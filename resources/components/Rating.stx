@@ -1,0 +1,20 @@
+<script server>
+const stars = Math.round(Number(rating || 0))
+const filled = Array.from({ length: 5 }, (_, i) => i < stars)
+</script>
+
+<span class="inline-flex gap-1.5 items-center text-[0.8125rem]">
+  <span class="inline-flex gap-px text-amber-500">
+    @foreach (filled as on)
+      @if (on)
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.854 5.78 6.375.927-4.614 4.498 1.089 6.35L10 15.92l-5.704 3.135 1.089-6.35L.77 8.207l6.375-.927L10 1.5z"/></svg>
+      @else
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" class="text-[color:var(--border-strong)]"><path d="M10 1.5l2.854 5.78 6.375.927-4.614 4.498 1.089 6.35L10 15.92l-5.704 3.135 1.089-6.35L.77 8.207l6.375-.927L10 1.5z"/></svg>
+      @endif
+    @endforeach
+  </span>
+  <span class="font-semibold">{{ rating }}</span>
+  @if (reviews)
+    <span class="text-[color:var(--text-muted)]">({{ reviews }})</span>
+  @endif
+</span>

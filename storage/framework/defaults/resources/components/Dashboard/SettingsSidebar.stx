@@ -1,0 +1,234 @@
+<script>
+interface SettingsSidebarProps {
+  currentPath?: string
+}
+
+const { currentPath = 'ai' } = defineProps<SettingsSidebarProps>()
+</script>
+<header class="p-4 sm:p-6 lg:p-8 lg:w-92 border-b border-gray-200 dark:border-neutral-600">
+    <div class="p-4 w-full bg-white rounded-lg shadow-sm">
+      <h3 class="font-semibold text-gray-700 md:text-sm">
+        Stacks Settings
+      </h3>
+      <p class="mt-2 text-gray-500 text-sm">
+        List of available settings
+      </p>
+    </div>
+    <!-- Side navigation -->
+    <nav class="flex flex-1 flex-col mt-4 p-4 w-full bg-white rounded-lg shadow-sm">
+      <ul role="list" class="-mx-2 mt-2 space-y-1">
+        <li>
+          <a href="/settings/ai" class="flex items-center justify-between : ? '' 'ai' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-sparkles"></div>
+              AI
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/analytics" class="flex items-center justify-between : ? '' 'analytics' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-chart-bar"></div>
+              Analytics
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/app" class="flex items-center justify-between : ? '' 'app' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-cog-6-tooth"></div>
+              App
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/billing" class="flex items-center justify-between : ? '' 'billing' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-credit-card"></div>
+              Billing
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/cache" class="flex items-center justify-between : ? '' 'cache' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-server"></div>
+              Cache
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/cli" class="flex items-center justify-between : ? '' 'cli' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-command-line"></div>
+              CLI
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/cloud" class="flex items-center justify-between : ? '' 'cloud' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-cloud"></div>
+              Cloud
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/database" class="flex items-center justify-between : ? '' 'database' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-circle-stack"></div>
+              Database
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/dns" class="flex items-center justify-between : ? '' 'dns' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-window"></div>
+              DNS
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/email" class="flex items-center justify-between : ? '' 'email' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-at-symbol"></div>
+              Email
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/file-system" class="flex items-center justify-between : ? '' 'file-system' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-folder"></div>
+              File System
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/hashing" class="flex items-center justify-between : ? '' 'hashing' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-hashtag"></div>
+              Hashing
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/languages" class="flex items-center justify-between : ? '' 'languages' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-language"></div>
+              Languages
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/library" class="flex items-center justify-between : ? '' 'library' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-book-open"></div>
+              Library
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/native" class="flex items-center justify-between : ? '' 'native' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-viewfinder-circle"></div>
+              Native
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/mail" class="flex items-center justify-between : ? '' 'mail' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-envelope"></div>
+              Mail
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/queue" class="flex items-center justify-between : ? '' 'queue' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-queue-02"></div>
+              Queue
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/search-engine" class="flex items-center justify-between : ? '' 'search-engine' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-search-01"></div>
+              Search Engine
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/security" class="flex items-center justify-between : ? '' 'security' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-shield-check"></div>
+              Security
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/services" class="flex items-center justify-between : ? '' 'services' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-briefcase"></div>
+              Services
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/storage" class="flex items-center justify-between : ? '' 'storage' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-circle-stack"></div>
+              Storage
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/team" class="flex items-center justify-between : ? '' 'team' 'text-blue-600' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-user-group"></div>
+              Team
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+        <li>
+          <a href="/settings/ui" class="flex items-center justify-between : ? '' 'text-blue-600' 'ui' {{ }} == currentPath group sidebar-links">
+            <div class="flex gap-x-2 items-center">
+              <div class="h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-rectangle-group"></div>
+              UI
+            </div>
+            <div class="self-end h-5 w-5 text-gray-500 dark:text-neutral-200 group-hover:text-gray-700 duration-150 ease-in-out transition i-hugeicons-arrow-right-01"></div>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+<style>
+.sidebar-links {
+  @apply text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+}
+</style>

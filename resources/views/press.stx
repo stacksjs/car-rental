@@ -1,0 +1,143 @@
+<script server>
+const pageTitle = 'Press · Drivly'
+const activePage = 'press'
+
+useSeoMeta({
+  title: 'Press & Media — Drivly',
+  description: 'Press releases, brand assets, and contact information for journalists covering Drivly.',
+})
+
+const releases = [
+  { date: '2026-03-28', tag: 'Company',        title: 'Drivly surpasses 350,000 listed vehicles, now operating in 16 countries' },
+  { date: '2026-02-14', tag: 'Product',        title: 'Instant Book arrives on every eligible car — no more waiting for host approval' },
+  { date: '2026-01-09', tag: 'Safety',         title: 'Drivly Trust & Safety report 2025: 99.97% of trips completed without incident' },
+  { date: '2025-11-02', tag: 'Partnership',    title: 'Drivly partners with Shell Recharge for EV charging discounts across North America' },
+  { date: '2025-09-17', tag: 'Funding',        title: 'Drivly raises $340M Series E at a $5.4B valuation, led by Sequoia Capital' },
+  { date: '2025-06-24', tag: 'Product',        title: 'Drivly Keys: turn your phone into the car key for 40+ eligible vehicles' },
+]
+
+const coverage = [
+  { outlet: 'The New York Times',  headline: 'Peer-to-peer car rentals, now with a lot more protection' },
+  { outlet: 'Bloomberg',           headline: 'How Drivly convinced 350,000 owners to rent out their cars' },
+  { outlet: 'The Verge',           headline: 'The Airbnb of cars finally has an app that doesn\'t feel like 2015' },
+  { outlet: 'TechCrunch',          headline: 'Drivly\'s new API lets dealerships offer short-term rentals in 48 hours' },
+  { outlet: 'Wired',               headline: 'Inside the insurance model making car-sharing viable at scale' },
+  { outlet: 'Fast Company',        headline: 'Most Innovative Company 2026: Travel' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-12 max-w-[1080px]">
+
+  <div class="mb-14">
+    <p class="m-0 mb-2 font-semibold text-sm tracking-wider uppercase text-[color:var(--text-muted)]">Press</p>
+    <h1 class="m-0 mb-4 text-5xl sm:text-6xl serif">Newsroom</h1>
+    <p class="m-0 max-w-[56ch] leading-relaxed text-lg text-[color:var(--text-muted)]">Announcements, reports, and resources for journalists covering the future of car sharing.</p>
+  </div>
+
+  <section class="grid gap-12 grid-cols-1 md:grid-cols-[2fr_1fr] mb-16">
+    <div>
+      <h2 class="m-0 mb-6 text-3xl serif">Latest announcements</h2>
+      <div class="flex flex-col gap-3">
+        @foreach (releases as r)
+          <button type="button" @click="openRelease('{{ r.date }}', '{{ r.tag }}', {{ r.title|json }})" class="flex gap-4 items-start p-5 text-left border rounded-2xl transition-transform cursor-pointer bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-px">
+            <div class="flex-1 min-w-0">
+              <div class="flex gap-3 items-center mb-2">
+                <span class="text-xs tabular text-[color:var(--text-muted)]">{{ r.date }}</span>
+                <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[#FF3E54] text-[0.6875rem] tracking-wider uppercase bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">{{ r.tag }}</span>
+              </div>
+              <p class="m-0 font-semibold leading-snug text-[0.9375rem]">{{ r.title }}</p>
+            </div>
+            <span class="flex-shrink-0 mt-1 font-semibold text-[#FF3E54] text-sm">Read →</span>
+          </button>
+        @endforeach
+      </div>
+    </div>
+
+    <aside class="md:sticky md:top-24 self-start">
+      <div class="mb-4 p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 mb-2 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Media inquiries</p>
+        <p class="m-0 mb-1 font-semibold">Priya Venkataraman</p>
+        <p class="m-0 mb-3 text-sm text-[color:var(--text-muted)]">Head of Communications</p>
+        <a href="mailto:press@drivly.example" class="font-semibold text-[#FF3E54] text-sm">press@drivly.example</a>
+      </div>
+
+      <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 mb-3 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Brand assets</p>
+        <ul class="flex flex-col gap-2.5 m-0 p-0 list-none">
+          <li><button type="button" @click="requestAsset('Logos (SVG, PNG)')" class="p-0 text-left text-sm hover:text-[#FF3E54] bg-transparent border-0 cursor-pointer text-[color:var(--text-secondary)]">Logos (SVG, PNG)</button></li>
+          <li><button type="button" @click="requestAsset('Product screenshots')" class="p-0 text-left text-sm hover:text-[#FF3E54] bg-transparent border-0 cursor-pointer text-[color:var(--text-secondary)]">Product screenshots</button></li>
+          <li><button type="button" @click="requestAsset('Team photos')" class="p-0 text-left text-sm hover:text-[#FF3E54] bg-transparent border-0 cursor-pointer text-[color:var(--text-secondary)]">Team photos</button></li>
+          <li><button type="button" @click="requestAsset('Brand guidelines (PDF)')" class="p-0 text-left text-sm hover:text-[#FF3E54] bg-transparent border-0 cursor-pointer text-[color:var(--text-secondary)]">Brand guidelines (PDF)</button></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <section>
+    <h2 class="m-0 mb-6 text-3xl serif">In the news</h2>
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+      @foreach (coverage as c)
+        <div class="p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <p class="m-0 mb-2 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">{{ c.outlet }}</p>
+          <p class="m-0 font-semibold leading-snug">"{{ c.headline }}"</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+</div>
+
+<!-- Release detail modal — same pattern as /help. Body is a generic blurb
+     so readers get the click-through flow without us fabricating full
+     press releases. Esc / backdrop click closes. -->
+<div :show="releaseOpen()" class="flex fixed inset-0 z-[150] items-start justify-center p-4 pt-16" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px)" @click="releaseOpen.set(false)">
+  <div class="max-w-[680px] w-full border rounded-2xl shadow-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" @click.stop>
+    <div class="flex gap-4 items-start justify-between px-7 py-5 border-b border-[color:var(--border)]">
+      <div>
+        <div class="flex gap-3 items-center mb-2">
+          <span class="text-xs tabular text-[color:var(--text-muted)]" :text="releaseDate">2026-01-01</span>
+          <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[#FF3E54] text-[0.6875rem] tracking-wider uppercase bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full" :text="releaseTag">Company</span>
+        </div>
+        <h3 class="m-0 font-bold leading-snug text-xl" :text="releaseTitle">Release title</h3>
+      </div>
+      <button type="button" @click="releaseOpen.set(false)" aria-label="Close release" class="inline-flex flex-shrink-0 items-center justify-center h-8 w-8 bg-transparent border-0 rounded-full cursor-pointer text-[color:var(--text-muted)] hover:bg-[color:var(--bg-subtle)] hover:text-[color:var(--text)]">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-7 py-6 leading-relaxed text-[0.9375rem] text-[color:var(--text-secondary)]">
+      <p class="m-0 mb-4">Full release text would live here in production — our newsroom is currently being migrated to this page.</p>
+      <p class="m-0 mb-4">For the complete announcement, quotes, and photography, media can reach out directly to <a href="mailto:press@drivly.example" class="font-semibold text-[#FF3E54]">press@drivly.example</a>.</p>
+      <p class="m-0">Embargoes and interview requests are typically handled same-day.</p>
+    </div>
+    <div class="flex gap-3 justify-end px-7 py-4 rounded-b-2xl bg-[color:var(--bg-subtle)]">
+      <button type="button" @click="releaseOpen.set(false)" class="px-4 py-2 font-semibold text-sm bg-transparent border rounded-lg cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]">Close</button>
+      <a href="mailto:press@drivly.example" class="px-4 py-2 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg transition-colors">Email press team</a>
+    </div>
+  </div>
+</div>
+
+<script client>
+  // Press release modal — we don't publish full release bodies into the demo,
+  // so the modal shows a generic blurb plus a mailto for media inquiries.
+  const releaseOpen  = state(false)
+  const releaseDate  = state('')
+  const releaseTag   = state('')
+  const releaseTitle = state('')
+
+  function openRelease(date, tag, title) {
+    releaseDate.set(date)
+    releaseTag.set(tag)
+    releaseTitle.set(title)
+    releaseOpen.set(true)
+  }
+
+  // Brand asset buttons — offer a friendly toast with the email instead of
+  // a dead download link. Gives journalists the right next step.
+  function requestAsset(name) {
+    window._toast && window._toast('Email press@drivly.example — we\'ll send ' + name + ' same-day.', 'info')
+  }
+</script>
+@endsection

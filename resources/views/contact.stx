@@ -1,0 +1,140 @@
+<script server>
+const pageTitle = 'Contact us · Drivly'
+const activePage = 'contact'
+
+useSeoMeta({
+  title: 'Contact Drivly — we\'re here 24/7',
+  description: 'Reach Drivly support by chat, phone, or email. Real humans, fast responses.',
+})
+
+const channels = [
+  {
+    icon: '💬',
+    title: 'Live chat',
+    subtitle: 'Fastest · 5 min average',
+    body: 'Tap the chat bubble in the bottom-right. Available 24/7 in English, Spanish, French, and Portuguese.',
+  },
+  {
+    icon: '📞',
+    title: 'Phone',
+    subtitle: 'For urgent trip issues',
+    body: 'Call 1-888-DRIVLY-1 anytime. Press 9 from inside an active trip for priority routing.',
+  },
+  {
+    icon: '✉️',
+    title: 'Email',
+    subtitle: 'For anything non-urgent',
+    body: 'support@drivly.example — we read every message and reply within 4 hours, faster on weekdays.',
+  },
+  {
+    icon: '🚨',
+    title: 'Roadside',
+    subtitle: '24/7 · Included with every trip',
+    body: 'Inside your trip, tap the red "Need help" button. Our roadside partner is dispatched immediately — no deductible for lockouts, jumps, or flat tires.',
+  },
+]
+
+const offices = [
+  { city: 'San Francisco', address: '1247 Mission St, Suite 400 · CA 94103' },
+  { city: 'Austin',        address: '600 Congress Ave, Floor 14 · TX 78701' },
+  { city: 'London',        address: '16 Great Marlborough St · W1F 7HS' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-12 max-w-[1040px]">
+
+  <div class="mb-14 text-center">
+    <h1 class="m-0 mb-4 text-5xl sm:text-6xl serif">We'd love to hear from you</h1>
+    <p class="m-0 mx-auto max-w-[48ch] leading-relaxed text-lg text-[color:var(--text-muted)]">Real humans, not bots. Pick whatever channel works for you.</p>
+  </div>
+
+  <div class="grid gap-5 grid-cols-1 md:grid-cols-2 mb-16">
+    @foreach (channels as c)
+      <div class="p-7 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 mb-3 text-3xl">{{ c.icon }}</p>
+        <h2 class="m-0 mb-1 font-bold text-xl">{{ c.title }}</h2>
+        <p class="m-0 mb-3 font-semibold text-[#FF3E54] text-xs tracking-wider uppercase">{{ c.subtitle }}</p>
+        <p class="m-0 leading-relaxed text-[color:var(--text-secondary)]">{{ c.body }}</p>
+      </div>
+    @endforeach
+  </div>
+
+  <section class="mb-16 mx-auto max-w-[640px]">
+    <h2 class="m-0 mb-2 text-3xl text-center serif">Send us a note</h2>
+    <p class="m-0 mb-8 text-center text-[color:var(--text-muted)]">We read every message and typically reply in under an hour.</p>
+
+    <form class="flex flex-col gap-4" @submit="submitForm($event)">
+      <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <label>
+          <span class="block mb-1.5 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Your name</span>
+          <input type="text" name="name" required x-model="contactName" class="px-4 py-3 w-full text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]">
+        </label>
+        <label>
+          <span class="block mb-1.5 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Email</span>
+          <input type="email" name="email" required x-model="contactEmail" class="px-4 py-3 w-full text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]">
+        </label>
+      </div>
+      <label>
+        <span class="block mb-1.5 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Topic</span>
+        <select name="topic" x-model="contactTopic" class="px-4 py-3 w-full text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]">
+          <option>General question</option><option>Trip in progress</option><option>Hosting</option><option>Insurance claim</option><option>Billing</option><option>Partnership</option>
+        </select>
+      </label>
+      <label>
+        <span class="block mb-1.5 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Message</span>
+        <textarea rows="5" name="message" required x-model="contactMessage" class="px-4 py-3 w-full text-sm border rounded-xl resize-none bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"></textarea>
+      </label>
+      <button type="submit" class="inline-flex gap-2 items-center self-start px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] border-0 rounded-xl disabled:opacity-60 transition-colors cursor-pointer disabled:cursor-not-allowed" :disabled="contactSending()">
+        <span :show="!contactSending()">Send message</span>
+        <span :show="contactSending()" class="inline-flex gap-2 items-center"><span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite"></span> Sending…</span>
+      </button>
+    </form>
+  </section>
+
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+  <script client>
+    // Lightweight form state — submit simulates a real network call with a
+    // short delay so users see progress, then surfaces a success toast and
+    // clears the form. In production this would POST to /api/contact.
+    const contactName = state('')
+    const contactEmail = state('')
+    const contactTopic = state('General question')
+    const contactMessage = state('')
+    const contactSending = state(false)
+
+    function submitForm(e) {
+      e.preventDefault()
+      if (contactSending()) return
+      if (!contactName() || !contactEmail() || !contactMessage()) {
+        window._toast && window._toast('Please fill in name, email, and message', 'error')
+        return
+      }
+      contactSending.set(true)
+      setTimeout(() => {
+        contactSending.set(false)
+        window._toast && window._toast('Thanks! We\'ll reply within an hour.', 'success')
+        contactName.set('')
+        contactEmail.set('')
+        contactMessage.set('')
+      }, 900)
+    }
+  </script>
+
+  <section>
+    <h2 class="m-0 mb-6 text-3xl text-center serif">Offices</h2>
+    <div class="grid gap-5 grid-cols-1 md:grid-cols-3">
+      @foreach (offices as o)
+        <div class="p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <p class="m-0 mb-1 font-bold">{{ o.city }}</p>
+          <p class="m-0 leading-relaxed text-sm text-[color:var(--text-muted)]">{{ o.address }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+</div>
+@endsection

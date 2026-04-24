@@ -1,0 +1,129 @@
+<script server>
+const pageTitle = 'How it works · Drivly'
+const activePage = 'about'
+
+// SEO: static page → canonical OG tags. `useSeoMeta` shorthands Open Graph +
+// Twitter card fields so we don't hand-write every `<meta property="og:..">`.
+useSeoMeta({
+  title: 'How Drivly works — car sharing, reimagined',
+  description: 'Skip the rental counter. Understand how Drivly\'s marketplace keeps every trip safe, cheap, and easy.',
+  ogTitle: 'How Drivly works',
+  ogImage: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=70',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
+const faq = [
+  { q: 'How does Drivly work?', a: 'Browse cars, book the one you like, meet the host (or have it delivered), and drive. Return the same way. We handle the insurance and payment. You handle the driving.' },
+  { q: 'Is it insured?', a: 'Yes. Every trip comes with up to $750K in liability coverage + physical damage coverage on the car. You can choose from three protection plans at checkout.' },
+  { q: 'What if the host cancels?', a: 'You\'ll be auto-matched with a comparable car. If nothing\'s available, you get a full refund + a $50 travel credit.' },
+  { q: 'Can I cancel my trip?', a: 'Free cancellation up to 24 hours before your trip starts. After that, a partial refund applies.' },
+  { q: 'Who can drive?', a: 'Anyone with a valid driver\'s license who passes our quick ID check. Drivers under 25 may have a young driver fee.' },
+  { q: 'How do I become a host?', a: 'Hit "List your car" in the nav, fill out the 5-step form (takes under 10 minutes), and we publish within 24 hours.' },
+  { q: 'What cars can be listed?', a: 'Most cars 2008 or newer, under 130,000 miles, with a clean title. Exotics, classics, and EVs encouraged.' },
+]
+
+const trustFacts = [
+  { icon: '🛡️', title: 'Up to $750K liability', desc: 'Every trip is backed by a top-tier insurance partner.' },
+  { icon: '🕰️', title: '24/7 support', desc: 'Roadside. Accidents. Questions. We\'re one tap away.' },
+  { icon: '✅', title: 'Verified drivers', desc: 'Every driver passes an ID + license check before their first trip.' },
+  { icon: '💳', title: 'Secure payments', desc: 'Pay only when the host confirms. Refunded within 5–7 days.' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-16 px-6 py-12 max-w-[960px]">
+
+  <div class="mb-16 text-center">
+    <span class="inline-flex gap-1.5 items-center mb-4 px-2.5 py-1.5 font-medium text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">How it works</span>
+    <h1 class="m-0 mb-4 mx-auto max-w-[20ch] leading-[1.05] text-5xl sm:text-6xl lg:text-7xl serif">A better way to rent a car.</h1>
+    <p class="mx-auto max-w-[52ch] leading-relaxed text-lg text-[color:var(--text-secondary)]">No long lines. No fine print. No upsells. Just you, a car, and the road.</p>
+  </div>
+
+  <section class="mb-20">
+    <div class="flex flex-col gap-16">
+      <div class="grid gap-12 grid-cols-1 items-center md:grid-cols-2">
+        <div>
+          <span class="inline-flex gap-1.5 items-center mb-3 px-2.5 py-1.5 font-medium text-xs border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]">01 · Browse</span>
+          <h2 class="m-0 mb-3 text-3xl sm:text-4xl serif">Find exactly what you want</h2>
+          <p class="m-0 leading-relaxed text-base text-[color:var(--text-muted)]">Over 350,000 cars from real people. Filter by make, price, features, fuel type — whatever you need. Then zoom in on the photos, reviews, and host info.</p>
+        </div>
+        <div class="overflow-hidden bg-center bg-cover border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" style="aspect-ratio: 4/3; background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=70')"></div>
+      </div>
+
+      <div class="grid gap-12 grid-cols-1 items-center md:grid-cols-2">
+        <div class="order-first overflow-hidden md:order-none bg-center bg-cover border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" style="aspect-ratio: 4/3; background-image: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=70')"></div>
+        <div>
+          <span class="inline-flex gap-1.5 items-center mb-3 px-2.5 py-1.5 font-medium text-xs border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]">02 · Book</span>
+          <h2 class="m-0 mb-3 text-3xl sm:text-4xl serif">Book in minutes</h2>
+          <p class="m-0 leading-relaxed text-base text-[color:var(--text-muted)]">Instant Book gets you on the road immediately. Otherwise, hosts typically respond in under an hour. Your card isn't charged until the host confirms.</p>
+        </div>
+      </div>
+
+      <div class="grid gap-12 grid-cols-1 items-center md:grid-cols-2">
+        <div>
+          <span class="inline-flex gap-1.5 items-center mb-3 px-2.5 py-1.5 font-medium text-xs border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]">03 · Drive</span>
+          <h2 class="m-0 mb-3 text-3xl sm:text-4xl serif">Meet & go — or unlock with your phone</h2>
+          <p class="m-0 leading-relaxed text-base text-[color:var(--text-muted)]">Hosts either meet you personally or unlock the car remotely via the Drivly app. Return the same way. Take a deep breath and enjoy.</p>
+        </div>
+        <div class="overflow-hidden bg-center bg-cover border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" style="aspect-ratio: 4/3; background-image: url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=70')"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-20">
+    <h2 class="m-0 mb-1.5 text-4xl text-center sm:text-5xl serif">Trust & safety built in</h2>
+    <p class="m-0 mb-10 text-center text-[color:var(--text-muted)]">Every trip backed by real protection.</p>
+
+    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      @foreach (trustFacts as fact)
+        <div class="p-6 text-center border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <p class="m-0 mb-2 text-3xl">{{ fact.icon }}</p>
+          <h3 class="m-0 mb-1.5 font-bold text-base">{{ fact.title }}</h3>
+          <p class="m-0 leading-relaxed text-sm text-[color:var(--text-muted)]">{{ fact.desc }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="mb-20">
+    <h2 class="m-0 mb-1.5 text-4xl text-center sm:text-5xl serif">Frequently asked</h2>
+    <p class="m-0 mb-10 text-center text-[color:var(--text-muted)]">Still have questions? <a href="#" class="font-semibold text-[#FF3E54]">Contact us →</a></p>
+
+    <!-- @memo: the FAQ list is static and re-rendering it is wasted work on
+         SPA navigation. @memo caches the subtree once per distinct dep value.
+         Empty deps = never re-render. -->
+    @memo([])
+    <div class="flex flex-col gap-2.5">
+      @foreach (faq as item)
+        <details class="overflow-hidden border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <summary class="flex items-center justify-between px-6 py-4.5 font-semibold list-none text-base cursor-pointer">
+            <span>{{ item.q }}</span>
+            <svg class="h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="pb-5 px-6 leading-relaxed text-[0.9375rem] text-[color:var(--text-secondary)]">{{ item.a }}</div>
+        </details>
+      @endforeach
+    </div>
+    @endmemo
+  </section>
+
+  <section class="mb-12 p-12 sm:p-16 text-center border rounded-3xl" style="background: linear-gradient(135deg, rgba(255,62,84,0.1) 0%, rgba(147,51,234,0.08) 100%); border-color: rgba(255,62,84,0.25)">
+    <h2 class="m-0 mb-4 text-4xl sm:text-5xl serif">Ready to roll?</h2>
+    <p class="m-0 mb-10 mx-auto max-w-[38ch] leading-relaxed text-lg text-[color:var(--text-muted)]">Millions are already driving better. You're next.</p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      <StxLink to="/search" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all hover:-translate-y-px"
+               style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Browse cars</StxLink>
+      <StxLink to="/host/list" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] bg-transparent border rounded-xl transition-colors border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">List your car</StxLink>
+    </div>
+  </section>
+
+</div>
+
+<style>
+  details[open] summary svg { transform: rotate(180deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+</style>
+@endsection

@@ -1,0 +1,87 @@
+<script server>
+const discount = car.originalPrice && car.originalPrice > car.price
+  ? Math.round((1 - car.price / car.originalPrice) * 100)
+  : 0
+const carId = car.id
+const carHref = '/cars/' + car.id
+// Smaller preview image for listing grids — loads much faster than the full gallery size
+const thumb = car.image.replace(/[?&]w=\d+/, '') + (car.image.includes('?') ? '&w=600' : '?w=600')
+</script>
+
+<article class="flex overflow-hidden flex-col border rounded-2xl animate-fade-in transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:border-[color:var(--border-strong)]">
+  <!-- Image container with skeleton placeholder behind it -->
+  <div class="overflow-hidden relative skeleton" style="aspect-ratio: 16 / 11">
+    <StxLink to="{{ carHref }}" aria-label="{{ car.year }} {{ car.make }} {{ car.model }}" class="block h-full">
+      <!-- `eager` loading for the first 4 cards keeps hero + featured-row visible immediately;
+           everything else falls back to browser lazy via `loading="auto"`. `decoding=async`
+           lets Safari/Chrome decode off-main-thread. -->
+      <img src="{{ car.image }}" alt="{{ car.year }} {{ car.make }} {{ car.model }}"
+           loading="{{ eager ? 'eager' : 'lazy' }}" decoding="async" fetchpriority="{{ eager ? 'high' : 'auto' }}"
+           class="block object-cover h-full w-full duration-[420ms] transition-transform"
+           onload="this.parentElement && this.parentElement.classList.remove('skeleton')"
+           onmouseenter="this.style.transform='scale(1.03)'" onmouseleave="this.style.transform='scale(1)'">
+    </StxLink>
+
+    <!-- Favorite heart -->
+    <button class="inline-flex absolute right-3 top-3 items-center justify-center h-9 w-9 text-[#0a0a0a] bg-white/90 border-0 rounded-full transition-transform hover:scale-110 cursor-pointer fav-btn"
+            data-car-id="{{ carId }}" aria-label="Save to favorites"
+            style="backdrop-filter: blur(8px)">
+      <svg class="fav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+
+    <!-- Top-left badges -->
+    <div class="flex absolute left-3 top-3 flex-col gap-1.5 items-start">
+      @if (discount > 0)
+        <span class="inline-flex gap-1.5 items-center px-2.5 py-1 font-semibold text-white text-xs bg-[#0a0a0a] rounded-full">-{{ discount }}%</span>
+      @endif
+      @if (car.badges)
+        @foreach (car.badges as badge)
+          <span class="inline-flex gap-1.5 items-center px-2.5 py-1 font-medium text-[#0a0a0a] text-xs bg-white/95 rounded-full">
+            @if (badge === 'All-Star Host')
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#FF3E54"><path d="M12 1.5l2.854 5.78 6.375.927-4.614 4.498 1.089 6.35L12 15.92l-5.704 3.135 1.089-6.35L1.77 8.207l6.375-.927L12 1.5z"/></svg>
+            @endif
+            {{ badge }}
+          </span>
+        @endforeach
+      @endif
+    </div>
+
+    @if (car.deliveryAvailable)
+      <span class="inline-flex absolute bottom-3 left-3 gap-1.5 items-center px-2.5 py-1 font-medium text-[#0a0a0a] text-xs bg-white/95 rounded-full">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7h-3V4H3a1 1 0 0 0-1 1v11h2M20 7l3 4v5h-2M20 7v9M6 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+        Delivery
+      </span>
+    @endif
+  </div>
+
+  <StxLink to="{{ carHref }}" class="flex flex-1 flex-col gap-2.5 px-4.5 py-4">
+    <div class="flex gap-2 items-start justify-between">
+      <div class="min-w-0">
+        <h3 class="overflow-hidden m-0 font-semibold leading-tight text-[0.9375rem] text-ellipsis whitespace-nowrap text-[color:var(--text)]">{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+        @if (car.trim)
+          <p class="m-0 mt-0.5 text-xs text-[color:var(--text-muted)]">{{ car.trim }}</p>
+        @endif
+      </div>
+      @component('Rating', { rating: car.rating, reviews: car.trips })
+      @endcomponent
+    </div>
+
+    <div class="flex gap-2 items-center justify-between mt-auto">
+      <div class="flex gap-1.5 items-baseline">
+        <span class="font-bold text-lg tabular text-[color:var(--text)]">${{ car.price }}</span>
+        <span class="text-xs text-[color:var(--text-muted)]">/day</span>
+        @if (discount > 0)
+          <span class="line-through text-xs tabular text-[color:var(--text-muted)]">${{ car.originalPrice }}</span>
+        @endif
+      </div>
+      @if (car.instantBook)
+        <span class="inline-flex gap-1 items-center px-2 py-0.5 font-medium text-[#10B981] text-[0.6875rem] bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)] rounded-full">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Instant
+        </span>
+      @endif
+    </div>
+  </StxLink>
+</article>

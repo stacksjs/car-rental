@@ -1,0 +1,123 @@
+<script server>
+const pageTitle = 'Careers · Drivly'
+const activePage = 'careers'
+
+useSeoMeta({
+  title: 'Careers — Drivly',
+  description: 'Build the future of personal mobility. We\'re hiring engineers, designers, and operators across four offices.',
+  ogTitle: 'Work at Drivly',
+  ogType: 'website',
+})
+
+const stats = [
+  { n: '340+', l: 'Teammates' },
+  { n: '4', l: 'Offices worldwide' },
+  { n: '16', l: 'Countries we serve' },
+  { n: '350K', l: 'Cars on the platform' },
+]
+
+const values = [
+  { icon: '🛣️', title: 'Go the distance', body: 'Ambitious goals, quarterly reviews, and a clear path from L3 to staff engineer.' },
+  { icon: '🧭', title: 'Own your route', body: 'Small teams, few meetings, async-first. Pick what to work on — your manager clears the path.' },
+  { icon: '⚡', title: 'Fast lane', body: 'We ship to production every day. No review gauntlets. Own your rollouts, own the outcomes.' },
+  { icon: '🤝', title: 'Share the ride', body: 'Equity for every full-timer. Transparent comp bands. No secret backchannels on reviews.' },
+]
+
+const openings = [
+  { team: 'Engineering',   role: 'Staff Engineer, Marketplace',          loc: 'San Francisco · Remote OK', type: 'Full-time' },
+  { team: 'Engineering',   role: 'Senior iOS Engineer',                  loc: 'Remote (Americas)',         type: 'Full-time' },
+  { team: 'Engineering',   role: 'Platform Reliability Engineer',        loc: 'Austin · Remote OK',        type: 'Full-time' },
+  { team: 'Design',        role: 'Senior Product Designer, Trust',       loc: 'San Francisco',             type: 'Full-time' },
+  { team: 'Design',        role: 'Brand Designer',                       loc: 'Remote (Americas)',         type: 'Contract' },
+  { team: 'Operations',    role: 'Regional Ops Manager, Southeast US',   loc: 'Atlanta, GA',               type: 'Full-time' },
+  { team: 'Operations',    role: 'Claims Specialist',                    loc: 'Remote (US)',               type: 'Full-time' },
+  { team: 'Data',          role: 'Senior Data Scientist, Pricing',       loc: 'San Francisco · Remote OK', type: 'Full-time' },
+  { team: 'Legal',         role: 'Counsel, Privacy & Regulatory',        loc: 'San Francisco · London',    type: 'Full-time' },
+  { team: 'Support',       role: 'Weekend Support Lead (24/7 team)',     loc: 'Remote (Americas)',         type: 'Full-time' },
+]
+
+const perks = [
+  'Fully paid medical, dental, vision (100% for you, 80% for dependents)',
+  'Take-what-you-need PTO (minimum 15 days enforced)',
+  'Unlimited Drivly credit — try any car, any time',
+  '$2,000/year learning & conference budget',
+  '16 weeks paid parental leave, all parents',
+  '401(k) with 4% match, vests immediately',
+  'Home office stipend: $1,500 one-time + $100/mo',
+  'Team offsites twice a year (past: Lisbon, Mexico City, Jackson Hole)',
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-12 max-w-[1080px]">
+
+  <div class="mb-16 text-center">
+    <span class="inline-flex gap-1.5 items-center mb-4 px-3 py-1.5 font-semibold text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">We're hiring</span>
+    <h1 class="m-0 mb-4 leading-[1.05] text-5xl sm:text-6xl lg:text-7xl serif">Build the future of personal mobility.</h1>
+    <p class="m-0 mx-auto max-w-[58ch] leading-relaxed text-lg text-[color:var(--text-secondary)]">Owning a car is expensive, inflexible, and increasingly irrational. We're building the marketplace that makes car ownership optional — for the next billion trips.</p>
+  </div>
+
+  <section class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 mb-20">
+    @foreach (stats as s)
+      <div class="text-center">
+        <p class="m-0 mb-1 text-[#FF3E54] text-5xl serif">{{ s.n }}</p>
+        <p class="m-0 text-sm text-[color:var(--text-muted)]">{{ s.l }}</p>
+      </div>
+    @endforeach
+  </section>
+
+  <section class="mb-20">
+    <h2 class="m-0 mb-1.5 text-4xl text-center sm:text-5xl serif">How we work</h2>
+    <p class="m-0 mb-10 text-center text-[color:var(--text-muted)]">Four principles that actually change our calendars.</p>
+    <div class="grid gap-5 grid-cols-1 md:grid-cols-2">
+      @foreach (values as v)
+        <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <p class="m-0 mb-3 text-3xl">{{ v.icon }}</p>
+          <h3 class="m-0 mb-2 font-bold text-lg">{{ v.title }}</h3>
+          <p class="m-0 leading-relaxed text-[color:var(--text-muted)]">{{ v.body }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="mb-20">
+    <h2 class="m-0 mb-1.5 text-4xl text-center sm:text-5xl serif">Open roles</h2>
+    <p class="m-0 mb-10 text-center text-[color:var(--text-muted)]">{{ openings.length }} openings across engineering, design, operations, and more.</p>
+
+    <div class="overflow-hidden border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      @foreach (openings as o)
+        <a href="mailto:careers@drivly.example?subject={{ encodeURIComponent('Application: ' + o.role) }}&body={{ encodeURIComponent('Hi Drivly team,\n\nI\'d like to apply for the ' + o.role + ' role (' + o.team + ', ' + o.loc + ').\n\nAttached is my resume and a short note on why I\'m excited about this one.\n\nThanks,\n') }}"
+           class="flex gap-4 items-center justify-between px-6 py-5 border-b last:border-b-0 transition-colors border-[color:var(--border)] hover:bg-[color:var(--bg-hover)]">
+          <div class="flex-1 min-w-0">
+            <p class="m-0 font-semibold text-[0.9375rem]">{{ o.role }}</p>
+            <p class="m-0 mt-1 text-[0.8125rem] text-[color:var(--text-muted)]">{{ o.team }} · {{ o.loc }} · {{ o.type }}</p>
+          </div>
+          <span class="flex-shrink-0 font-semibold text-[#FF3E54] text-sm">Apply →</span>
+        </a>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="m-0 mb-1.5 text-4xl text-center sm:text-5xl serif">Benefits & perks</h2>
+    <p class="m-0 mb-10 text-center text-[color:var(--text-muted)]">Competitive comp, meaningful equity, and the stuff that actually matters.</p>
+    <div class="grid gap-3 grid-cols-1 md:grid-cols-2 mx-auto max-w-[720px]">
+      @foreach (perks as p)
+        <div class="flex gap-3 items-start p-4 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <svg class="flex-shrink-0 mt-0.5 h-5 w-5 text-[#FF3E54]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <p class="m-0 text-sm text-[color:var(--text-secondary)]">{{ p }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="p-12 text-center border rounded-3xl" style="background: linear-gradient(135deg, rgba(255,62,84,0.1) 0%, rgba(147,51,234,0.08) 100%); border-color: rgba(255,62,84,0.25)">
+    <h2 class="m-0 mb-3 text-4xl sm:text-5xl serif">Don't see your role?</h2>
+    <p class="m-0 mb-8 mx-auto max-w-[44ch] leading-relaxed text-lg text-[color:var(--text-muted)]">We hire exceptional people when we meet them. Tell us what you'd build.</p>
+    <a href="mailto:careers@drivly.example" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-colors">careers@drivly.example</a>
+  </section>
+
+</div>
+@endsection

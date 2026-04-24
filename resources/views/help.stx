@@ -1,0 +1,220 @@
+<script server>
+const pageTitle = 'Help Center · Drivly'
+const activePage = 'help'
+
+useSeoMeta({
+  title: 'Help Center — Drivly',
+  description: 'Answers to common questions for drivers and hosts. Can\'t find what you need? Contact us.',
+})
+
+const categories = [
+  {
+    icon: '🚗',
+    title: 'Before your trip',
+    articles: [
+      'How do I book a car?',
+      'Can I cancel after booking?',
+      'What IDs do I need to verify?',
+      'Are there young driver fees?',
+    ],
+  },
+  {
+    icon: '🔑',
+    title: 'Pickup & return',
+    articles: [
+      'How does remote unlock work?',
+      'What if the host is late?',
+      'I need to extend my trip',
+      'Return instructions',
+    ],
+  },
+  {
+    icon: '🛡️',
+    title: 'Insurance & incidents',
+    articles: [
+      'What does my protection plan cover?',
+      'How do I file a claim?',
+      'What to do after an accident',
+      'Roadside assistance',
+    ],
+  },
+  {
+    icon: '💳',
+    title: 'Payments & refunds',
+    articles: [
+      'When will my card be charged?',
+      'How do refunds work?',
+      'Promo codes & travel credits',
+      'Receipts & expense reports',
+    ],
+  },
+  {
+    icon: '🏠',
+    title: 'Hosting',
+    articles: [
+      'How do I list my car?',
+      'Pricing & earnings',
+      'Handling damage claims',
+      'Tax documents (1099)',
+    ],
+  },
+  {
+    icon: '⚙️',
+    title: 'Account',
+    articles: [
+      'Update my profile',
+      'Change email or phone',
+      'Enable two-factor auth',
+      'Delete my account',
+    ],
+  },
+]
+
+const popular = [
+  { q: 'Where do I find my pickup code?', a: 'Check the trip details screen — the 6-digit code is shown 30 minutes before pickup.' },
+  { q: 'What if my trip is canceled by the host?', a: 'We auto-match you with a comparable car. If nothing fits, you get a full refund and a $50 travel credit.' },
+  { q: 'How do I extend my trip?', a: 'Open the trip in the app and tap "Request extension". The host has 30 minutes to approve.' },
+  { q: 'I damaged the car — now what?', a: 'Report it in the app under "Report an issue". Your protection plan takes it from there.' },
+]
+
+// Flatten article titles with their category so the client-side search can
+// return hits grouped by topic without round-tripping the server.
+const allArticles = categories.flatMap(c => c.articles.map(a => ({ title: a, category: c.title, icon: c.icon })))
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-12 max-w-[1040px]">
+
+  <div class="mb-14 text-center">
+    <h1 class="m-0 mb-4 text-5xl sm:text-6xl serif">How can we help?</h1>
+    <p class="m-0 mx-auto max-w-[52ch] leading-relaxed text-lg text-[color:var(--text-muted)]">Most answers are a click away. Our team is on call 24/7 for anything else.</p>
+
+    <div class="relative mt-8 mx-auto max-w-[540px]">
+      <input type="search" placeholder="Search help articles…" x-model="helpQuery" aria-label="Search help articles" class="pl-14 px-6 py-4 w-full text-base border rounded-full bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]">
+      <svg class="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+    </div>
+  </div>
+
+  <!-- Default: category grid (shown when search is empty) -->
+  <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mb-16" :show="!helpQuery()">
+    @foreach (categories as cat)
+      <div class="p-6 border rounded-2xl transition-transform bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-px">
+        <p class="m-0 mb-3 text-3xl">{{ cat.icon }}</p>
+        <h2 class="m-0 mb-3 font-bold text-lg">{{ cat.title }}</h2>
+        <ul class="flex flex-col gap-2 m-0 p-0 list-none">
+          @foreach (cat.articles as a)
+            <li><button type="button" @click="openArticle('{{ cat.title }}', '{{ a }}')" class="p-0 text-left text-sm hover:text-[#FF3E54] bg-transparent border-0 cursor-pointer text-[color:var(--text-secondary)]">{{ a }}</button></li>
+          @endforeach
+        </ul>
+      </div>
+    @endforeach
+  </div>
+
+  <!-- Search results: appears when the query is non-empty, flat list
+       filtered from ALL_ARTICLES. Empty state acknowledges the miss. -->
+  <div :show="helpQuery().length > 0" class="mb-16">
+    <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]"><span :text="matchCountLabel">0 results</span> for <span class="font-semibold text-[color:var(--text)]" :text="helpQuery">…</span></p>
+    <div :show="matches().length > 0" class="flex flex-col gap-2">
+      <div :for="m in matches" class="border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <button type="button" @click="openArticle(m.category, m.title)" class="flex gap-4 items-center px-5 py-4 w-full text-left bg-transparent border-0 rounded-xl transition-colors cursor-pointer hover:bg-[color:var(--bg-hover)]">
+          <span class="text-2xl" x-text="m.icon"></span>
+          <div class="flex-1 min-w-0">
+            <p class="m-0 font-semibold text-[0.9375rem]" x-text="m.title"></p>
+            <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" x-text="m.category"></p>
+          </div>
+          <span class="flex-shrink-0 font-semibold text-[#FF3E54] text-sm">→</span>
+        </button>
+      </div>
+    </div>
+    <div :show="matches().length === 0" class="py-12 text-center rounded-2xl bg-[color:var(--bg-subtle)]">
+      <p class="m-0 mb-3 text-5xl">🔍</p>
+      <p class="m-0 mb-2 font-semibold">No articles match that search</p>
+      <p class="m-0 mb-5 text-sm text-[color:var(--text-muted)]">Try a different keyword or <StxLink to="/contact" class="font-semibold text-[#FF3E54]">reach out to support</StxLink>.</p>
+    </div>
+  </div>
+
+  <section class="mb-14">
+    <h2 class="m-0 mb-6 text-3xl text-center sm:text-4xl serif">Popular right now</h2>
+    <div class="flex flex-col gap-3 mx-auto max-w-[720px]">
+      @foreach (popular as item)
+        <details class="overflow-hidden border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <summary class="flex items-center justify-between px-6 py-4 font-semibold list-none text-base cursor-pointer">
+            <span>{{ item.q }}</span>
+            <svg class="h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="pb-5 px-6 leading-relaxed text-sm text-[color:var(--text-secondary)]">{{ item.a }}</div>
+        </details>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="p-12 text-center border rounded-3xl" style="background: linear-gradient(135deg, rgba(255,62,84,0.1) 0%, rgba(147,51,234,0.08) 100%); border-color: rgba(255,62,84,0.25)">
+    <h2 class="m-0 mb-3 text-3xl sm:text-4xl serif">Still need a human?</h2>
+    <p class="m-0 mb-6 mx-auto max-w-[44ch] leading-relaxed text-[color:var(--text-muted)]">Our support team reads every message and typically replies within 5 minutes.</p>
+    <StxLink to="/contact" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-colors">Contact support →</StxLink>
+  </section>
+
+</div>
+
+<!-- Article detail modal — opens when any article title is clicked. Body copy
+     is a stock "still building" blurb, which keeps the demo honest: you get
+     the search + click-through UX without faking full article content. -->
+<div :show="articleOpen()" class="flex fixed inset-0 z-[150] items-start justify-center p-4 pt-16" style="background: rgba(0,0,0,0.55); backdrop-filter: blur(6px)" @click="articleOpen.set(false)">
+  <div class="max-w-[640px] w-full border rounded-2xl shadow-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" @click.stop>
+    <div class="flex gap-4 items-start justify-between px-7 py-5 border-b border-[color:var(--border)]">
+      <div>
+        <p class="m-0 mb-1.5 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]" :text="articleCategory">Topic</p>
+        <h3 class="m-0 font-bold text-xl" :text="articleTitle">Article title</h3>
+      </div>
+      <button type="button" @click="articleOpen.set(false)" aria-label="Close article" class="inline-flex flex-shrink-0 items-center justify-center h-8 w-8 bg-transparent border-0 rounded-full cursor-pointer text-[color:var(--text-muted)] hover:bg-[color:var(--bg-subtle)] hover:text-[color:var(--text)]">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-7 py-6 leading-relaxed text-[0.9375rem] text-[color:var(--text-secondary)]">
+      <p class="m-0 mb-4">Full article text would live here in production — our support knowledge base is currently being migrated into this help center.</p>
+      <p class="m-0 mb-4">In the meantime, if this is urgent, the fastest path is live chat (tap the bubble in the bottom-right of any page) or calling <strong>1-888-DRIVLY-1</strong> for anything trip-related.</p>
+      <p class="m-0">Our support team reads every message and typically replies within an hour.</p>
+    </div>
+    <div class="flex gap-3 justify-end px-7 py-4 rounded-b-2xl bg-[color:var(--bg-subtle)]">
+      <button type="button" @click="articleOpen.set(false)" class="px-4 py-2 font-semibold text-sm bg-transparent border rounded-lg cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]">Close</button>
+      <StxLink to="/contact" class="px-4 py-2 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg transition-colors">Contact support</StxLink>
+    </div>
+  </div>
+</div>
+
+<style>
+  details[open] summary svg { transform: rotate(180deg); }
+</style>
+
+<script client>
+  // Article search — filters the flat article list spliced from the server.
+  // Case-insensitive substring match against title OR category name.
+  const ALL_ARTICLES = {{ allArticles }}
+
+  const helpQuery = state('')
+  const matches = derived(() => {
+    const q = helpQuery().trim().toLowerCase()
+    if (!q) return []
+    return ALL_ARTICLES.filter(a =>
+      a.title.toLowerCase().includes(q) || a.category.toLowerCase().includes(q)
+    )
+  })
+  const matchCountLabel = derived(() => {
+    const n = matches().length
+    return n === 1 ? '1 result' : n + ' results'
+  })
+
+  // Article modal — same for category grid clicks and search result clicks.
+  const articleOpen     = state(false)
+  const articleCategory = state('')
+  const articleTitle    = state('')
+
+  function openArticle(category, title) {
+    articleCategory.set(category)
+    articleTitle.set(title)
+    articleOpen.set(true)
+  }
+</script>
+@endsection

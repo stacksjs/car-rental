@@ -1,0 +1,402 @@
+<script server>
+import { cars, categories, cities } from '../data/cars'
+
+const pageTitle = 'Drivly — Rent unique cars from real people'
+const pageDescription = 'Skip the rental counter. Book from 350,000+ hosts across 10,000+ cities. Teslas, Jeeps, classic Mustangs, and more.'
+const activePage = 'home'
+
+// Full SEO payload: title, description, Open Graph, Twitter card. stx's
+// `useSeoMeta` merges these into the <head> at render time — the layout
+// picks them up automatically via `@stack('head')` internally.
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: 'Drivly — the car marketplace',
+  ogDescription: pageDescription,
+  ogImage: cars[0].image,
+  ogType: 'website',
+  ogUrl: 'https://drivly.example/',
+  twitterCard: 'summary_large_image',
+  twitterTitle: pageTitle,
+  twitterDescription: pageDescription,
+  twitterImage: cars[0].image,
+})
+
+const featured = cars.slice(0, 4)
+const deals = cars.filter(c => c.originalPrice).slice(0, 3)
+const luxury = cars.filter(c => c.category === 'Luxury' || c.category === 'Sports' || c.category === 'Convertible').slice(0, 4)
+
+const stats = [
+  { label: 'Cities', value: '10,000+' },
+  { label: 'Cars listed', value: '350,000+' },
+  { label: 'Average host earnings', value: '$10,516' },
+  { label: 'Trips completed', value: '14M+' },
+]
+
+const steps = [
+  { num: '01', title: 'Find the perfect car', desc: 'Browse by make, price, or vibe. Filter to exactly what you need — from a grocery-getter to a weekend cruiser.', icon: '🔍' },
+  { num: '02', title: 'Book in a click', desc: 'Instant Book gets you on the road in minutes. No counter, no fine print, no games.', icon: '⚡' },
+  { num: '03', title: 'Meet or unlock & go', desc: 'Hosts hand off keys in person or via contactless unlock with the app. Return the same way.', icon: '🔑' },
+]
+
+const testimonials = [
+  { name: 'Maya L.', role: 'Guest · New York', body: 'Booked a Model 3 for a trip up the Hudson. It was cheaper than renting, cooler than Uber, and the host was a gem.', rating: 5 },
+  { name: 'Darren C.', role: 'Host · Austin',   body: 'I make ~$1,200/mo off my second car. Pays my rent. Guests have been lovely, and Drivly handles everything insurance-wise.', rating: 5 },
+  { name: 'Priya S.',  role: 'Guest · LA',      body: 'Found a convertible AMG for our anniversary. Top down on PCH was unreal. Easily the most memorable date we\'ve had.', rating: 5 },
+]
+
+const popularSearches = ['Tesla', 'Jeep Wrangler', 'Convertible', 'SUVs with 7 seats', 'Under $75/day', 'EVs']
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+
+<!-- ── HERO ─────────────────────────────────────────── -->
+<section class="overflow-hidden relative pb-10 py-20">
+  <!-- Decorative radial gradient orbs — behind content, non-interactive -->
+  <div class="absolute inset-0 pointer-events-none -z-1" aria-hidden="true">
+    <div class="absolute right-[-80px] top-[-100px] h-[500px] w-[500px] rounded-full blur-3xl"
+         style="background: radial-gradient(circle, rgba(255, 62, 84, 0.18) 0%, transparent 70%)"></div>
+    <div class="absolute bottom-[-100px] left-[-80px] h-[400px] w-[400px] rounded-full blur-3xl"
+         style="background: radial-gradient(circle, rgba(147, 51, 234, 0.14) 0%, transparent 70%)"></div>
+  </div>
+
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="max-w-[820px]">
+      <span class="inline-flex gap-2 items-center mb-6 px-3 py-1.5 font-medium text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full animate-fade-in">
+        <span class="inline-block h-1.5 w-1.5 bg-[#FF3E54] rounded-full" style="animation: pulse 2s infinite"></span>
+        Now live in 10,000+ cities
+      </span>
+      <h1 class="m-0 leading-[1.03] text-5xl tracking-tight sm:text-6xl lg:text-7xl animate-fade-in serif">
+        Find your <em class="not-italic text-[#FF3E54] underline underline-offset-[0.08em] decoration-[0.18em] decoration-[rgba(255,62,84,0.1)]">drive</em>.<br>
+        Skip the <span class="line-through text-[color:var(--text-muted)]">rental counter</span>.
+      </h1>
+      <p class="mt-6 max-w-[56ch] leading-relaxed text-lg animate-fade-in text-[color:var(--text-secondary)]">
+        Book any car, anywhere, from trusted hosts in your neighborhood. Teslas, Jeeps, vintage Mustangs — or the trusty minivan for the next big family trip.
+      </p>
+    </div>
+
+    <div class="mt-10 max-w-[980px] animate-fade-in">
+      @component('SearchBar', { location: 'San Francisco, CA' })
+      @endcomponent
+    </div>
+
+    <div class="flex flex-wrap gap-2 items-center mt-5 animate-fade-in">
+      <span class="mr-1 text-xs text-[color:var(--text-muted)]">Popular:</span>
+      @foreach (popularSearches as term)
+        <a href="/search?q={{ encodeURIComponent(term) }}"
+           class="inline-flex gap-1.5 items-center px-2.5 py-1.5 font-medium text-xs border rounded-full transition-colors cursor-pointer bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text-secondary)] hover:border-[color:var(--border-strong)]">{{ term }}</a>
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.35 } }
+</style>
+
+<!-- ── CATEGORY STRIP (horizontal-scroll on mobile) ──────────── -->
+<section class="py-10">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="overflow-x-auto -mx-6 pb-2 px-6">
+      <div class="flex gap-3" style="min-width: max-content">
+        @foreach (categories as cat)
+          <a href="/search?category={{ cat.id }}"
+             class="flex flex-col flex-shrink-0 gap-2 items-center justify-center px-5 py-4 min-w-[140px] text-center border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+            <div class="flex items-center justify-center h-11 w-11 rounded-xl bg-[color:var(--bg-subtle)]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF3E54" stroke-width="1.75" aria-hidden="true">{!! cat.svg !!}</svg>
+            </div>
+            <span class="font-medium text-[0.8125rem]">{{ cat.label }}</span>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED CARS ───────────────────────────────── -->
+<section class="py-8">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="flex flex-wrap gap-4 items-end justify-between mb-7">
+      <div>
+        <span class="inline-flex gap-1.5 items-center px-2.5 py-1.5 font-medium text-[#10B981] text-xs bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)] rounded-full">This week</span>
+        <h2 class="m-0 mb-1.5 mt-2 text-4xl sm:text-5xl serif">Featured cars near you</h2>
+        <p class="m-0 text-[0.9375rem] text-[color:var(--text-muted)]">Handpicked by the Drivly team. Fresh listings, stellar reviews.</p>
+      </div>
+      <StxLink to="/search" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-[#FF3E54] text-sm bg-transparent rounded-xl transition-colors hover:bg-[color:var(--bg-hover)]">
+        Browse all →
+      </StxLink>
+    </div>
+
+    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      @foreach (featured as car)
+        @component('CarCard', { car: car, eager: true })
+        @endcomponent
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<!-- ── DEALS HERO ───────────────────────────────────── -->
+<section class="py-12">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="overflow-hidden relative p-12 text-white rounded-3xl"
+         style="background: linear-gradient(135deg, #FF3E54 0%, #9333ea 100%)">
+      <div class="absolute right-[-100px] top-[-100px] h-[400px] w-[400px] rounded-full"
+           style="background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%)" aria-hidden="true"></div>
+      <div class="grid relative gap-8 grid-cols-[1fr_auto] items-end">
+        <div>
+          <span class="inline-block mb-4 px-3 py-1.5 font-semibold text-xs bg-white/20 rounded-full">DEALS OF THE WEEK</span>
+          <h2 class="m-0 mb-3 leading-[1.05] text-4xl sm:text-5xl serif">Up to 30% off · This week only</h2>
+          <p class="m-0 max-w-[48ch] text-lg opacity-90">Top-rated cars, hosts offering a limited-time rate. No surge pricing, no hidden fees.</p>
+        </div>
+        <StxLink to="/search?deals=1" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[#0a0a0a] text-[0.9375rem] whitespace-nowrap bg-white hover:bg-white/95 rounded-xl transition-colors">
+          Shop deals
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </StxLink>
+      </div>
+    </div>
+
+    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-6">
+      @foreach (deals as car)
+        @component('CarCard', { car: car })
+        @endcomponent
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ────────────────────────────────── -->
+<!-- @memo: pure static marketing content — memoize so SPA nav doesn't re-render. -->
+@memo([])
+<section class="py-16">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="mb-12 mx-auto max-w-[640px] text-center">
+      <span class="inline-flex gap-1.5 items-center px-2.5 py-1.5 font-medium text-xs border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]">How it works</span>
+      <h2 class="m-0 mb-2 mt-4 text-4xl sm:text-5xl serif">The simplest way to rent a car</h2>
+      <p class="m-0 text-lg text-[color:var(--text-muted)]">It takes under 60 seconds. Really.</p>
+    </div>
+
+    <div class="grid gap-5 grid-cols-1 md:grid-cols-3">
+      @foreach (steps as step)
+        <div class="overflow-hidden relative p-8 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <div class="absolute right-5 top-5 font-bold text-xs tracking-wider text-[color:var(--text-faint)]">{{ step.num }}</div>
+          <div class="flex items-center justify-center mb-5 h-14 w-14 text-3xl bg-[rgba(255,62,84,0.1)] rounded-2xl">{{ step.icon }}</div>
+          <h3 class="m-0 mb-2 text-2xl serif">{{ step.title }}</h3>
+          <p class="m-0 leading-relaxed text-[color:var(--text-muted)]">{{ step.desc }}</p>
+        </div>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endmemo
+
+<!-- ── LUXURY ─────────────────────────────────────── -->
+<section class="pb-16 py-8">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="flex flex-wrap gap-4 items-end justify-between mb-7">
+      <div>
+        <span class="inline-flex gap-1.5 items-center px-2.5 py-1.5 font-medium text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">Luxury & exotic</span>
+        <h2 class="m-0 mb-1.5 mt-2 text-4xl sm:text-5xl serif">Drive something special</h2>
+        <p class="m-0 text-[color:var(--text-muted)]">For the birthday, the anniversary, or just because you earned it.</p>
+      </div>
+      <StxLink to="/search?category=luxury" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-[#FF3E54] text-sm bg-transparent rounded-xl transition-colors hover:bg-[color:var(--bg-hover)]">
+        Explore luxury →
+      </StxLink>
+    </div>
+
+    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      @foreach (luxury as car)
+        @component('CarCard', { car: car })
+        @endcomponent
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<!-- ── CITIES ──────────────────────────────────────── -->
+<section class="py-8">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <h2 class="m-0 mb-2 text-4xl sm:text-5xl serif">Popular destinations</h2>
+    <p class="m-0 mb-10 text-[color:var(--text-muted)]">Rent anywhere Drivly has cars — which is basically everywhere now.</p>
+
+    <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      @foreach (cities as city)
+        <a href="/search?location={{ encodeURIComponent(city.name + ', ' + city.state) }}"
+           class="block overflow-hidden relative border rounded-2xl transition-all border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]" style="aspect-ratio: 4 / 3">
+          <img src="{{ city.image }}" alt="{{ city.name }}" loading="lazy" decoding="async"
+               class="object-cover h-full w-full">
+          <div class="absolute inset-0" style="background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)"></div>
+          <div class="absolute bottom-5 left-5 right-5 text-white">
+            <h3 class="m-0 font-bold text-xl">{{ city.name }}</h3>
+            <p class="m-0 mt-1 text-sm opacity-85">{{ city.listings.toLocaleString() }} cars available</p>
+          </div>
+        </a>
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<!-- ── HOST CTA ───────────────────────────────────── -->
+<section class="py-16">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="grid overflow-hidden grid-cols-1 md:grid-cols-[1.1fr_1fr] border rounded-3xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      <div class="flex flex-col justify-center p-12">
+        <span class="inline-flex gap-1.5 items-center self-start px-2.5 py-1.5 font-medium text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">For hosts</span>
+        <h2 class="m-0 mb-3 mt-4 leading-[1.05] text-4xl sm:text-5xl lg:text-[3.25rem] serif">Your car could be earning $10,516/year</h2>
+        <p class="m-0 mb-6 leading-relaxed text-lg text-[color:var(--text-secondary)]">List it in under 10 minutes. We handle insurance (up to $750K), payments, and support. You keep the keys — and the cash.</p>
+
+        <div class="grid gap-4 grid-cols-2 mb-6 my-2">
+          @foreach (stats as stat)
+            <div>
+              <p class="m-0 font-bold text-3xl text-[color:var(--text)]">{{ stat.value }}</p>
+              <p class="m-0 mt-0.5 text-sm text-[color:var(--text-muted)]">{{ stat.label }}</p>
+            </div>
+          @endforeach
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <StxLink to="/host/list" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all hover:-translate-y-px"
+                   style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Get started</StxLink>
+          <StxLink to="/about" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] bg-transparent border rounded-xl transition-colors border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">Learn more</StxLink>
+        </div>
+      </div>
+      <div class="relative min-h-[340px] bg-center bg-cover"
+           style="background-image: url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=70')">
+        <div class="absolute inset-0" style="background: linear-gradient(90deg, var(--bg-elevated) 0%, transparent 20%)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ────────────────────────────────── -->
+<section class="py-12">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <h2 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">Trusted by millions</h2>
+    <p class="m-0 mb-8 text-[color:var(--text-muted)]">Average rating: 4.9 ★ across 14M+ completed trips.</p>
+
+    <div class="grid gap-5 grid-cols-1 md:grid-cols-3">
+      @foreach (testimonials as t)
+        <div class="p-7 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+          <div class="mb-3">
+            @component('Rating', { rating: t.rating })
+            @endcomponent
+          </div>
+          <p class="m-0 mb-5 leading-snug text-lg serif">"{{ t.body }}"</p>
+          <div class="flex gap-3 items-center">
+            <div class="inline-flex items-center justify-center h-8 w-8 font-semibold text-[0.8125rem] text-white rounded-full"
+                 style="background: linear-gradient(135deg, #FF3E54 0%, #7c3aed 100%)">{{ t.name.split(' ').map(s => s[0]).join('') }}</div>
+            <div>
+              <p class="m-0 font-semibold text-sm">{{ t.name }}</p>
+              <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]">{{ t.role }}</p>
+            </div>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  </div>
+</section>
+
+<!-- ── APP CTA ──────────────────────────────────────────
+     Two-column at lg: copy on the left, stylised phone on the right.
+     Sizing is tuned so the copy block and the phone are roughly the same
+     visual height — otherwise `items-center` would leave lots of empty
+     space on one side. Phone stroke is darkened so the frame reads on
+     the light `bg-subtle` panel. -->
+<section class="pb-20 py-12">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="grid overflow-hidden gap-12 grid-cols-1 items-center lg:gap-16 lg:grid-cols-[1.15fr_1fr] p-10 sm:p-14 lg:p-16 border rounded-3xl bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
+      <!-- Left: copy + CTAs. Max-width keeps line length readable even
+           when the column grows wide. -->
+      <div class="max-w-[560px]">
+        <span class="inline-flex gap-1.5 items-center px-3 py-1.5 font-semibold text-[#FF3E54] text-xs tracking-wide uppercase bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          New · iOS & Android
+        </span>
+        <h2 class="m-0 mb-4 mt-4 leading-[1.02] text-4xl tracking-tight sm:text-5xl lg:text-6xl serif">Drive smarter from your pocket.</h2>
+        <p class="m-0 mb-8 max-w-[48ch] leading-relaxed text-lg text-[color:var(--text-muted)]">Unlock cars without swapping keys, message hosts in-thread, and track pickup times — all from the Drivly app.</p>
+
+        <!-- Store buttons: both fixed-width + same internal row layout so
+             the Apple and Google glyphs optically align. `items-center`
+             on the outer flex vertically centers icon against the
+             two-line label block. -->
+        <div class="flex flex-wrap gap-3 items-center">
+          <a href="#" class="inline-flex gap-3 items-center px-5 h-14 no-underline text-white bg-[#0a0a0a] rounded-2xl transition-transform hover:-translate-y-px">
+            <svg width="24" height="24" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true" class="shrink-0"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zM282.1 87.2c19.7-23.4 29.4-51.6 26.3-80.1-24.9 1.6-52 18-72.8 40.7-18.9 20.5-29.6 49.7-26.1 77.9 24.2 1.5 48-10.3 72.6-38.5z"/></svg>
+            <span class="flex flex-col leading-none">
+              <span class="mb-1 font-normal text-[0.625rem] opacity-75">Download on the</span>
+              <span class="font-semibold text-base tracking-tight">App Store</span>
+            </span>
+          </a>
+          <a href="#" class="inline-flex gap-3 items-center px-5 h-14 no-underline text-white bg-[#0a0a0a] rounded-2xl transition-transform hover:-translate-y-px">
+            <svg width="22" height="24" viewBox="0 0 24 24" aria-hidden="true" class="shrink-0">
+              <path fill="#34a853" d="M3 20.5V3.5c0-.34.09-.66.24-.93l10.5 10.5-10.5 10.46C3.09 21.16 3 20.84 3 20.5z"/>
+              <path fill="#fbbc05" d="M17.47 11.95l-3.73-3.73L4.06 2.36l12.66 9.24.75.35z"/>
+              <path fill="#ea4335" d="M17.47 12.05l-.75.55L4.06 21.64l9.68-5.86 3.73-3.73z"/>
+              <path fill="#4285f4" d="M21.5 10.88l-3.2-1.82-3.56 3.03L18.3 15l3.2-1.82c.96-.55.96-1.75 0-2.3z"/>
+            </svg>
+            <span class="flex flex-col leading-none">
+              <span class="mb-1 font-normal text-[0.625rem] opacity-75">Get it on</span>
+              <span class="font-semibold text-base tracking-tight">Google Play</span>
+            </span>
+          </a>
+        </div>
+
+        <!-- Reviews line, tucked under the buttons with matched rhythm. -->
+        <div class="flex gap-2 items-center mt-6 text-sm text-[color:var(--text-muted)]">
+          <span class="text-[#f5a623] tracking-tight" aria-hidden="true">★★★★★</span>
+          <span><strong class="text-[color:var(--text)]">4.8</strong> · 52k reviews on iOS & Android</span>
+        </div>
+      </div>
+
+      <!-- Right: decorative phone mock. Stroke darkened + drop shadow so
+           the silhouette reads clearly on the light panel. Height tuned
+           to roughly match the copy stack. -->
+      <div class="flex relative items-center justify-center lg:justify-end">
+        <svg viewBox="0 0 280 540" class="h-auto max-w-[260px] w-full drop-shadow-2xl" aria-hidden="true">
+          <defs>
+            <linearGradient id="phone-bg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF3E54"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <!-- Outer phone body -->
+          <rect x="10" y="10" width="260" height="520" rx="40" fill="#0a0a0d" stroke="#1a1a1d" stroke-width="1"/>
+          <!-- Inner bezel for depth -->
+          <rect x="18" y="18" width="244" height="504" rx="34" fill="url(#phone-bg)"/>
+          <!-- Dynamic island / notch -->
+          <rect x="112" y="28" width="56" height="16" rx="8" fill="#0a0a0d"/>
+          <!-- Status bar time placeholder -->
+          <rect x="38" y="32" width="28" height="6" rx="3" fill="rgba(255,255,255,0.9)"/>
+          <!-- Heading block -->
+          <rect x="38" y="72" width="120" height="10" rx="5" fill="rgba(255,255,255,0.95)"/>
+          <rect x="38" y="90" width="72" height="8" rx="4" fill="rgba(255,255,255,0.6)"/>
+          <!-- Hero card -->
+          <rect x="38" y="120" width="204" height="140" rx="16" fill="rgba(255,255,255,0.18)"/>
+          <rect x="52" y="220" width="72" height="8" rx="4" fill="rgba(255,255,255,0.85)"/>
+          <rect x="52" y="234" width="48" height="6" rx="3" fill="rgba(255,255,255,0.6)"/>
+          <!-- List row 1 -->
+          <rect x="38" y="282" width="204" height="60" rx="14" fill="rgba(255,255,255,0.12)"/>
+          <circle cx="66" cy="312" r="14" fill="rgba(255,255,255,0.85)"/>
+          <rect x="90" y="302" width="100" height="7" rx="3" fill="rgba(255,255,255,0.85)"/>
+          <rect x="90" y="316" width="64" height="6" rx="3" fill="rgba(255,255,255,0.55)"/>
+          <!-- List row 2 -->
+          <rect x="38" y="354" width="204" height="60" rx="14" fill="rgba(255,255,255,0.12)"/>
+          <circle cx="66" cy="384" r="14" fill="rgba(255,255,255,0.85)"/>
+          <rect x="90" y="374" width="88" height="7" rx="3" fill="rgba(255,255,255,0.85)"/>
+          <rect x="90" y="388" width="72" height="6" rx="3" fill="rgba(255,255,255,0.55)"/>
+          <!-- Bottom tab bar -->
+          <rect x="38" y="450" width="204" height="48" rx="16" fill="rgba(255,255,255,0.95)"/>
+          <circle cx="70" cy="474" r="4" fill="#FF3E54"/>
+          <circle cx="110" cy="474" r="4" fill="rgba(10,10,13,0.3)"/>
+          <circle cx="150" cy="474" r="4" fill="rgba(10,10,13,0.3)"/>
+          <circle cx="190" cy="474" r="4" fill="rgba(10,10,13,0.3)"/>
+          <circle cx="230" cy="474" r="4" fill="rgba(10,10,13,0.3)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+@endsection

@@ -1,0 +1,66 @@
+{
+  "name": "@stacksjs/dns",
+  "type": "module",
+  "version": "0.70.23",
+  "description": "Easily manage your DNS.",
+  "author": "Chris Breuer",
+  "contributors": [
+    "Chris Breuer <chris@stacksjs.com>"
+  ],
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/chrisbbreuer",
+  "homepage": "https://github.com/stacksjs/stacks/tree/main/storage/framework/core/dns#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stacksjs/stacks.git",
+    "directory": "./storage/framework/core/dns"
+  },
+  "bugs": {
+    "url": "https://github.com/stacksjs/stacks/issues"
+  },
+  "keywords": [
+    "dns",
+    "domain",
+    "management",
+    "custom emails",
+    "stacks",
+    "aws",
+    "route53",
+    "framework",
+    "typescript",
+    "javascript"
+  ],
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "bun": "./src/*",
+      "import": "./dist/*"
+    }
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun build.ts",
+    "typecheck": "bun tsc --noEmit",
+    "prepublishOnly": "bun run build"
+  },
+  "dependencies": {
+    "@stacksjs/dnsx": "^0.2.2",
+    "@stacksjs/ts-cloud": "^0.1.14"
+  },
+  "devDependencies": {
+    "@stacksjs/actions": "workspace:*",
+    "better-dx": "^0.2.5",
+    "@stacksjs/error-handling": "workspace:*",
+    "@stacksjs/path": "workspace:*",
+    "@stacksjs/storage": "workspace:*",
+    "@stacksjs/strings": "workspace:*",
+    "@stacksjs/whois": "workspace:*"
+  }
+}

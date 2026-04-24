@@ -1,0 +1,88 @@
+<script>
+interface SettingsHeaderProps {
+  currentPath?: string
+}
+
+const { currentPath = '/settings/ai' } = defineProps<SettingsHeaderProps>()
+</script>
+<header class="border-b border-gray-200 dark:border-neutral-600">
+    <!-- Secondary navigation -->
+    <nav class="flex overflow-x-auto py-4">
+      <ul
+        role="list"
+        class="flex flex-none gap-x-6 px-4 sm:px-6 lg:px-8 min-w-full font-semibold leading-6 text-gray-600 text-sm"
+      >
+        <li>
+          <a href="/settings/ai" class=": ? '' '/settings/ai' 'text-blue-600' {{ }} == currentPath">AI</a>
+        </li>
+        <li>
+          <a href="/settings/analytics" class=": ? '' '/settings/analytics' 'text-blue-600' {{ }} == currentPath">Analytics</a>
+        </li>
+        <li>
+          <a href="/settings/app" class=": ? '' '/settings/app' 'text-blue-600' {{ }} == currentPath">App</a>
+        </li>
+        <li>
+          <a href="/settings/cache" class=": ? '' '/settings/cache' 'text-blue-600' {{ }} == currentPath">Cache</a>
+        </li>
+        <li>
+          <a href="/settings/cli" class=": ? '' '/settings/cli' 'text-blue-600' {{ }} == currentPath">CLI</a>
+        </li>
+        <li>
+          <a href="/settings/cloud" class=": ? '' '/settings/cloud' 'text-blue-600' {{ }} == currentPath">Cloud</a>
+        </li>
+        <li>
+          <a href="/settings/database" class=": ? '' '/settings/database' 'text-blue-600' {{ }} == currentPath">Database</a>
+        </li>
+        <li>
+          <a href="/settings/dns" class=": ? '' '/settings/dns' 'text-blue-600' {{ }} == currentPath">DNS</a>
+        </li>
+        <li>
+          <a href="/settings/email" class=": ? '' '/settings/email' 'text-blue-600' {{ }} == currentPath">Email</a>
+        </li>
+        <li>
+          <a href="/settings/file-systems" class=": ? '' '/settings/file-systems' 'text-blue-600' {{ }} == currentPath">File Systems</a>
+        </li>
+        <li>
+          <a href="/settings/hashing" class=": ? '' '/settings/hashing' 'text-blue-600' {{ }} == currentPath">Hashing</a>
+        </li>
+        <li>
+          <a href="/settings/languages" class=": ? '' '/settings/languages' 'text-blue-600' {{ }} == currentPath">Languages</a>
+        </li>
+        <li>
+          <a href="/settings/library" class=": ? '' '/settings/library' 'text-blue-600' {{ }} == currentPath">Library</a>
+        </li>
+        <li>
+          <a href="/settings/native" class=": ? '' '/settings/native' 'text-blue-600' {{ }} == currentPath">Native</a>
+        </li>
+        <li>
+          <a href="/settings/mail" class=": ? '' '/settings/mail' 'text-blue-600' {{ }} == currentPath">Mail</a>
+        </li>
+        <li>
+          <a href="/settings/queue" class=": ? '' '/settings/queue' 'text-blue-600' {{ }} == currentPath">Queue</a>
+        </li>
+        <li>
+          <a href="/settings/search-engine" class=": ? '' '/settings/search-engine' 'text-blue-600' {{ }} == currentPath">Search Engine</a>
+        </li>
+        <li>
+          <a href="/settings/security" class=": ? '' '/settings/security' 'text-blue-600' {{ }} == currentPath">Security</a>
+        </li>
+        <li>
+          <a href="/settings/services" class=": ? '' '/settings/services' 'text-blue-600' {{ }} == currentPath">Services</a>
+        </li>
+        <li>
+          <a href="/settings/storage" class=": ? '' '/settings/storage' 'text-blue-600' {{ }} == currentPath">Storage</a>
+        </li>
+        <li>
+          <a href="/settings/team" class=": ? '' '/settings/team' 'text-blue-600' {{ }} == currentPath">Team</a>
+        </li>
+        <li>
+          <a href="/settings/ui" class=": ? '' '/settings/ui' 'text-blue-600' {{ }} == currentPath">UI</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+<style>
+.sidebar-links {
+  @apply text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+}
+</style>

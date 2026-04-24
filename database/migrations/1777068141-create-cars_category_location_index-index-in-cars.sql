@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "cars_cars_category_location_index" ON "cars" ("category", "location_id");

@@ -1,0 +1,382 @@
+<script server>
+import { cars, categories } from '../data/cars'
+
+const pageTitle = 'Browse cars — Drivly'
+const activePage = 'search'
+
+useSeoMeta({
+  title: pageTitle,
+  description: 'Search 350,000+ cars near you. Filter by price, make, category, features — from daily drivers to exotic weekenders.',
+  ogTitle: 'Browse cars on Drivly',
+  ogType: 'website',
+  twitterCard: 'summary',
+})
+
+const makes = Array.from(new Set(cars.map(c => c.make))).sort()
+const totalCount = cars.length
+const minPrice = Math.min(...cars.map(c => c.price))
+const maxPrice = Math.max(...cars.map(c => c.price))
+
+// Each card's filter attributes are embedded server-side as a JSON data-car blob.
+// The JS effect reads that on every filter change and decides which cards stay visible.
+const cardsData = cars.map(c => ({
+  id: c.id,
+  car: c,
+  filterData: JSON.stringify({
+    make: c.make, category: c.category, transmission: c.transmission,
+    fuel: c.fuelType, seats: c.seats, price: c.price,
+    instantBook: !!c.instantBook, deliveryAvailable: !!c.deliveryAvailable,
+    onSale: !!c.originalPrice,
+  }),
+}))
+
+const categoryChips = categories.map(cat => ({
+  label: cat.label,
+  value: cat.label === 'Electric' ? 'EV' : cat.label,
+}))
+
+const fuelChips = [
+  { label: 'Electric', value: 'Electric' },
+  { label: 'Hybrid',   value: 'Hybrid' },
+  { label: 'Gas',      value: 'Gasoline' },
+  { label: 'Diesel',   value: 'Diesel' },
+]
+
+const seatChips = [2, 4, 5, 7]
+</script>
+
+@extends('layouts/app.stx')
+
+@push('styles')
+  @media (max-width: 1024px) {
+    .filters-panel { position: fixed; inset: 0; z-index: 90; background: var(--bg); transform: translateX(-100%); transition: transform 220ms cubic-bezier(0.16,1,0.3,1); padding: 1.5rem; overflow-y: auto; }
+    .filters-panel.open { transform: translateX(0); }
+  }
+  /* Dual-handle price slider */
+  .price-range-input { position: absolute; top: -9px; width: 100%; height: 22px; appearance: none; background: none; pointer-events: none; }
+  .price-range-input::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: white; border: 2px solid #FF3E54; cursor: pointer; pointer-events: auto; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+  .price-range-input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: white; border: 2px solid #FF3E54; cursor: pointer; pointer-events: auto; }
+  .view-list #resultsGrid { display: flex; flex-direction: column; }
+  .view-list #resultsGrid > * { max-width: none; }
+@endpush
+
+@section('content')
+<div class="mx-auto pb-16 px-6 py-6 max-w-[1280px]">
+
+  <div class="mb-7">
+    @component('SearchBar', { variant: 'compact', location: 'San Francisco, CA' })
+    @endcomponent
+  </div>
+
+  <div class="grid gap-10 grid-cols-1 lg:grid-cols-[300px_1fr]">
+
+    <!-- ── FILTERS PANEL ─────────────── -->
+    <aside class="overflow-y-auto lg:sticky lg:top-24 self-start px-5 lg:max-h-[calc(100vh-120px)] border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)] filters-panel"
+           :class="{ 'open': filtersOpen() }">
+
+      <div class="flex items-center justify-between pt-5">
+        <h2 class="m-0 font-bold text-lg">Filters</h2>
+        <button class="px-3.5 py-2 font-medium text-[0.8125rem] bg-transparent border-0 rounded-lg transition-colors cursor-pointer text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"
+                @click="resetFilters()">Clear all</button>
+      </div>
+
+      <div class="py-5 border-b border-[color:var(--border)]">
+        <h3 class="m-0 mb-3.5 font-bold text-[0.9375rem]">Price per day</h3>
+        <div class="flex justify-between text-[0.8125rem] text-[color:var(--text-muted)]">
+          <span class="tabular" :text="priceMinLabel">${{ minPrice }}</span>
+          <span class="tabular" :text="priceMaxLabel">${{ maxPrice }}+</span>
+        </div>
+        <div class="relative mb-3 mt-5 h-1 rounded bg-[color:var(--bg-muted)]">
+          <div class="absolute h-full bg-[#FF3E54] rounded"
+               :attr:style="'left: ' + priceFillLeft() + '%; right: ' + priceFillRight() + '%'"></div>
+          <input type="range" class="price-range-input" min="{{ minPrice }}" max="{{ maxPrice }}"
+                 x-model="priceMin" @input="clampPrice('min')">
+          <input type="range" class="price-range-input" min="{{ minPrice }}" max="{{ maxPrice }}"
+                 x-model="priceMax" @input="clampPrice('max')">
+        </div>
+      </div>
+
+      <!-- Filter chip groups — active state bound to the matching signal -->
+      @foreach (['category', 'make', 'transmission', 'fuel', 'seats'] as filterKey)
+        <div class="py-5 border-b border-[color:var(--border)]">
+          <h3 class="m-0 mb-3.5 capitalize font-bold text-[0.9375rem]">{{ filterKey === 'fuel' ? 'Fuel' : filterKey }}</h3>
+          <div class="flex flex-wrap gap-1.5">
+            @if (filterKey === 'category')
+              @foreach (categoryChips as chip)
+                <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                        :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': category() === '{{ chip.value }}', 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': category() !== '{{ chip.value }}' }"
+                        @click="toggleFilter('category', '{{ chip.value }}')">{{ chip.label }}</button>
+              @endforeach
+            @elseif (filterKey === 'make')
+              @foreach (makes as make)
+                <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                        :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': make() === '{{ make }}', 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': make() !== '{{ make }}' }"
+                        @click="toggleFilter('make', '{{ make }}')">{{ make }}</button>
+              @endforeach
+            @elseif (filterKey === 'transmission')
+              <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                      :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': transmission() === 'Automatic', 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': transmission() !== 'Automatic' }"
+                      @click="toggleFilter('transmission', 'Automatic')">Automatic</button>
+              <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                      :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': transmission() === 'Manual', 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': transmission() !== 'Manual' }"
+                      @click="toggleFilter('transmission', 'Manual')">Manual</button>
+            @elseif (filterKey === 'fuel')
+              @foreach (fuelChips as chip)
+                <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                        :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': fuel() === '{{ chip.value }}', 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': fuel() !== '{{ chip.value }}' }"
+                        @click="toggleFilter('fuel', '{{ chip.value }}')">{{ chip.label }}</button>
+              @endforeach
+            @elseif (filterKey === 'seats')
+              @foreach (seatChips as n)
+                <button class="px-3.5 py-2 font-medium text-[0.8125rem] rounded-full transition-all cursor-pointer select-none"
+                        :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)] border border-[color:var(--text)]': seats() === {{ n }}, 'bg-[color:var(--bg-subtle)] border border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-muted)]': seats() !== {{ n }} }"
+                        @click="toggleSeats({{ n }})">{{ n }}+</button>
+              @endforeach
+            @endif
+          </div>
+        </div>
+      @endforeach
+
+      <div class="py-5">
+        <h3 class="m-0 mb-3.5 font-bold text-[0.9375rem]">Booking</h3>
+        <label class="flex gap-2 items-center py-1.5 text-sm cursor-pointer">
+          <input type="checkbox" class="h-4 w-4" style="accent-color: #FF3E54" x-model="instantBook"> Instant book only
+        </label>
+        <label class="flex gap-2 items-center py-1.5 text-sm cursor-pointer">
+          <input type="checkbox" class="h-4 w-4" style="accent-color: #FF3E54" x-model="deliveryOnly"> Offers delivery
+        </label>
+        <label class="flex gap-2 items-center py-1.5 text-sm cursor-pointer">
+          <input type="checkbox" class="h-4 w-4" style="accent-color: #FF3E54" x-model="dealOnly"> On sale
+        </label>
+      </div>
+
+      <div class="pb-6 pt-4">
+        <button class="px-5 py-3.5 w-full font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] border-0 rounded-xl transition-colors cursor-pointer"
+                @click="filtersOpen.set(false)">Show results</button>
+      </div>
+    </aside>
+
+    <!-- ── RESULTS ────────────────────────── -->
+    <div>
+      <div class="flex flex-wrap gap-4 items-center justify-between mb-6">
+        <div>
+          <h1 class="m-0 mb-1 text-3xl serif">Cars in <span :text="locationLabel">San Francisco</span></h1>
+          <p class="m-0 text-[0.9375rem] text-[color:var(--text-muted)]"><span class="tabular" :text="visibleCount">{{ totalCount }}</span> cars available</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <button class="inline-flex lg:hidden gap-2 items-center px-3.5 py-2 font-semibold text-[0.8125rem] bg-transparent border rounded-xl transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]"
+                  @click="filtersOpen.set(true)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+            Filters
+          </button>
+          <select x-model="sortBy" class="px-3.5 py-2 text-[0.8125rem] border rounded-lg bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="rating">Top-rated</option>
+            <option value="trips">Most trips</option>
+          </select>
+          <div class="inline-flex overflow-hidden border rounded-lg bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+            <button class="flex items-center px-3 py-2 border-0 cursor-pointer"
+                    :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)]': viewMode() === 'grid', 'bg-transparent text-[color:var(--text-muted)]': viewMode() !== 'grid' }"
+                    @click="viewMode.set('grid')" aria-label="Grid view"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></button>
+            <button class="flex items-center px-3 py-2 border-0 cursor-pointer"
+                    :class="{ 'bg-[color:var(--text)] text-[color:var(--bg)]': viewMode() === 'list', 'bg-transparent text-[color:var(--text-muted)]': viewMode() !== 'list' }"
+                    @click="viewMode.set('list')" aria-label="List view"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active-filter chip row — rendered from `activeChips` derived signal -->
+      <div class="flex-wrap gap-2 mb-5" :show="activeChips().length > 0" style="display: flex">
+        <template :for="chip in activeChips()">
+          <button class="inline-flex gap-1.5 items-center px-2.5 py-1.5 font-medium text-[#FF3E54] text-xs bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full cursor-pointer"
+                  @click="removeChip(chip.key)">
+            <span :text="chip.label"></span>
+            <span style="font-weight:700">×</span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Cards rendered server-side. Each wrapper carries a `data-car` blob the
+           filter effect reads via a single `querySelectorAll` on mount. Using
+           `data-results-grid` instead of an id keeps the SPA-routing semantics
+           clean — no global id collisions if the page ever appears twice. -->
+      <div data-results-grid class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+           :class="{ 'view-list-grid': viewMode() === 'list' }">
+        @foreach (cardsData as entry)
+          <div data-car='{{ entry.filterData }}'>
+            @component('CarCard', { car: entry.car })
+            @endcomponent
+          </div>
+        @endforeach
+      </div>
+
+      <div class="px-4 py-16 text-center" :show="visibleCount() === 0">
+        <p class="m-0 mb-2 text-5xl">🚗</p>
+        <h3 class="m-0 mb-2 text-2xl serif">No cars match your filters</h3>
+        <p class="m-0 mb-6 text-[color:var(--text-muted)]">Try clearing a filter or expanding your search.</p>
+        <button class="px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] border-0 rounded-xl transition-colors cursor-pointer"
+                @click="resetFilters()">Clear all filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script client>
+  const favorites = useStore('favorites')
+
+  const MIN_PRICE = {{ minPrice }}
+  const MAX_PRICE = {{ maxPrice }}
+
+  // ── Filter state — one signal per dimension. ──
+  const priceMin      = state(MIN_PRICE)
+  const priceMax      = state(MAX_PRICE)
+  const category      = state('')
+  const make          = state('')
+  const transmission  = state('')
+  const fuel          = state('')
+  const seats         = state(0)
+  const instantBook   = state(false)
+  const deliveryOnly  = state(false)
+  const dealOnly      = state(false)
+  const sortBy        = state('featured')
+  const viewMode      = state('grid')
+  const filtersOpen   = state(false)
+  const locationLabel = state('San Francisco')
+  const visibleCount  = state(0)
+
+  // stx's `useSearchParams()` returns a reactive ref — `.get()` for reads,
+  // `.set()` to push a new URL (preserves history). We only read here, so
+  // destructuring `.get` is enough; the signal naturally tracks the current
+  // URL, including browser back/forward events.
+  const sp = useSearchParams()
+  const categoryMap = { ev: 'EV', suv: 'SUV', luxury: 'Luxury', convertible: 'Convertible', truck: 'Truck', sports: 'Sports', classic: 'Classic', compact: 'Compact', minivan: 'Minivan' }
+  const initialCat = sp.get('category')
+  if (initialCat) category.set(categoryMap[initialCat.toLowerCase()] || initialCat)
+  if (sp.get('deals') === '1') dealOnly.set(true)
+  const initialLoc = sp.get('location')
+  if (initialLoc) locationLabel.set(initialLoc.split(',')[0])
+
+  // ── Derived signals — the price-bar fill + label values. ──
+  const priceFillLeft  = derived(() => ((Number(priceMin()) - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100)
+  const priceFillRight = derived(() => 100 - ((Number(priceMax()) - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100)
+  const priceMinLabel  = derived(() => '$' + priceMin())
+  const priceMaxLabel  = derived(() => '$' + priceMax() + (Number(priceMax()) === MAX_PRICE ? '+' : ''))
+
+  const activeChips = derived(() => {
+    const out = []
+    if (category())        out.push({ key: 'category',    label: category() })
+    if (make())            out.push({ key: 'make',        label: make() })
+    if (transmission())    out.push({ key: 'transmission', label: transmission() })
+    if (fuel())            out.push({ key: 'fuel',        label: fuel() })
+    if (seats())           out.push({ key: 'seats',       label: seats() + '+ seats' })
+    if (instantBook())     out.push({ key: 'instantBook', label: 'Instant book' })
+    if (deliveryOnly())    out.push({ key: 'deliveryOnly', label: 'Delivery' })
+    if (dealOnly())        out.push({ key: 'dealOnly',    label: 'On sale' })
+    if (Number(priceMin()) !== MIN_PRICE || Number(priceMax()) !== MAX_PRICE)
+      out.push({ key: 'price', label: '$' + priceMin() + '–$' + priceMax() })
+    return out
+  })
+
+  // ── Filter application. Every signal change re-runs this effect, which
+  //    toggles `hidden` on each card + updates visibleCount. ──
+  function matches(c) {
+    if (c.price < Number(priceMin()) || c.price > Number(priceMax())) return false
+    if (category()      && c.category     !== category())     return false
+    if (make()          && c.make         !== make())          return false
+    if (transmission()  && c.transmission !== transmission())  return false
+    if (fuel()          && c.fuel         !== fuel())          return false
+    if (seats()         && c.seats         < seats())         return false
+    if (instantBook()   && !c.instantBook)                      return false
+    if (deliveryOnly()  && !c.deliveryAvailable)                return false
+    if (dealOnly()      && !c.onSale)                           return false
+    return true
+  }
+
+  onMount(() => {
+    // Init-time DOM traversal — one `querySelector` to find the wrapper, one to
+    // collect the server-rendered cards. After this, all visibility flips flow
+    // through the reactive `effect` below.
+    const grid = document.querySelector('[data-results-grid]')
+    if (!grid) return
+    const cards = Array.from(grid.querySelectorAll('[data-car]'))
+      .map(el => ({ el, data: JSON.parse(el.dataset.car) }))
+
+    // Wire favorite hearts once (they're not bound reactively because CarCard
+    // isn't in a signal scope — the heart click flows through the shared store).
+    cards.forEach(c => {
+      const btn = c.el.querySelector('.fav-btn')
+      const icon = c.el.querySelector('.fav-icon')
+      if (!btn || !icon) return
+      const sync = () => {
+        if (favorites.has(c.data.id || c.el.querySelector('[data-car-id]')?.getAttribute('data-car-id'))) {
+          icon.setAttribute('fill', '#FF3E54'); icon.style.stroke = '#FF3E54'
+        } else { icon.setAttribute('fill', 'none'); icon.style.stroke = 'currentColor' }
+      }
+      const id = btn.getAttribute('data-car-id')
+      const syncHeart = () => {
+        if (favorites.has(id)) { icon.setAttribute('fill', '#FF3E54'); icon.style.stroke = '#FF3E54' }
+        else { icon.setAttribute('fill', 'none'); icon.style.stroke = 'currentColor' }
+      }
+      syncHeart()
+      btn.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation()
+        favorites.toggle(id); syncHeart()
+        window._toast && window._toast(favorites.has(id) ? 'Saved to favorites' : 'Removed from favorites', 'success')
+      })
+    })
+
+    // The one effect that drives the grid. Re-runs on every filter/sort change.
+    effect(() => {
+      const visible = cards.filter(c => matches(c.data))
+      const s = sortBy()
+      if (s === 'price-asc')  visible.sort((a, b) => a.data.price - b.data.price)
+      else if (s === 'price-desc') visible.sort((a, b) => b.data.price - a.data.price)
+
+      cards.forEach(c => c.el.hidden = true)
+      const frag = document.createDocumentFragment()
+      visible.forEach(c => { c.el.hidden = false; frag.appendChild(c.el) })
+      grid.appendChild(frag)
+      visibleCount.set(visible.length)
+    })
+
+    // Body-overflow lock mirrors `filtersOpen` — single effect handling the side-effect.
+    effect(() => {
+      document.body.style.overflow = filtersOpen() ? 'hidden' : ''
+    })
+  })
+
+  // ── Actions. ──
+  function toggleFilter(key, value) {
+    const current = { category, make, transmission, fuel }[key]
+    if (!current) return
+    current.set(current() === value ? '' : value)
+  }
+  function toggleSeats(n) {
+    seats.set(seats() === n ? 0 : n)
+  }
+  function removeChip(key) {
+    if (key === 'price')        { priceMin.set(MIN_PRICE); priceMax.set(MAX_PRICE); return }
+    if (key === 'seats')        { seats.set(0); return }
+    if (key === 'instantBook')  { instantBook.set(false); return }
+    if (key === 'deliveryOnly') { deliveryOnly.set(false); return }
+    if (key === 'dealOnly')     { dealOnly.set(false); return }
+    const sig = { category, make, transmission, fuel }[key]
+    if (sig) sig.set('')
+  }
+  function resetFilters() {
+    priceMin.set(MIN_PRICE); priceMax.set(MAX_PRICE)
+    category.set(''); make.set(''); transmission.set(''); fuel.set(''); seats.set(0)
+    instantBook.set(false); deliveryOnly.set(false); dealOnly.set(false)
+    sortBy.set('featured')
+  }
+  // Keep the two price handles from crossing each other.
+  function clampPrice(which) {
+    const lo = Number(priceMin()), hi = Number(priceMax())
+    if (which === 'min' && lo > hi - 5) priceMin.set(hi - 5)
+    if (which === 'max' && hi < lo + 5) priceMax.set(lo + 5)
+  }
+</script>
+
+@endsection

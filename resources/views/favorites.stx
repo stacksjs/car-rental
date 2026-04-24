@@ -1,0 +1,73 @@
+<script server>
+import { cars } from '../data/cars'
+
+const pageTitle = 'Favorites · Drivly'
+const activePage = 'favorites'
+
+useSeoMeta({ title: pageTitle, robots: 'noindex' })
+
+// Emit every car server-side; the :show binding below hides non-favorites.
+// No JS "render from data" step means no flash-of-empty and zero DOM queries.
+const allCars = cars
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-16 px-6 py-8 max-w-[1280px]">
+  <div class="flex flex-wrap gap-4 items-end justify-between mb-8">
+    <div>
+      <h1 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">Your favorites</h1>
+      <p class="m-0 text-[color:var(--text-muted)]"><span :text="favCount">0</span> saved cars</p>
+    </div>
+    <button class="px-5 py-3 font-semibold text-sm bg-transparent border rounded-xl transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]"
+            :show="hasFavs()"
+            @click="clear()">Clear all</button>
+  </div>
+
+  <!-- Grid visible when we have favs; otherwise show the empty state -->
+  <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4" :show="hasFavs()">
+    @foreach (allCars as car)
+      <!-- Each wrapper's visibility is bound to favorites.has(id) -->
+      <div :show="isFav('{{ car.id }}')">
+        @component('CarCard', { car: car })
+        @endcomponent
+      </div>
+    @endforeach
+  </div>
+
+  <div class="px-4 py-20 text-center" :show="!hasFavs()">
+    <div class="inline-flex items-center justify-center mb-5 h-20 w-20 bg-[rgba(255,62,84,0.1)] rounded-full">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FF3E54" stroke-width="1.8"><path stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+    <h2 class="m-0 mb-2 text-3xl serif">No favorites yet</h2>
+    <p class="m-0 mb-6 mx-auto max-w-[36ch] text-[color:var(--text-muted)]">Tap the heart on any car to save it for later. Perfect for planning your next big trip.</p>
+    <StxLink to="/search" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all hover:-translate-y-px"
+             style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Find cars</StxLink>
+  </div>
+</div>
+
+<script client>
+  const favorites = useStore('favorites')
+
+  // Reading favorites.ids()/count() inside a derived() subscribes the
+  // computation to those signals — no explicit version-bump needed.
+  const favCount = derived(() => favorites.count())
+  const hasFavs  = derived(() => favCount() > 0)
+  const isFav    = id => (favorites.ids(), favorites.has(id))
+
+  // Dynamic tab title — `useHead` on the client updates document.title
+  // reactively as the store changes.
+  effect(() => {
+    useHead({ title: favCount() > 0 ? `Favorites (${favCount()}) · Drivly` : 'Favorites · Drivly' })
+  })
+
+  function clear() {
+    if (confirm('Clear all saved cars?')) {
+      favorites.clear()
+      window._toast && window._toast('Favorites cleared', 'info')
+    }
+  }
+</script>
+
+@endsection

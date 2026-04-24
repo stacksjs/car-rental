@@ -1,0 +1,45 @@
+<script>
+interface TabsProps {
+  tabs?: any[]
+  activeTab?: string
+  variant?: 'underline' | 'pills' | 'boxed'
+  size?: 'sm' | 'md' | 'lg'
+  fullWidth?: boolean
+}
+
+const { tabs = [], activeTab = '', variant = 'underline', size = 'md', fullWidth = false } = defineProps<TabsProps>()
+
+const sizeClasses = {
+  sm: 'text-sm py-2 px-3',
+  md: 'text-sm py-2.5 px-4',
+  lg: 'text-base py-3 px-5'
+}
+
+const containerClasses = {
+  underline: 'border-b border-neutral-200 dark:border-neutral-700',
+  pills: 'gap-2 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg',
+  boxed: 'border border-neutral-200 dark:border-neutral-700 rounded-lg p-1'
+}
+</script>
+<div class="flex containerClasses[variant] : ? '' 'w-full' {{ {{ }} }} fullWidth" role="tablist">
+    @foreach(tabs as tab)
+      <button
+        type="button"
+        role="tab"
+        aria-selected="{{ activeTab == tab.id ? 'true' : 'false' }}"
+        class="inline-flex gap-2 items-center justify-center -mb-px font-medium text-blue-600 text-neutral-500 text-neutral-900 text-neutral-900 dark:text-blue-400' dark:text-neutral-400 dark:text-neutral-400 dark:text-neutral-400 dark:text-white dark:text-white' hover:text-neutral-700 hover:text-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200 dark:hover:text-neutral-200' dark:hover:text-neutral-200' dark:bg-neutral-700 dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50' border-blue-500 border-transparent rounded-md rounded-md hover:border-neutral-300 shadow-sm' duration-150 transition-all cursor-not-allowed' : : : : : ? ? ? ? ? '' 'bg-neutral-100 'bg-white 'border-b-2 'border-b-2 'boxed') 'cursor-pointer' 'flex-1' 'opacity-50 'pills') 'text-neutral-500 'text-neutral-500 'underline') {{ {{ {{ {{ {{ {{ }} }} }} }} }} }} @elseif(variant @elseif(variant @endif @if(variant == == == == == == activeTab activeTab activeTab fullWidth sizeClasses[size] tab.disabled tab.id tab.id tab.id"
+        data-tab-id="{{ tab.id }}"
+        @if(tab.disabled) disabled @endif
+      >
+        @if(tab.icon)
+          <div class="h-4 w-4 {{ }} tab.icon"></div>
+        @endif
+        <span>{{ tab.label }}</span>
+        @if(tab.badge !== undefined)
+          <span class="inline-flex items-center justify-center px-1.5 h-5 min-w-[1.25rem] font-medium text-blue-600 text-neutral-600 text-xs dark:text-blue-400' dark:text-neutral-300' dark:bg-blue-900/50 dark:bg-neutral-700 rounded-full : ? 'bg-blue-100 'bg-neutral-200 {{ }} == activeTab tab.id">
+            {{ tab.badge }}
+          </span>
+        @endif
+      </button>
+    @endforeach
+  </div>

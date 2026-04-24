@@ -1,0 +1,73 @@
+<script server>
+const pageTitle = 'Reset your password · Drivly'
+const activePage = 'forgot'
+
+useSeoMeta({
+  title: 'Reset your password — Drivly',
+  description: 'Enter your email and we\'ll send a reset link.',
+  robots: 'noindex',
+})
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-16 max-w-[440px]">
+
+  <div class="mb-8">
+    <StxLink to="/login" class="inline-flex gap-1.5 items-center text-sm transition-colors text-[color:var(--text-muted)] hover:text-[color:var(--text)]">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      Back to log in
+    </StxLink>
+  </div>
+
+  <h1 class="m-0 mb-2 text-4xl serif">Forgot your password?</h1>
+  <p class="m-0 mb-8 leading-relaxed text-[color:var(--text-muted)]">Enter the email on your Drivly account and we'll send you a reset link. Check spam if it doesn't appear in 2 minutes.</p>
+
+  <form class="flex flex-col gap-4" @submit="submitReset($event)" :show="!sent()">
+    <label class="block">
+      <span class="block mb-1.5 font-medium text-[0.8125rem]">Email</span>
+      <input class="px-4 py-3 w-full text-[0.9375rem] border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+             type="email" name="email" x-model="email" required placeholder="you@example.com" autocomplete="email">
+    </label>
+    <button type="submit" class="inline-flex gap-2 items-center justify-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] border-0 rounded-xl disabled:opacity-60 transition-colors cursor-pointer disabled:cursor-not-allowed" :disabled="sending()">
+      <span :show="!sending()">Send reset link</span>
+      <span :show="sending()" class="inline-flex gap-2 items-center"><span style="display:inline-block;width:16px;height:16px;border:2px solid white;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite"></span> Sending…</span>
+    </button>
+  </form>
+
+  <div :show="sent()" class="p-6 text-center border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+    <div class="inline-flex items-center justify-center mb-4 h-14 w-14 bg-[rgba(16,185,129,0.12)] rounded-full">
+      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h2 class="m-0 mb-2 text-2xl serif">Check your inbox</h2>
+    <p class="m-0 mb-4 leading-relaxed text-sm text-[color:var(--text-muted)]">If an account exists for <span class="font-semibold text-[color:var(--text)]" :text="sentEmail">your email</span>, a reset link is on its way.</p>
+    <StxLink to="/login" class="font-semibold text-[#FF3E54] text-sm">Back to log in →</StxLink>
+  </div>
+
+</div>
+
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+<script client>
+  const email     = state('')
+  const sending   = state(false)
+  const sent      = state(false)
+  const sentEmail = state('')
+
+  function submitReset(e) {
+    e.preventDefault()
+    if (sending() || !email()) return
+    sending.set(true)
+    // Simulate a network request. Real implementation would POST to
+    // /api/auth/forgot-password with the email. We show the generic
+    // "check your inbox" success regardless to avoid leaking whether an
+    // account exists.
+    setTimeout(() => {
+      sending.set(false)
+      sentEmail.set(email())
+      sent.set(true)
+    }, 700)
+  }
+</script>
+@endsection

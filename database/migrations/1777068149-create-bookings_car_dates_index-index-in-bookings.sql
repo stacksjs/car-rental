@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "bookings_bookings_car_dates_index" ON "bookings" ("car_id", "start_date", "end_date");

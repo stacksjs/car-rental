@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "bookings_bookings_user_status_index" ON "bookings" ("user_id", "status");

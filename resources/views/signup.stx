@@ -1,0 +1,102 @@
+<script server>
+const pageTitle = 'Sign up · Drivly'
+useSeoMeta({
+  title: pageTitle,
+  description: 'Create a Drivly account in under a minute. Book cars or host yours — same account, no commitments.',
+  ogTitle: 'Join Drivly',
+  twitterCard: 'summary',
+})
+</script>
+
+@extends('layouts/auth.stx')
+
+@section('content')
+<h1 class="m-0 mb-2 mt-8 text-4xl serif">Create your account</h1>
+<p class="m-0 mb-8 text-[color:var(--text-muted)]">Drive or host — same account, zero commitments.</p>
+
+<form onsubmit="return false" autocomplete="on" @submit.prevent="submit()">
+  <div class="grid gap-3 grid-cols-2">
+    <label class="block"><span class="block mb-1.5 font-medium text-[0.8125rem]">First name</span><input class="px-4 py-3 w-full text-[0.9375rem] border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="firstName" required autocomplete="given-name"></label>
+    <label class="block"><span class="block mb-1.5 font-medium text-[0.8125rem]">Last name</span><input class="px-4 py-3 w-full text-[0.9375rem] border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="lastName" required autocomplete="family-name"></label>
+  </div>
+  <label class="block mt-4">
+    <span class="block mb-1.5 font-medium text-[0.8125rem]">Email</span>
+    <input class="px-4 py-3 w-full text-[0.9375rem] border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" type="email" x-model="email" required autocomplete="email" placeholder="you@example.com">
+  </label>
+  <label class="block mt-4">
+    <span class="block mb-1.5 font-medium text-[0.8125rem]">Password</span>
+    <input class="px-4 py-3 w-full text-[0.9375rem] border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" type="password" x-model="password" required minlength="8" autocomplete="new-password">
+    <p class="m-0 mt-2 text-xs text-[color:var(--text-muted)]">At least 8 characters</p>
+  </label>
+
+  <div class="mt-5">
+    <span class="block mb-1.5 font-medium text-[0.8125rem]">I'm here to…</span>
+    <div class="grid gap-2.5 grid-cols-2">
+      <label class="p-4 border-[1.5px] rounded-xl transition-all cursor-pointer"
+             :class="{ 'border-[#FF3E54] bg-[rgba(255,62,84,0.1)]': role() === 'guest', 'border-[color:var(--border)]': role() !== 'guest' }"
+             @click="role.set('guest')">
+        <input type="radio" name="role" value="guest" :checked="role() === 'guest'" style="display: none">
+        <p class="m-0 font-semibold">🚗 Rent a car</p>
+        <p class="m-0 mt-1 text-[0.8125rem] text-[color:var(--text-muted)]">Book cars from hosts</p>
+      </label>
+      <label class="p-4 border-[1.5px] rounded-xl transition-all cursor-pointer"
+             :class="{ 'border-[#FF3E54] bg-[rgba(255,62,84,0.1)]': role() === 'host', 'border-[color:var(--border)]': role() !== 'host' }"
+             @click="role.set('host')">
+        <input type="radio" name="role" value="host" :checked="role() === 'host'" style="display: none">
+        <p class="m-0 font-semibold">💰 Earn from my car</p>
+        <p class="m-0 mt-1 text-[0.8125rem] text-[color:var(--text-muted)]">Become a host</p>
+      </label>
+    </div>
+  </div>
+
+  <label class="flex gap-2 items-start mt-5 leading-relaxed text-[0.8125rem] cursor-pointer text-[color:var(--text-muted)]">
+    <input type="checkbox" required class="mt-1 h-4 w-4" style="accent-color: #FF3E54" x-model="acceptTerms">
+    <span>I agree to Drivly's <StxLink to="/terms" class="text-[#FF3E54]">Terms</StxLink> and <StxLink to="/privacy" class="text-[#FF3E54]">Privacy Policy</StxLink>.</span>
+  </label>
+
+  <button type="submit" class="mt-6 px-5 py-3.5 w-full font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] border-0 rounded-xl transition-colors cursor-pointer">Create account</button>
+</form>
+
+<p class="mt-7 text-center text-[color:var(--text-muted)]">
+  Already have an account? <StxLink to="/login" class="font-semibold text-[#FF3E54]">Log in →</StxLink>
+</p>
+
+<script client>
+  const firstName    = state('')
+  const lastName     = state('')
+  const email        = state('')
+  const password     = state('')
+  const role         = state('guest')
+  const acceptTerms  = state(false)
+  const submitting   = state(false)
+
+  async function submit() {
+    if (!email() || !firstName() || !password() || submitting()) return
+    submitting.set(true)
+    try {
+      const session = useStore('session')
+      const name = (firstName() + ' ' + lastName()).trim()
+      await session.register(name, email(), password())
+      if (role() === 'host') {
+        const token = localStorage.getItem('drivly-token')
+        await fetch('/api/host/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+          body: '{}',
+        })
+      }
+      window._toast && window._toast('Welcome to Drivly, ' + firstName() + '!', 'success')
+      setTimeout(() => {
+        const next = role() === 'host' ? '/host/list' : '/'
+        try { window.navigate && window.navigate(next) } catch (_) { location.href = next }
+      }, 400)
+    }
+    catch (err) {
+      window._toast && window._toast(err?.payload?.message || 'Signup failed', 'error')
+    }
+    finally {
+      submitting.set(false)
+    }
+  }
+</script>
+@endsection

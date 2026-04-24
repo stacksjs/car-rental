@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>try{var t=localStorage.getItem('drivly-theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(!window.matchMedia('(prefers-color-scheme:light)').matches)document.documentElement.setAttribute('data-theme','dark');else document.documentElement.setAttribute('data-theme','light')}catch(e){document.documentElement.setAttribute('data-theme','light')}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Theme tokens — driven by [data-theme] attribute so the whole tree can flip modes.
+       Using CSS custom properties (not :root vars) lets us use them inside utility classes
+       like `bg-[var(--bg)]`. */
+    [data-theme="light"] {
+      --bg: #ffffff; --bg-elevated: #ffffff; --bg-subtle: #f7f7f8; --bg-muted: #f0f0f2;
+      --bg-hover: rgba(0,0,0,0.04); --nav-bg: rgba(255,255,255,0.8);
+      --text: #0a0a0a; --text-secondary: #3f3f46; --text-muted: #71717a; --text-faint: #a1a1aa;
+      --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.14);
+      --input-bg: #ffffff;
+      --skeleton: linear-gradient(90deg, #f0f0f2 0%, #e4e4e7 50%, #f0f0f2 100%);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b0b0d; --bg-elevated: #141418; --bg-subtle: #17171b; --bg-muted: #1f1f24;
+      --bg-hover: rgba(255,255,255,0.05); --nav-bg: rgba(11,11,13,0.75);
+      --text: #fafafa; --text-secondary: #d4d4d8; --text-muted: #a1a1aa; --text-faint: #71717a;
+      --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.14);
+      --input-bg: #17171b;
+      --skeleton: linear-gradient(90deg, #1f1f24 0%, #2a2a30 50%, #1f1f24 100%);
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: 'ss01', 'cv11';
+      scroll-behavior: smooth;
+    }
+    body { min-height: 100vh; margin: 0; }
+    * { box-sizing: border-box; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* Serif display font for hero headlines */
+    .serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.02em; }
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    /* Theme-aware skeleton placeholder (shown under lazy-loading images) */
+    .skeleton { background: var(--skeleton); background-size: 200% 100%; animation: sk 1.4s infinite; }
+    @keyframes sk { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Icon toggle visibility for theme button */
+    [data-theme="light"] .icon-moon { display: block; }
+    [data-theme="light"] .icon-sun { display: none; }
+    [data-theme="dark"] .icon-moon { display: none; }
+    [data-theme="dark"] .icon-sun { display: block; }
+
+    /* Crosswind doesn't yet ship an `animate-fade-in` shorthand — add a minimal keyframe. */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: none; } }
+    .animate-fade-in { animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+    /* Toast slide-in */
+    @keyframes toastIn { from { opacity: 0; transform: translateY(1rem) scale(0.95); } to { opacity: 1; transform: none; } }
+    .toast-anim { animation: toastIn 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* Focus rings — crosswind's default ring tokens don't auto-wire to our brand */
+    *:focus-visible { outline: 2px solid #FF3E54; outline-offset: 2px; border-radius: 0.375rem; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; border: 2px solid var(--bg); }
+
+    @stack('styles')
+  </style>
+
+  <!-- Router config — brand color for progress bar. View-transition CSS
+       (fade + slight slide, reduced-motion aware) now ships with the router
+       by default; set viewTransitions:false to opt out. -->
+  <script>window.__stxRouterConfig={progressColor:'#FF3E54',progressHeight:'2.5px'};</script>
+</head>
+<body class="min-h-screen">
+
+  <!-- ── Top Navigation ─────────────────────────────────── -->
+  <nav class="sticky top-0 z-50 border-b backdrop-blur-xl border-[color:var(--border)]"
+       style="background: var(--nav-bg)">
+    <div class="flex gap-8 items-center justify-between mx-auto px-6 h-18 max-w-[1280px]" style="height: 72px">
+      <div class="flex gap-8 items-center">
+        <StxLink to="/" class="flex gap-2 items-center font-extrabold text-[#FF3E54] text-2xl tracking-tight">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="2" y="10" width="28" height="14" rx="4" fill="currentColor"/>
+            <rect x="6" y="6" width="20" height="8" rx="3" fill="currentColor" opacity="0.6"/>
+            <circle cx="9" cy="24" r="3" fill="var(--bg)"/>
+            <circle cx="23" cy="24" r="3" fill="var(--bg)"/>
+          </svg>
+          drivly
+        </StxLink>
+
+        <div class="hidden lg:flex gap-1 items-center">
+          <StxLink to="/search" class="px-3.5 py-2 font-medium text-sm rounded-lg transition-colors text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)] hover:text-[color:var(--text)]">Browse cars</StxLink>
+          <StxLink to="/host/list" class="px-3.5 py-2 font-medium text-sm rounded-lg transition-colors text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)] hover:text-[color:var(--text)]">Become a host</StxLink>
+          <StxLink to="/about" class="px-3.5 py-2 font-medium text-sm rounded-lg transition-colors text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)] hover:text-[color:var(--text)]">How it works</StxLink>
+        </div>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <!-- Theme toggle — writes to localStorage; a DOM attribute flip is
+             still the cleanest way to re-evaluate every `[data-theme=...]`
+             CSS selector, so we do that one side-effect by hand. -->
+        <button class="inline-flex items-center justify-center h-9 w-9 bg-transparent border rounded-full transition-colors border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-subtle)] hover:text-[color:var(--text)]"
+                @click="toggleTheme()" aria-label="Toggle theme">
+          <svg class="h-4 w-4 icon-sun" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="h-4 w-4 icon-moon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <!-- Favorites — dot shown when the store has any saved cars -->
+        <StxLink to="/favorites" class="inline-flex relative items-center justify-center h-9 w-9 border rounded-full transition-colors border-[color:var(--border)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-subtle)] hover:text-[color:var(--text)]" aria-label="Favorites" title="Favorites">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="absolute right-1 top-1 h-2 w-2 bg-[#FF3E54] border-2 rounded-full border-[color:var(--bg)]" :show="favCount() > 0"></span>
+        </StxLink>
+
+        <!-- User menu — `userMenuOpen` signal drives :show on the panel.
+             Avatar swaps between a neutral person icon (guest) and the user's
+             initials (authed) so the control has a visible identity state. -->
+        <div class="relative">
+          <button class="flex gap-2 items-center pl-3.5 pr-1.5 py-1.5 border rounded-full hover:shadow transition-all cursor-pointer bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text)] hover:border-[color:var(--border-strong)]"
+                  @click.stop="userMenuOpen.set(!userMenuOpen())" :attr:aria-expanded="userMenuOpen() ? 'true' : 'false'" aria-haspopup="true" aria-label="Open user menu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+            <!-- Guest avatar: neutral person icon -->
+            <span :show="!isAuthed()" class="inline-flex items-center justify-center h-8 w-8 border rounded-full bg-[color:var(--bg)] border-[color:var(--border-strong)] text-[color:var(--text-secondary)]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/>
+                <path stroke-linecap="round" d="M4 21a8 8 0 0 1 16 0"/>
+              </svg>
+            </span>
+            <!-- Authed avatar: user's initials, gradient background -->
+            <span :show="isAuthed()" class="inline-flex items-center justify-center h-8 w-8 font-semibold text-[0.8125rem] text-white rounded-full" style="background: linear-gradient(135deg, #FF3E54 0%, #7c3aed 100%)" :text="avatar"></span>
+          </button>
+          <div :show="userMenuOpen()" @click.stop
+               class="absolute right-0 top-[calc(100%+0.5rem)] z-50 p-1.5 min-w-[240px] border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]"
+               style="box-shadow: 0 24px 48px -12px rgba(0,0,0,0.18)">
+            <!-- Guest items -->
+            <div :show="!isAuthed()">
+              <StxLink to="/login" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Log in</StxLink>
+              <StxLink to="/signup" class="flex gap-3 items-center px-3 py-2.5 font-semibold text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M8.5 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM20 8v6M23 11h-6"/></svg>Sign up</StxLink>
+              <div class="my-1.5 h-px bg-[color:var(--border)]"></div>
+              <StxLink to="/host/list" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]">List your car</StxLink>
+            </div>
+            <!-- Authed items -->
+            <div :show="isAuthed()">
+              <StxLink to="/trips" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 13h12l3-13M3 6l-1-3M3 6h18"/></svg>My trips</StxLink>
+              <StxLink to="/favorites" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Favorites</StxLink>
+              <StxLink to="/host/dashboard" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/></svg>Host dashboard</StxLink>
+              <div class="my-1.5 h-px bg-[color:var(--border)]"></div>
+              <StxLink to="/host/list" class="flex gap-3 items-center px-3 py-2.5 text-sm rounded transition-colors text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]">List your car</StxLink>
+              <button type="button" class="flex gap-3 items-center px-3 py-2.5 w-full text-left text-sm bg-transparent border-0 rounded transition-colors cursor-pointer text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]" @click="logout()"><svg class="h-4 w-4 text-[color:var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Log out</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile menu opener — bound to `mobileOpen` signal -->
+        <button class="inline-flex lg:hidden items-center justify-center h-10 w-10 bg-transparent border rounded-lg border-[color:var(--border)] text-[color:var(--text)]"
+                @click="mobileOpen.set(true)" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu — transform class is bound to `mobileOpen` signal.
+       `lg:hidden` keeps this off desktop entirely.
+       `translate-x-full` is the default so the pane is off-screen before
+       reactive hydration runs (avoids a flash of the menu covering the page). -->
+  <aside class="lg:hidden fixed inset-0 overflow-y-auto z-[100] p-6 transition-transform translate-x-full"
+         style="background: var(--bg)"
+         :class="{ 'translate-x-full': !mobileOpen(), 'translate-x-0': mobileOpen() }">
+    <div class="flex items-center justify-between mb-8">
+      <span class="flex gap-2 items-center font-extrabold text-[#FF3E54] text-2xl tracking-tight">drivly</span>
+      <button class="inline-flex items-center justify-center h-9 w-9 bg-transparent border rounded-full border-[color:var(--border)] text-[color:var(--text-secondary)]"
+              @click="mobileOpen.set(false)" aria-label="Close menu">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-1">
+      <StxLink to="/" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Home</StxLink>
+      <StxLink to="/search" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Browse cars</StxLink>
+      <StxLink to="/host/list" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Become a host</StxLink>
+      <StxLink to="/host/dashboard" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Host dashboard</StxLink>
+      <StxLink to="/trips" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">My trips</StxLink>
+      <StxLink to="/favorites" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Favorites</StxLink>
+      <StxLink to="/about" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">How it works</StxLink>
+      <div class="my-4 h-px bg-[color:var(--border)]"></div>
+      <StxLink to="/login" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Log in</StxLink>
+      <StxLink to="/signup" class="px-3.5 py-2 font-medium text-sm rounded-lg text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" @click="mobileOpen.set(false)">Sign up</StxLink>
+    </nav>
+  </aside>
+
+  <main>
+    @yield('content')
+  </main>
+
+  @include('footer.stx')
+
+  <!-- Toasts — populated by window._toast(). Transient disposable nodes are
+       the one case where signal-backed :for is more hassle than value. -->
+  <div data-toast-wrap class="flex bottom-6 fixed right-6 z-[200] flex-col-reverse gap-2.5 pointer-events-none" style="max-width: calc(100vw - 3rem)" aria-live="polite" aria-atomic="true"></div>
+
+  <script client>
+    // ── Layout-scope reactive state. The setup function runs once per full
+    //    page load (not per SPA nav), so these signals survive navigation. ──
+    const session = useStore('session')
+    const favorites = useStore('favorites')
+
+    const userMenuOpen = state(false)
+    const mobileOpen   = state(false)
+
+    // ── Footer locale/currency pickers. Persisted to localStorage so the
+    //    selection survives refresh. A production build would also push this
+    //    to the server via a Set-Cookie so SSR renders in the right locale. ──
+    const uiLocale   = useLocalStorage('drivly-locale', 'en-US')
+    const uiCurrency = useLocalStorage('drivly-currency', 'USD')
+    effect(() => {
+      document.documentElement.setAttribute('lang', uiLocale().split('-')[0])
+    })
+
+    // Store signals propagate through derived() directly — no version-bump
+    // shim needed. Reading session.user() inside derived() subscribes this
+    // computation to session.user changes.
+    const isAuthed = derived(() => session.user() !== null)
+    const avatar   = derived(() => session.user()?.avatar || 'U')
+    const favCount = derived(() => favorites.count())
+
+    // Keep `document.body.style.overflow` and the theme attribute in sync with
+    // our signals — both are global DOM state that can't be expressed with a
+    // bind alone, so they live in a single effect.
+    effect(() => {
+      document.body.style.overflow = mobileOpen() ? 'hidden' : ''
+    })
+
+    function toggleTheme() {
+      const html = document.documentElement
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+      html.setAttribute('data-theme', next)
+      try { localStorage.setItem('drivly-theme', next) } catch (e) {}
+    }
+
+    function logout() {
+      session.logout()
+      userMenuOpen.set(false)
+      window._toast('Signed out', 'info')
+      try { window.navigate && window.navigate('/') } catch (e) { location.href = '/' }
+    }
+
+    // Close menus on outside-click / Escape. `@click.stop` on the panel and
+    // the trigger button stops this from firing for in-menu clicks.
+    document.addEventListener('click', () => { if (userMenuOpen()) userMenuOpen.set(false) })
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return
+      userMenuOpen.set(false)
+      mobileOpen.set(false)
+    })
+
+    // Global favorite heart handler — delegated on body so it works on every
+    // page that uses the `CarCard` component (home, search, favorites). Each
+    // card's `.fav-btn` carries the car id; we look up that id in the shared
+    // `favorites` store and flip it. Sync icon state after load + toggle.
+    function syncFavIcon(btn) {
+      const id = btn.getAttribute('data-car-id')
+      const icon = btn.querySelector('.fav-icon')
+      if (!icon || !id) return
+      if (favorites.has(id)) { icon.setAttribute('fill', '#FF3E54'); icon.style.stroke = '#FF3E54' }
+      else { icon.setAttribute('fill', 'none'); icon.style.stroke = 'currentColor' }
+    }
+
+    function syncAllFavIcons() {
+      document.querySelectorAll('.fav-btn').forEach(syncFavIcon)
+    }
+
+    // Click handler uses closest('.fav-btn') so the heart still works if the
+    // click lands on the inner SVG.
+    document.addEventListener('click', function (e) {
+      const btn = e.target && e.target.closest && e.target.closest('.fav-btn')
+      if (!btn) return
+      e.preventDefault()
+      e.stopPropagation()
+      const id = btn.getAttribute('data-car-id')
+      if (!id) return
+      favorites.toggle(id)
+      syncFavIcon(btn)
+      window._toast && window._toast(favorites.has(id) ? 'Saved to favorites' : 'Removed from favorites', 'success')
+    })
+
+    // Sync icons on every load (SPA nav included — stx:load fires after swap)
+    onMount(syncAllFavIcons)
+    window.addEventListener('stx:load', syncAllFavIcons)
+
+    // Toast API — one global helper other pages call via `window._toast`.
+    // We still create DOM nodes here because toasts are transient visitors
+    // not part of the template; a signal-backed `:for` over a toast list would
+    // work but offers no real benefit for disposable elements.
+    if (!window._toast) {
+      window._toast = function (msg, type) {
+        type = type || 'info'
+        const wrap = document.querySelector('[data-toast-wrap]')
+        if (!wrap) return
+        const borderColor = type === 'success' ? '#10B981' : type === 'error' ? '#FF3E54' : '#3b82f6'
+        const el = document.createElement('div')
+        el.className = 'flex gap-3 items-center px-4.5 py-3.5 font-medium text-sm border rounded-lg pointer-events-auto bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text)] toast-anim'
+        el.style.cssText = 'max-width: 380px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.18); border-left: 3px solid ' + borderColor + ';'
+        const icon = type === 'success' ? '✓' : type === 'error' ? '⚠' : 'ℹ'
+        el.innerHTML = '<span style="font-weight:700; color:var(--text-muted)">' + icon + '</span><span>' + msg + '</span>'
+        wrap.appendChild(el)
+        setTimeout(() => {
+          el.style.transition = 'opacity 0.3s, transform 0.3s'
+          el.style.opacity = '0'
+          el.style.transform = 'translateY(0.5rem)'
+          setTimeout(() => el.remove(), 320)
+        }, 3200)
+      }
+    }
+  </script>
+</body>
+</html>
