@@ -1,14 +1,8 @@
 <script server>
-import { cars } from '../data/cars'
-
 const pageTitle = 'Favorites · Drivly'
 const activePage = 'favorites'
 
 useSeoMeta({ title: pageTitle, robots: 'noindex' })
-
-// Emit every car server-side; the :show binding below hides non-favorites.
-// No JS "render from data" step means no flash-of-empty and zero DOM queries.
-const allCars = cars
 </script>
 
 @extends('layouts/app.stx')
@@ -18,25 +12,39 @@ const allCars = cars
   <div class="flex flex-wrap gap-4 items-end justify-between mb-8">
     <div>
       <h1 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">Your favorites</h1>
-      <p class="m-0 text-[color:var(--text-muted)]"><span :text="favCount">0</span> saved cars</p>
+      <p class="m-0 text-[color:var(--text-muted)]"><span :text="favCount()">0</span> saved cars</p>
     </div>
     <button class="px-5 py-3 font-semibold text-sm bg-transparent border rounded-xl transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]"
             :show="hasFavs()"
             @click="clear()">Clear all</button>
   </div>
 
-  <!-- Grid visible when we have favs; otherwise show the empty state -->
-  <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4" :show="hasFavs()">
-    @foreach (allCars as car)
-      <!-- Each wrapper's visibility is bound to favorites.has(id) -->
-      <div :show="isFav('{{ car.id }}')">
-        @component('CarCard', { car: car })
-        @endcomponent
-      </div>
-    @endforeach
+  <!-- Loading -->
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading your favorites…</div>
+
+  <!-- Grid -->
+  <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-4" :show="!loading() && hasFavs()">
+    <template :foreach="car of cars()">
+      <a :href="'/cars/' + car.slug" class="block overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--bg-elevated)] text-[color:var(--text)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+        <div class="overflow-hidden bg-[color:var(--bg-muted)]" style="aspect-ratio: 16/11">
+          <img :src="car.image" :alt="car.year + ' ' + car.make + ' ' + car.model" loading="lazy" decoding="async" class="object-cover h-full w-full">
+        </div>
+        <div class="p-4">
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="m-0 font-bold text-[0.9375rem] leading-tight" :text="car.make + ' ' + car.model"></h3>
+            <button class="bg-transparent border-0 cursor-pointer p-0" @click.stop.prevent="removeFav(car)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF3E54" stroke="#FF3E54" stroke-width="1.5"><path stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <p class="m-0 mt-1 text-xs text-[color:var(--text-muted)]" :text="car.year + ' · ' + (car.category || '')"></p>
+          <p class="m-0 mt-2 font-semibold tabular" :text="'$' + Number(car.daily_rate || car.price || 0) + '/day'"></p>
+        </div>
+      </a>
+    </template>
   </div>
 
-  <div class="px-4 py-20 text-center" :show="!hasFavs()">
+  <!-- Empty state -->
+  <div :show="!loading() && !hasFavs()" class="px-4 py-20 text-center">
     <div class="inline-flex items-center justify-center mb-5 h-20 w-20 bg-[rgba(255,62,84,0.1)] rounded-full">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FF3E54" stroke-width="1.8"><path stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     </div>
@@ -48,26 +56,75 @@ const allCars = cars
 </div>
 
 <script client>
-  const favorites = useStore('favorites')
+  const loading = state(true)
+  const cars = state([])
+  const localFavorites = useStore('favorites')
 
-  // Reading favorites.ids()/count() inside a derived() subscribes the
-  // computation to those signals — no explicit version-bump needed.
-  const favCount = derived(() => favorites.count())
-  const hasFavs  = derived(() => favCount() > 0)
-  const isFav    = id => (favorites.ids(), favorites.has(id))
+  const favCount = derived(() => cars().length)
+  const hasFavs = derived(() => favCount() > 0)
 
-  // Dynamic tab title — `useHead` on the client updates document.title
-  // reactively as the store changes.
   effect(() => {
     useHead({ title: favCount() > 0 ? `Favorites (${favCount()}) · Drivly` : 'Favorites · Drivly' })
   })
 
-  function clear() {
-    if (confirm('Clear all saved cars?')) {
-      favorites.clear()
-      window._toast && window._toast('Favorites cleared', 'info')
+  async function load() {
+    loading.set(true)
+    const token = localStorage.getItem('drivly-token')
+    try {
+      if (token) {
+        const res = await fetch('/api/favorites', { headers: { Authorization: 'Bearer ' + token } })
+        if (res.ok) {
+          const body = await res.json()
+          cars.set((body?.data || []).map(c => c._attributes ?? c))
+          return
+        }
+      }
+      // Guest fallback — hydrate from local favorites store + /api/cars lookup.
+      const ids = localFavorites.ids?.() ?? []
+      if (!ids.length) { cars.set([]); return }
+      const out = []
+      for (const id of ids) {
+        try {
+          const r = await fetch(/^\d+$/.test(String(id)) ? `/api/cars/${id}` : `/api/cars/by-slug/${id}`)
+          if (r.ok) {
+            const body = await r.json()
+            const attrs = body?.data?._attributes ?? body?.data
+            if (attrs) out.push(attrs)
+          }
+        } catch { /* ignore */ }
+      }
+      cars.set(out)
     }
+    catch { cars.set([]) }
+    finally { loading.set(false) }
   }
+
+  async function removeFav(car) {
+    const id = Number(car.id)
+    const token = localStorage.getItem('drivly-token')
+    try {
+      if (token) await fetch('/api/favorites/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } })
+    } catch { /* ignore */ }
+    try { localFavorites.toggle?.(String(car.slug || car.id)) } catch { /* ignore */ }
+    cars.set(cars().filter(c => Number(c.id) !== id))
+    window._toast && window._toast('Removed from favorites', 'info')
+  }
+
+  async function clear() {
+    if (!confirm('Clear all saved cars?')) return
+    const token = localStorage.getItem('drivly-token')
+    const list = cars()
+    cars.set([])
+    if (token) {
+      for (const c of list) {
+        try { await fetch('/api/favorites/' + Number(c.id), { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } }) } catch {}
+      }
+    }
+    try { localFavorites.clear?.() } catch { /* ignore */ }
+    window._toast && window._toast('Favorites cleared', 'info')
+  }
+
+  effect(() => { load() })
 </script>
 
 @endsection

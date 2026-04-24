@@ -1,29 +1,13 @@
 <script server>
-import { cars } from '../data/cars'
-
 const pageTitle = 'My trips · Drivly'
 const activePage = 'trips'
 
 useSeoMeta({ title: pageTitle, robots: 'noindex' })
 
-const upcoming = [
-  { id: 'DRV-482913', carId: 'tesla-model-3-2024', guest: 'Maya L.', from: '2026-05-14', to: '2026-05-17', total: 432.50, status: 'Confirmed', pickupTime: '10:00 AM' },
-  { id: 'DRV-481802', carId: 'jeep-wrangler-2023',  from: '2026-06-02', to: '2026-06-08', total: 946.00, status: 'Awaiting host', pickupTime: '9:00 AM' },
-]
-
-const past = [
-  { id: 'DRV-478291', carId: 'porsche-911-carrera-2023', from: '2026-02-14', to: '2026-02-16', total: 1210.00, status: 'Completed', rating: 5 },
-  { id: 'DRV-471029', carId: 'mazda-miata-2023',         from: '2025-11-03', to: '2025-11-05', total: 285.00, status: 'Completed', rating: 5 },
-  { id: 'DRV-468013', carId: 'honda-civic-2024',         from: '2025-09-18', to: '2025-09-22', total: 342.00, status: 'Completed', rating: 4 },
-]
-
-const upcomingWithCar = upcoming.map(t => ({ ...t, car: cars.find(c => c.id === t.carId) }))
-const pastWithCar = past.map(t => ({ ...t, car: cars.find(c => c.id === t.carId) }))
-
 const tabs = [
-  { id: 'upcoming',  label: 'Upcoming (' + upcoming.length + ')' },
-  { id: 'past',      label: 'Past (' + past.length + ')' },
-  { id: 'cancelled', label: 'Cancelled (0)' },
+  { id: 'upcoming',  label: 'Upcoming' },
+  { id: 'past',      label: 'Past' },
+  { id: 'cancelled', label: 'Cancelled' },
 ]
 </script>
 
@@ -41,112 +25,177 @@ const tabs = [
              style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Book another trip</StxLink>
   </div>
 
-  <!-- Tabs — active state driven by `tab` signal -->
+  <!-- Tabs -->
   <div class="flex gap-1 mb-8 border-b border-[color:var(--border)]">
     @foreach (tabs as t)
       <button class="-mb-px px-5 py-3.5 bg-transparent border-0 border-b-2 transition-colors cursor-pointer"
               :class="{ 'text-[color:var(--text)] font-semibold border-b-[#FF3E54]': tab() === '{{ t.id }}', 'text-[color:var(--text-muted)] font-medium border-b-transparent': tab() !== '{{ t.id }}' }"
-              @click="tab.set('{{ t.id }}')">{{ t.label }}</button>
+              @click="tab.set('{{ t.id }}')">
+        {{ t.label }} (<span :text="counts()[`{{ t.id }}`] ?? 0"></span>)
+      </button>
     @endforeach
   </div>
 
-  <!-- Upcoming -->
-  <section :show="tab() === 'upcoming'">
-    @if (upcoming.length === 0)
-      <div class="px-4 py-16 text-center"><p class="m-0 mb-2 text-5xl">🗺️</p><h3 class="m-0 mb-2 text-2xl serif">No upcoming trips</h3><p class="text-[color:var(--text-muted)]">Ready for your next adventure?</p><StxLink to="/search" class="inline-flex gap-2 items-center mt-4 px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all" style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Browse cars</StxLink></div>
-    @else
-      <div class="flex flex-col gap-4">
-        @foreach (upcomingWithCar as trip)
-          <a href="/cars/{{ trip.carId }}"
-             class="grid gap-6 grid-cols-1 items-center sm:grid-cols-[200px_1fr_auto] p-4 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
-            <div class="overflow-hidden rounded-xl bg-[color:var(--bg-muted)]" style="aspect-ratio: 16/11">
-              <img src="{{ trip.car.image }}" alt="{{ trip.car.year }} {{ trip.car.make }} {{ trip.car.model }}" loading="lazy" decoding="async" class="object-cover h-full w-full">
-            </div>
-            <div>
-              <div class="flex flex-wrap gap-2 items-center mb-1">
-                <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium {{ trip.status === 'Confirmed' ? 'text-[#10B981] bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)]' : 'text-[#F59E0B] bg-[rgba(245,158,11,0.12)] border border-[rgba(245,158,11,0.25)]' }}">{{ trip.status }}</span>
-                <span class="text-[0.8125rem] text-[color:var(--text-muted)]">#{{ trip.id }}</span>
-              </div>
-              <h3 class="m-0 font-bold text-xl">{{ trip.car.year }} {{ trip.car.make }} {{ trip.car.model }}</h3>
-              <p class="m-0 mt-1 text-sm text-[color:var(--text-muted)]">Hosted by {{ trip.car.host.name }} · {{ trip.car.location }}</p>
-              <div class="flex flex-wrap gap-4 items-center mt-2.5 text-sm">
-                <span class="flex gap-1.5 items-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/></svg><span class="tabular">{{ trip.from }} — {{ trip.to }}</span></span>
-                <span class="flex gap-1.5 items-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>Pickup at {{ trip.pickupTime }}</span>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="m-0 font-bold text-xl tabular">${{ trip.total.toFixed(2) }}</p>
-              <p class="m-0 mt-0.5 text-xs text-[color:var(--text-muted)]">total</p>
-              <button class="mt-2.5 px-3.5 py-2 font-semibold text-[0.8125rem] bg-transparent border rounded-lg transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]"
-                      @click.prevent="messageHost()">Message host</button>
-            </div>
-          </a>
-        @endforeach
-      </div>
-    @endif
-  </section>
+  <!-- Loading state -->
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">
+    Loading your trips…
+  </div>
 
-  <!-- Past -->
-  <section :show="tab() === 'past'">
-    <div class="flex flex-col gap-4">
-      @foreach (pastWithCar as trip)
-        <a href="/cars/{{ trip.carId }}"
-           class="grid gap-6 grid-cols-1 items-center sm:grid-cols-[200px_1fr_auto] p-4 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
-          <div class="overflow-hidden rounded-xl bg-[color:var(--bg-muted)]" style="aspect-ratio: 16/11">
-            <img src="{{ trip.car.image }}" alt="{{ trip.car.year }} {{ trip.car.make }} {{ trip.car.model }}" loading="lazy" decoding="async" class="object-cover h-full w-full" style="filter: saturate(0.8)">
-          </div>
-          <div>
-            <div class="flex flex-wrap gap-2 items-center mb-1">
-              <span class="inline-flex gap-1.5 items-center px-2.5 py-1 font-medium text-xs border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]">Completed</span>
-              <span class="text-[0.8125rem] text-[color:var(--text-muted)]">#{{ trip.id }}</span>
-            </div>
-            <h3 class="m-0 font-bold text-lg">{{ trip.car.year }} {{ trip.car.make }} {{ trip.car.model }}</h3>
-            <p class="m-0 mt-1 text-sm text-[color:var(--text-muted)]">{{ trip.car.location }}</p>
-            <div class="flex gap-4 items-center mt-2.5 text-[0.8125rem]">
-              <span class="tabular">{{ trip.from }} — {{ trip.to }}</span>
-              @component('Rating', { rating: trip.rating })
-              @endcomponent
-            </div>
-          </div>
-          <div class="text-right">
-            <p class="m-0 font-semibold tabular">${{ trip.total.toFixed(2) }}</p>
-            <button class="mt-2.5 px-3.5 py-2 font-medium text-[0.8125rem] bg-transparent border-0 rounded-lg transition-colors cursor-pointer text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"
-                    @click.prevent="rebook()">Rebook</button>
-          </div>
-        </a>
-      @endforeach
-    </div>
-  </section>
+  <!-- Not authed -->
+  <div :show="!loading() && !authed()" class="py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🔒</p>
+    <h3 class="m-0 mb-2 text-2xl serif">Sign in to see your trips</h3>
+    <StxLink to="/login" class="inline-flex gap-2 items-center mt-4 px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all"
+             style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Log in</StxLink>
+  </div>
 
-  <!-- Cancelled -->
-  <section class="px-4 py-16 text-center" :show="tab() === 'cancelled'">
-    <p class="m-0 mb-2 text-5xl">✨</p>
-    <h3 class="m-0 text-2xl serif">No cancellations. Nice.</h3>
-  </section>
+  <!-- Empty state (per tab) -->
+  <div :show="!loading() && authed() && currentList().length === 0" class="px-4 py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🗺️</p>
+    <h3 class="m-0 mb-2 text-2xl serif" :text="emptyTitle()"></h3>
+    <p class="text-[color:var(--text-muted)]">Ready for your next adventure?</p>
+    <StxLink to="/search" class="inline-flex gap-2 items-center mt-4 px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all"
+             style="box-shadow: 0 1px 0 rgba(0,0,0,0.08), 0 4px 16px rgba(255,62,84,0.2)">Browse cars</StxLink>
+  </div>
+
+  <!-- Trip list — reactive -->
+  <div class="flex flex-col gap-4" :show="!loading() && authed() && currentList().length > 0">
+    <template :foreach="trip of currentList()">
+      <a :href="'/cars/' + trip.carId"
+         class="grid gap-6 grid-cols-1 items-center sm:grid-cols-[200px_1fr_auto] p-4 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+        <div class="overflow-hidden rounded-xl bg-[color:var(--bg-muted)]" style="aspect-ratio: 16/11">
+          <img :src="trip.car?.image" :alt="trip.car ? (trip.car.year + ' ' + trip.car.make + ' ' + trip.car.model) : trip.reference" loading="lazy" decoding="async" class="object-cover h-full w-full">
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-2 items-center mb-1">
+            <span :class="statusBadgeClass(trip.status)" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium"
+                  :text="humanStatus(trip.status)"></span>
+            <span class="text-[0.8125rem] text-[color:var(--text-muted)]" :text="'#' + trip.reference"></span>
+          </div>
+          <h3 class="m-0 font-bold text-xl" :text="trip.car ? (trip.car.year + ' ' + trip.car.make + ' ' + trip.car.model) : 'Trip ' + trip.reference"></h3>
+          <p class="m-0 mt-1 text-sm text-[color:var(--text-muted)]" :text="trip.car ? ('Hosted car · ' + (trip.car.category || '')) : ''"></p>
+          <div class="flex flex-wrap gap-4 items-center mt-2.5 text-sm">
+            <span class="flex gap-1.5 items-center">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span class="tabular" :text="trip.from + ' — ' + trip.to"></span>
+            </span>
+            <span class="flex gap-1.5 items-center" :show="trip.pickupTime">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>
+              <span>Pickup at <span :text="trip.pickupTime"></span></span>
+            </span>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="m-0 font-bold text-xl tabular" :text="'$' + (Number(trip.total || 0)).toFixed(2)"></p>
+          <p class="m-0 mt-0.5 text-xs text-[color:var(--text-muted)]">total</p>
+          <div class="flex flex-col gap-2 mt-2.5">
+            <button :show="tab() === 'upcoming'" class="px-3.5 py-2 font-semibold text-[0.8125rem] bg-transparent border rounded-lg transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]"
+                    @click.prevent="cancelTrip(trip)">Cancel trip</button>
+            <button :show="tab() === 'past'" class="px-3.5 py-2 font-medium text-[0.8125rem] bg-transparent border-0 rounded-lg transition-colors cursor-pointer text-[color:var(--text)] hover:bg-[color:var(--bg-hover)]"
+                    @click.prevent="rebook(trip)">Rebook</button>
+          </div>
+        </div>
+      </a>
+    </template>
+  </div>
 
 </div>
 
 <script client>
   const tab = state('upcoming')
-  const liveUpcoming = state(null)
-  const livePast = state(null)
-  const liveCancelled = state(null)
+  const loading = state(true)
+  const authed = state(false)
+  const upcoming = state([])
+  const past = state([])
+  const cancelled = state([])
 
-  effect(async () => {
-    const token = localStorage.getItem('drivly-token')
-    if (!token) return
-    try {
-      const res = await fetch('/api/bookings/mine', { headers: { Authorization: 'Bearer ' + token } })
-      if (!res.ok) return
-      const body = await res.json()
-      liveUpcoming.set(body.upcoming || [])
-      livePast.set(body.past || [])
-      liveCancelled.set(body.cancelled || [])
-    } catch { /* noop */ }
+  const counts = derived(() => ({
+    upcoming: upcoming().length,
+    past: past().length,
+    cancelled: cancelled().length,
+  }))
+
+  const currentList = derived(() => {
+    const t = tab()
+    if (t === 'past') return past()
+    if (t === 'cancelled') return cancelled()
+    return upcoming()
   })
 
-  function messageHost() { window._toast && window._toast('Host contacted', 'success') }
-  function rebook()      { window._toast && window._toast('Rebooking this car...', 'info') }
+  const emptyTitle = derived(() => {
+    const t = tab()
+    if (t === 'past') return 'No past trips yet'
+    if (t === 'cancelled') return 'Nothing cancelled — nice.'
+    return 'No upcoming trips'
+  })
+
+  function statusBadgeClass(status) {
+    const s = String(status || '').toLowerCase()
+    if (s === 'confirmed' || s === 'active')
+      return 'text-[#10B981] bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)]'
+    if (s === 'pending')
+      return 'text-[#F59E0B] bg-[rgba(245,158,11,0.12)] border border-[rgba(245,158,11,0.25)]'
+    if (s === 'cancelled')
+      return 'text-[color:var(--text-muted)] bg-[color:var(--bg-subtle)] border border-[color:var(--border)]'
+    return 'text-[color:var(--text-secondary)] bg-[color:var(--bg-subtle)] border border-[color:var(--border)]'
+  }
+
+  function humanStatus(status) {
+    const s = String(status || 'pending')
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
+
+  async function cancelTrip(trip) {
+    if (!confirm('Cancel trip ' + trip.reference + '?')) return
+    try {
+      const token = localStorage.getItem('drivly-token')
+      const res = await fetch('/api/bookings/' + trip.id + '/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: '{}',
+      })
+      if (res.ok) {
+        window._toast && window._toast('Trip cancelled', 'success')
+        loadTrips()
+      }
+      else {
+        window._toast && window._toast('Could not cancel trip', 'error')
+      }
+    }
+    catch { window._toast && window._toast('Network error', 'error') }
+  }
+
+  function rebook(trip) {
+    if (trip.carId) location.href = '/cars/' + trip.carId
+    else window._toast && window._toast('Rebooking…', 'info')
+  }
+
+  async function loadTrips() {
+    loading.set(true)
+    const token = localStorage.getItem('drivly-token')
+    if (!token) {
+      authed.set(false)
+      loading.set(false)
+      return
+    }
+    authed.set(true)
+    try {
+      const res = await fetch('/api/bookings/mine', { headers: { Authorization: 'Bearer ' + token } })
+      if (!res.ok) throw new Error('bookings fetch failed')
+      const body = await res.json()
+      upcoming.set(body.upcoming || [])
+      past.set(body.past || [])
+      cancelled.set(body.cancelled || [])
+    }
+    catch {
+      upcoming.set([]); past.set([]); cancelled.set([])
+    }
+    finally {
+      loading.set(false)
+    }
+  }
+
+  effect(() => { loadTrips() })
 </script>
 
 @endsection

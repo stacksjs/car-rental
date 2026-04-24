@@ -29,10 +29,10 @@ export default defineModel({
       routes: ['index', 'store', 'show', 'update'],
     },
     useSearch: {
-      displayable: ['id', 'reference', 'status', 'startDate', 'endDate', 'total'],
-      searchable: ['reference', 'driverFirstName', 'driverLastName', 'driverEmail'],
-      sortable: ['startDate', 'endDate', 'total', 'created_at'],
-      filterable: ['status', 'car_id', 'user_id', 'protectionPlan'],
+      displayable: ['id', 'reference', 'status', 'start_date', 'end_date', 'total'],
+      searchable: ['reference', 'driver_first_name', 'driver_last_name', 'driver_email'],
+      sortable: ['start_date', 'end_date', 'total', 'created_at'],
+      filterable: ['status', 'car_id', 'user_id', 'protection_plan'],
     },
     observe: true,
   },
@@ -46,196 +46,82 @@ export default defineModel({
       unique: true,
       order: 1,
       fillable: true,
-      validation: {
-        rule: schema.string().required().max(20),
-      },
+      validation: { rule: schema.string().required().max(20) },
       factory: faker => `DRV-${faker.string.numeric(6)}`,
     },
 
-    car_id: {
-      order: 101,
-      fillable: true,
-      factory: () => null,
-    },
-
-    user_id: {
-      order: 102,
-      fillable: true,
-      factory: () => null,
-    },
+    car_id: { order: 2, fillable: true, factory: () => null },
+    user_id: { order: 3, fillable: true, factory: () => null },
 
     status: {
-      order: 2,
+      order: 4,
       fillable: true,
-      validation: {
-        rule: schema.string().required(),
-      },
+      validation: { rule: schema.string().required() },
       factory: faker => faker.helpers.arrayElement(['pending', 'confirmed', 'active', 'completed', 'cancelled']),
     },
 
-    startDate: {
-      order: 3,
+    start_date: {
+      order: 5,
       fillable: true,
-      validation: {
-        rule: schema.string().required(),
-      },
+      validation: { rule: schema.string().required() },
       factory: faker => faker.date.soon({ days: 60 }).toISOString().slice(0, 10),
     },
 
-    endDate: {
-      order: 4,
+    end_date: {
+      order: 6,
       fillable: true,
-      validation: {
-        rule: schema.string().required(),
-      },
+      validation: { rule: schema.string().required() },
       factory: faker => faker.date.soon({ days: 90, refDate: faker.date.soon({ days: 61 }) }).toISOString().slice(0, 10),
     },
 
-    pickupTime: {
-      order: 5,
-      fillable: true,
-      factory: () => '10:00',
-    },
+    pickup_time: { order: 7, fillable: true, factory: () => '10:00' },
+    return_time: { order: 8, fillable: true, factory: () => '10:00' },
+    pickup_location: { order: 9, fillable: true, factory: () => 'host' },
+    delivery_address: { order: 10, fillable: true, factory: () => null },
 
-    returnTime: {
-      order: 6,
+    protection_plan: {
+      order: 11,
       fillable: true,
-      factory: () => '10:00',
-    },
-
-    pickupLocation: {
-      order: 7,
-      fillable: true,
-      factory: () => 'host',
-    },
-
-    deliveryAddress: {
-      order: 8,
-      fillable: true,
-      factory: () => null,
-    },
-
-    protectionPlan: {
-      order: 9,
-      fillable: true,
-      validation: {
-        rule: schema.string().required(),
-      },
+      validation: { rule: schema.string().required() },
       factory: faker => faker.helpers.arrayElement(['minimum', 'standard', 'premium']),
     },
 
-    subtotal: {
-      order: 10,
-      fillable: true,
-      factory: faker => faker.number.int({ min: 100, max: 5000 }),
-    },
-
-    protectionFee: {
-      order: 11,
-      fillable: true,
-      factory: faker => faker.number.int({ min: 0, max: 500 }),
-    },
-
-    extrasFee: {
-      order: 12,
-      fillable: true,
-      factory: () => 0,
-    },
-
-    taxes: {
-      order: 13,
-      fillable: true,
-      factory: faker => faker.number.int({ min: 10, max: 400 }),
-    },
+    subtotal: { order: 12, fillable: true, factory: faker => faker.number.int({ min: 100, max: 5000 }) },
+    protection_fee: { order: 13, fillable: true, factory: faker => faker.number.int({ min: 0, max: 500 }) },
+    extras_fee: { order: 14, fillable: true, factory: () => 0 },
+    taxes: { order: 15, fillable: true, factory: faker => faker.number.int({ min: 10, max: 400 }) },
 
     total: {
-      order: 14,
+      order: 16,
       fillable: true,
-      validation: {
-        rule: schema.number().required().min(0),
-      },
+      validation: { rule: schema.number().required().min(0) },
       factory: faker => faker.number.int({ min: 120, max: 6000 }),
     },
 
-    platformFee: {
-      order: 15,
-      fillable: false,
-      factory: () => 0,
-    },
+    platform_fee: { order: 17, fillable: true, factory: () => 0 },
+    payout_amount: { order: 18, fillable: true, factory: () => 0 },
 
-    payoutAmount: {
-      order: 16,
-      fillable: false,
-      factory: () => 0,
-    },
-
-    driverFirstName: {
-      order: 17,
+    driver_first_name: { order: 19, fillable: true, factory: faker => faker.person.firstName() },
+    driver_last_name: { order: 20, fillable: true, factory: faker => faker.person.lastName() },
+    driver_email: {
+      order: 21,
       fillable: true,
-      factory: faker => faker.person.firstName(),
-    },
-
-    driverLastName: {
-      order: 18,
-      fillable: true,
-      factory: faker => faker.person.lastName(),
-    },
-
-    driverEmail: {
-      order: 19,
-      fillable: true,
-      validation: {
-        rule: schema.string().email(),
-      },
+      validation: { rule: schema.string().email() },
       factory: faker => faker.internet.email(),
     },
-
-    driverPhone: {
-      order: 20,
-      fillable: true,
-      factory: faker => faker.phone.number(),
-    },
-
-    driverDob: {
-      order: 21,
+    driver_phone: { order: 22, fillable: true, factory: faker => faker.phone.number() },
+    driver_dob: {
+      order: 23,
       fillable: true,
       factory: faker => faker.date.birthdate({ min: 21, max: 70, mode: 'age' }).toISOString().slice(0, 10),
     },
+    driver_license: { order: 24, hidden: true, fillable: true, factory: faker => faker.string.alphanumeric(10).toUpperCase() },
+    driver_license_state: { order: 25, fillable: true, factory: faker => faker.location.state({ abbreviated: true }) },
 
-    driverLicense: {
-      order: 22,
-      hidden: true,
-      fillable: true,
-      factory: faker => faker.string.alphanumeric(10).toUpperCase(),
-    },
-
-    driverLicenseState: {
-      order: 23,
-      fillable: true,
-      factory: faker => faker.location.state({ abbreviated: true }),
-    },
-
-    paymentMethod: {
-      order: 24,
-      fillable: true,
-      factory: () => 'card',
-    },
-
-    paymentIntentId: {
-      order: 25,
-      fillable: false,
-      hidden: true,
-      factory: () => null,
-    },
-
-    cancellationReason: {
-      order: 26,
-      fillable: true,
-      factory: () => null,
-    },
+    payment_method: { order: 26, fillable: true, factory: () => 'card' },
+    payment_intent_id: { order: 27, fillable: false, hidden: true, factory: () => null },
+    cancellation_reason: { order: 28, fillable: true, factory: () => null },
   },
 
-  dashboard: {
-    highlight: true,
-  },
+  dashboard: { highlight: true },
 } as const)

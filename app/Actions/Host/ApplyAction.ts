@@ -20,20 +20,26 @@ export default new Action({
     const hostProfile = await HostProfile.create({
       user_id: userId,
       bio: String(request.get('bio') ?? ''),
-      joinedAt: new Date().toISOString(),
+      joined_at: new Date().toISOString(),
       trips: 0,
       rating: 5,
-      responseRate: 100,
-      responseTime: '< 24 hours',
+      response_rate: 100,
+      response_time: '< 24 hours',
       verified: false,
-      allStar: false,
-      chargesEnabled: false,
-      payoutsEnabled: false,
-      platformFeeBps: 1500,
+      all_star: false,
+      charges_enabled: false,
+      payouts_enabled: false,
+      platform_fee_bps: 1500,
     })
 
     try {
-      await User.update(userId, { role: 'host' })
+      // User.update respects fillable + may reject partial writes; fall back
+      // to a raw UPDATE to ensure role actually flips to 'host'.
+      const { db } = await import('@stacksjs/database')
+      await (db as any).updateTable('users')
+        .set({ role: 'host', updated_at: new Date().toISOString() })
+        .where('id', '=', userId)
+        .execute()
     }
     catch { /* non-fatal — role update best-effort */ }
 

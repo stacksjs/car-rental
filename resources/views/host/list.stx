@@ -342,15 +342,67 @@ const stepTitles = {
     availableDays.set(s)
   }
 
-  function publish() {
+  async function publish() {
     isPublishing.set(true)
-    setTimeout(() => {
-      isPublishing.set(false)
-      // Clear the draft — user successfully published, no reason to keep it.
+    try {
+      const token = localStorage.getItem('drivly-token')
+      if (!token) {
+        window._toast && window._toast('Please log in first', 'error')
+        location.href = '/login?next=%2Fhost%2Flist'
+        return
+      }
+
+      // Auto-upgrade the user to host if needed — API returns
+      // { already: true, data: {...} } when already a host.
+      try {
+        await fetch('/api/host/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: '{}',
+        })
+      } catch {}
+
+      const slug = (wMake() + '-' + wModel() + '-' + wYear()).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      const payload = {
+        slug,
+        make: wMake(),
+        model: wModel(),
+        year: Number(wYear()),
+        trim: wTrim() || null,
+        daily_rate: Number(price()),
+        category: 'Compact',
+        transmission: 'Automatic',
+        fuel_type: 'Gasoline',
+        seats: 5,
+        doors: 4,
+        mpg: '—',
+        description: houseRules() || 'Hosted on Drivly.',
+        image: photos()[0] || 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1200',
+        instant_book: !!instantBook(),
+        delivery_available: !!offerDelivery(),
+        status: 'active',
+      }
+
+      const res = await fetch('/api/cars', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) throw new Error('publish failed')
+
       try { localStorage.removeItem('drivly-host-draft') } catch {}
-      window._toast && window._toast('Listing submitted! We\'ll review within 24h.', 'success')
-      try { window.navigate && window.navigate('/host/dashboard') } catch (e) { location.href = '/host/dashboard' }
-    }, 1400)
+      window._toast && window._toast('Listing published!', 'success')
+      setTimeout(() => {
+        try { window.navigate && window.navigate('/host/dashboard') } catch (e) { location.href = '/host/dashboard' }
+      }, 500)
+    }
+    catch (err) {
+      window._toast && window._toast('Could not publish listing', 'error')
+    }
+    finally {
+      isPublishing.set(false)
+    }
   }
 </script>
 
