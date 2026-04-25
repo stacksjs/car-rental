@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId } from '../helpers/auth'
-
 export default new Action({
   name: 'HostApplyAction',
   description: 'Apply to become a host (creates HostProfile, upgrades role)',

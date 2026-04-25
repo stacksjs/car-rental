@@ -30,10 +30,26 @@ export default defineModel({
     },
     observe: true,
     taggable: true,
+    likeable: true,
   },
 
   belongsTo: ['HostProfile', 'Location'],
   hasMany: ['CarPhoto', 'Booking', 'Review'],
+
+  // Auto-CRUD ownership stamp: when a host hits POST /api/cars without an
+  // explicit `host_profile_id`, look up their HostProfile by user_id and
+  // attach it. Same goes for updates — prevents one host's edit from being
+  // accidentally re-parented to another host_profile_id.
+  authedFill: {
+    creating: {
+      host_profile_id: async (user: any) => {
+        const userId = Number(user?._attributes?.id ?? user?.id)
+        if (!userId) return null
+        const hp = await HostProfile.query().where('user_id', userId).first() as any
+        return hp ? Number(hp._attributes?.id ?? hp.id) : null
+      },
+    },
+  },
 
   attributes: {
     slug: {

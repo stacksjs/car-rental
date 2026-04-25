@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'IndexCarInSearch',
   description: 'Push/update a Car document in Meilisearch',

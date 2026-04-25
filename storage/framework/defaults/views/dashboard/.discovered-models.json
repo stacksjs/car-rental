@@ -6,10 +6,28 @@
     "hasDedicatedPage": true
   },
   {
+    "id": "booking",
+    "name": "Booking",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
     "id": "campaign",
     "name": "Campaign",
     "icon": "megaphone.fill",
     "hasDedicatedPage": true
+  },
+  {
+    "id": "car",
+    "name": "Car",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
+    "id": "car-photo",
+    "name": "CarPhoto",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
   },
   {
     "id": "cart",
@@ -72,10 +90,22 @@
     "hasDedicatedPage": false
   },
   {
+    "id": "extra",
+    "name": "Extra",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
     "id": "gift-card",
     "name": "GiftCard",
     "icon": "giftcard.fill",
     "hasDedicatedPage": true
+  },
+  {
+    "id": "host-profile",
+    "name": "HostProfile",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
   },
   {
     "id": "job",
@@ -87,6 +117,12 @@
     "id": "license-key",
     "name": "LicenseKey",
     "icon": "key.fill",
+    "hasDedicatedPage": false
+  },
+  {
+    "id": "location",
+    "name": "Location",
+    "icon": "tablecells.fill",
     "hasDedicatedPage": false
   },
   {

@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId, resolveAuthedUser } from '../helpers/auth'
-
 function attrs<T = any>(row: any): T { return (row?._attributes ?? row) as T }
 
 export default new Action({

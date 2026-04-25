@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'RefundBooking',
   description: 'Refund a cancelled booking via Stripe if a payment intent exists',

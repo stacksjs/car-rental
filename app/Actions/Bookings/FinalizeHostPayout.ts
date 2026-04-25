@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'FinalizeHostPayout',
   description: 'Trigger a host payout after a completed trip (Stripe Connect will auto-transfer; hook reserved for custom rules)',

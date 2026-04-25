@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId } from '../helpers/auth'
-
 export default new Action({
   name: 'MyBookingsAction',
   description: "List the authed user's bookings with car details, grouped by tab (upcoming/past/cancelled)",

@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { dispatch } from '@stacksjs/events'
-import { authedUserId, resolveAuthedUser } from '../helpers/auth'
-
 export default new Action({
   name: 'CancelBookingAction',
   description: 'Cancel a pending/confirmed booking',

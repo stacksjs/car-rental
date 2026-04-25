@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId } from '../helpers/auth'
-
 export default new Action({
   name: 'FavoritesIndexAction',
   description: 'List the authed user favorite cars',
@@ -11,23 +7,12 @@ export default new Action({
     const userId = await authedUserId(request)
     if (!userId) return response.unauthorized('Auth required')
 
-    // Read the likes pivot directly — the _likeable helper's shape varies
-    // across framework versions; a raw query is the only resilient path.
+    const likeable = (Car as any)._likeable
     let carIds: number[] = []
     try {
-      const { db } = await import('@stacksjs/database')
-      const rows = await (db as any)
-        .selectFrom('likes')
-        .select(['likeable_id'])
-        .where('user_id', '=', userId)
-        .where('likeable_type', '=', 'cars')
-        .execute()
-      carIds = rows.map((r: any) => Number(r.likeable_id)).filter(Boolean)
+      carIds = await likeable?.likedBy?.(userId) ?? []
     }
-    catch {
-      // `likes` table may not exist in some setups; return empty.
-      return response.json({ data: [] })
-    }
+    catch { return response.json({ data: [] }) }
 
     const rows = carIds.length
       ? await Car.query().whereIn('id', carIds).get()

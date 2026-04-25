@@ -1,0 +1,73 @@
+<footer class="mt-20 pb-8 pt-16 border-t border-[color:var(--border)]" style="background: var(--bg-subtle)">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="grid gap-12 grid-cols-2 md:grid-cols-4">
+      <div>
+        <div class="flex gap-2 items-center mb-3 font-extrabold text-[#FF3E54] text-2xl tracking-tight">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+            <rect x="2" y="10" width="28" height="14" rx="4" fill="currentColor"/>
+            <rect x="6" y="6" width="20" height="8" rx="3" fill="currentColor" opacity="0.6"/>
+            <circle cx="9" cy="24" r="3" fill="var(--bg)"/>
+            <circle cx="23" cy="24" r="3" fill="var(--bg)"/>
+          </svg>
+          drivly
+        </div>
+        <p class="m-0 max-w-[22rem] leading-relaxed text-sm text-[color:var(--text-muted)]">The world's largest car sharing marketplace. Skip the counter — drive something special instead.</p>
+      </div>
+
+      <div>
+        <p class="m-0 mb-4 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Drivly</p>
+        <ul class="flex flex-col gap-2.5 m-0 p-0 list-none">
+          <li><StxLink to="/about" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">How it works</StxLink></li>
+          <li><StxLink to="/trust" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Trust & safety</StxLink></li>
+          <li><StxLink to="/careers" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Careers</StxLink></li>
+          <li><StxLink to="/press" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Press</StxLink></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="m-0 mb-4 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Hosting</p>
+        <ul class="flex flex-col gap-2.5 m-0 p-0 list-none">
+          <li><StxLink to="/host/list" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">List your car</StxLink></li>
+          <li><StxLink to="/host/dashboard" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Host dashboard</StxLink></li>
+          <li><StxLink to="/trust" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Protection plans</StxLink></li>
+          <li><StxLink to="/earnings" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Earnings calculator</StxLink></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="m-0 mb-4 font-bold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Support</p>
+        <ul class="flex flex-col gap-2.5 m-0 p-0 list-none">
+          <li><StxLink to="/help" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Help Center</StxLink></li>
+          <li><StxLink to="/claims" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Insurance claims</StxLink></li>
+          <li><StxLink to="/contact" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Contact us</StxLink></li>
+          <li><StxLink to="/community-guidelines" class="text-sm text-[color:var(--text-secondary)] hover:text-[color:var(--text)]">Community guidelines</StxLink></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="my-6 h-px bg-[color:var(--border)]"></div>
+
+    <div class="flex flex-wrap gap-4 items-center justify-between">
+      <p class="m-0 text-xs text-[color:var(--text-muted)]">© 2026 Drivly, Inc. · Built with <a href="https://stacksjs.org/stx" class="text-[#FF3E54]">stx</a></p>
+      <div class="flex gap-3 items-center">
+        <select aria-label="Language" x-model="uiLocale" class="px-2 py-1 text-xs bg-transparent border rounded-md cursor-pointer border-[color:var(--border)] text-[color:var(--text-muted)] hover:text-[color:var(--text)]">
+          <option value="en-US">English (US)</option>
+          <option value="en-GB">English (UK)</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="pt-BR">Português (BR)</option>
+          <option value="de">Deutsch</option>
+        </select>
+        <select aria-label="Currency" x-model="uiCurrency" class="px-2 py-1 text-xs bg-transparent border rounded-md cursor-pointer border-[color:var(--border)] text-[color:var(--text-muted)] hover:text-[color:var(--text)]">
+          <option value="USD">USD $</option>
+          <option value="EUR">EUR €</option>
+          <option value="GBP">GBP £</option>
+          <option value="CAD">CAD $</option>
+          <option value="AUD">AUD $</option>
+        </select>
+        <StxLink to="/terms" class="text-xs text-[color:var(--text-muted)] hover:text-[color:var(--text)]">Terms</StxLink>
+        <StxLink to="/privacy" class="text-xs text-[color:var(--text-muted)] hover:text-[color:var(--text)]">Privacy</StxLink>
+      </div>
+    </div>
+  </div>
+</footer>

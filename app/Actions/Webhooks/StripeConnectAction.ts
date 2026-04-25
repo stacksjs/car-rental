@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'StripeConnectWebhookAction',
   description: 'Handle Stripe Connect events (account.updated, payout.*)',

@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'CarSearchAction',
   description: 'Search and filter cars with facets + sort',

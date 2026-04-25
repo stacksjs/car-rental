@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { mail, template } from '@stacksjs/email'
-import { log } from '@stacksjs/logging'
-
 export default new Action({
   name: 'SendWelcomeEmail',
   description: 'Sends a welcome email to newly registered users',

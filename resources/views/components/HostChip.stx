@@ -1,0 +1,19 @@
+<script server>
+const bigSize = size === 'lg'
+</script>
+
+<div class="flex gap-3 items-center">
+  <div class="inline-flex items-center justify-center {{ bigSize ? 'w-12 h-12 text-base' : 'w-8 h-8 text-[0.8125rem]' }} rounded-full text-white font-semibold"
+       style="background: linear-gradient(135deg, #FF3E54 0%, #7c3aed 100%)">{{ host.avatar }}</div>
+  <div class="min-w-0">
+    <p class="flex gap-1.5 items-center m-0 font-semibold text-sm text-[color:var(--text)]">
+      {{ host.name }}
+      @if (host.allStar)
+        <span class="inline-flex items-center px-1.5 py-0.5 font-medium text-[#FF3E54] text-[0.625rem] bg-[rgba(255,62,84,0.1)] border border-[rgba(255,62,84,0.25)] rounded-full">★ All-Star</span>
+      @endif
+    </p>
+    <p class="m-0 mt-0.5 text-xs text-[color:var(--text-muted)]">
+      {{ host.trips }} trips · {{ host.rating }} ★
+    </p>
+  </div>
+</div>

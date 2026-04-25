@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "taggable_taggable_target_index" ON "taggable" ("taggable_id", "taggable_type");

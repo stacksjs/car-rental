@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
-import { dispatch } from '@stacksjs/events'
-
 export default new Action({
   name: 'StripeWebhookAction',
   description: 'Handle Stripe platform events (payment_intents, invoices)',

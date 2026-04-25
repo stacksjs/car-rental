@@ -1,7 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId } from '../helpers/auth'
-
 export default new Action({
   name: 'FavoritesRemoveAction',
   description: 'Remove a car from the authed user favorites',
@@ -12,8 +8,8 @@ export default new Action({
     if (!userId) return response.unauthorized('Auth required')
 
     const carId = Number((request as any).params?.carId)
-    const likeable = (User as any)._likeable
-    try { await likeable?.unlike?.(userId, carId, 'cars') } catch { /* best effort */ }
+    const likeable = (Car as any)._likeable
+    try { await likeable?.unlike?.(carId, userId) } catch { /* best effort */ }
 
     return response.json({ success: true, carId })
   },

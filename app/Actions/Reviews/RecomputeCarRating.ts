@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'RecomputeCarRating',
   description: 'Recompute the Car aggregate rating + review_count after a new review',

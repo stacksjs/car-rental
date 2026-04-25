@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 async function resolveCar(idOrSlug: any): Promise<any | null> {
   if (idOrSlug == null) return null
   const asNum = Number(idOrSlug)

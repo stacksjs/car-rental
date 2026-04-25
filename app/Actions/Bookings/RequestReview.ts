@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
-import { mail } from '@stacksjs/email'
-
 export default new Action({
   name: 'RequestReview',
   description: 'After a completed trip, email the renter asking for a review',

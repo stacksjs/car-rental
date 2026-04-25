@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'CarShowBySlugAction',
   description: 'Fetch a car by id or slug (drivly URLs are slug-based)',

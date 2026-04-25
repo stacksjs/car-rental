@@ -37,7 +37,6 @@ export default defineModel({
       routes: ['index', 'store', 'show'],
     },
     billable: true,
-    likeable: true,
     observe: true,
   },
 

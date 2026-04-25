@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
-import { mail } from '@stacksjs/email'
-
 export default new Action({
   name: 'SendCancellationEmail',
   description: 'Emails both parties when a booking is cancelled',

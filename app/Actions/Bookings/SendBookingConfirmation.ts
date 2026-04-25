@@ -1,9 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
-import { mail, template } from '@stacksjs/email'
-import { log } from '@stacksjs/logging'
-
 export default new Action({
   name: 'SendBookingConfirmation',
   description: 'Emails the renter after a booking is created',

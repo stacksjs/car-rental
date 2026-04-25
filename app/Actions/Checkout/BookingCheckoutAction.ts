@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'BookingCheckoutAction',
   description: 'Create Stripe PaymentIntent with platform-fee split for a booking',

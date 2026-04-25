@@ -18,6 +18,11 @@ export default defineModel({
       routes: ['show', 'update'],
     },
     observe: true,
+    // Connect helpers — host_profile rows hold stripe_account_id +
+    // charges_enabled + payouts_enabled. The billable trait now exposes
+    // createConnectAccount / connectOnboardLink / syncConnectStatus on
+    // hostProfile._billable so the host onboarding action is one call.
+    billable: true,
   },
 
   belongsTo: ['User'],

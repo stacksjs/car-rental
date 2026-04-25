@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { dispatch } from '@stacksjs/events'
-import { authedUserId } from '../helpers/auth'
-
 function daysBetween(start: string, end: string): number {
   const a = new Date(start)
   const b = new Date(end)

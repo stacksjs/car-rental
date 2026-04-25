@@ -1,8 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
-import { log } from '@stacksjs/logging'
-
 export default new Action({
   name: 'NotifyHostOfNewBooking',
   description: 'Pings the host when a new booking lands for one of their cars',

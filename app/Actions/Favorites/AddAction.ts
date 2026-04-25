@@ -1,10 +1,6 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-import { authedUserId } from '../helpers/auth'
-
 export default new Action({
   name: 'FavoritesAddAction',
-  description: 'Add a car to the authed user favorites (likeable trait)',
+  description: 'Add a car to the authed user favorites',
   method: 'POST',
 
   async handle(request: RequestInstance) {
@@ -15,8 +11,16 @@ export default new Action({
     const car = await Car.find(carId)
     if (!car) return response.notFound('Car not found')
 
-    const likeable = (User as any)._likeable
-    try { await likeable?.like?.(userId, carId, 'cars') } catch { /* best effort */ }
+    const likeable = (Car as any)._likeable
+    if (!likeable?.like) return response.badRequest('likeable trait not wired')
+
+    try {
+      await likeable.like(carId, userId)
+    }
+    catch (err) {
+      // Surface the underlying SQL/connection error so we can fix the cause.
+      return response.json({ success: false, error: String((err as Error).message) }, 500)
+    }
 
     return response.json({ success: true, carId })
   },

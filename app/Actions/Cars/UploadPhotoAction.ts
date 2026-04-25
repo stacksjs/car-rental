@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 import { storage } from '@stacksjs/storage'
 
 export default new Action({

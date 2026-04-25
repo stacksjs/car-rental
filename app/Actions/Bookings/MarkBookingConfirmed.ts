@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'MarkBookingConfirmed',
   description: 'Flip booking status to confirmed on payment success',

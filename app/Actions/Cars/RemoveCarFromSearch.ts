@@ -1,6 +1,3 @@
-import { Action } from '@stacksjs/actions'
-import { response } from '@stacksjs/router'
-
 export default new Action({
   name: 'RemoveCarFromSearch',
   description: 'Remove a Car document from Meilisearch',
