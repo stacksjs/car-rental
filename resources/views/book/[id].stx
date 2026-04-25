@@ -6,9 +6,10 @@ const car = getCar(id) || cars[0]
 const pageTitle = 'Book your ' + car.make + ' ' + car.model + ' · Drivly'
 const activePage = 'search'
 
-// `validate` 404s unknown car IDs. Auth is not required — the framework will
-// handle session/gating end-to-end when it lands.
+// `validate` 404s unknown car IDs. The auth middleware bounces logged-out
+// guests to /login (preserving ?next so they land back here after sign-in).
 definePageMeta({
+  middleware: ['auth'],
   validate({ params }) {
     return getCar(params.id) !== undefined
   },

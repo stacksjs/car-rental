@@ -2,6 +2,8 @@
 const pageTitle = 'Favorites · Drivly'
 const activePage = 'favorites'
 
+definePageMeta({ middleware: ['auth'] })
+
 useSeoMeta({ title: pageTitle, robots: 'noindex' })
 </script>
 

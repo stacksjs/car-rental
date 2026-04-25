@@ -6,6 +6,7 @@
  */
 
 const TOKEN_KEY = 'drivly-token'
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 30
 
 export function getToken(): string | null {
   try {
@@ -20,6 +21,19 @@ export function setToken(token: string | null): void {
   try {
     if (token) localStorage.setItem(TOKEN_KEY, token)
     else localStorage.removeItem(TOKEN_KEY)
+  }
+  catch { /* noop */ }
+
+  // Mirror the token into a cookie so the server-side stx middleware
+  // can gate protected pages on the *initial* request (before any
+  // client JS runs). Not HttpOnly because it's the same value the
+  // client already trusts via localStorage.
+  try {
+    if (typeof document === 'undefined') return
+    if (token)
+      document.cookie = `${TOKEN_KEY}=${encodeURIComponent(token)}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`
+    else
+      document.cookie = `${TOKEN_KEY}=; Path=/; Max-Age=0; SameSite=Lax`
   }
   catch { /* noop */ }
 }

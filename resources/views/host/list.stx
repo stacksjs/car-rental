@@ -2,6 +2,8 @@
 const pageTitle = 'List your car · Drivly'
 const activePage = 'become-host'
 
+definePageMeta({ middleware: ['auth'] })
+
 useSeoMeta({
   title: pageTitle,
   description: 'Become a Drivly host in under 10 minutes. Average host earns $10,516/year. We handle insurance, payments, and support.',
