@@ -7,5 +7,7 @@ CREATE TABLE IF NOT EXISTS "payment_transactions" (
   "provider_id" TEXT,
   "user_id" INTEGER,
   "payment_method_id" INTEGER,
+  "created_at" TEXT not null default CURRENT_TIMESTAMP,
+  "updated_at" TEXT,
   "uuid" TEXT
 );

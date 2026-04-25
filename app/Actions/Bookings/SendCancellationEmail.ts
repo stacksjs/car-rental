@@ -1,14 +1,23 @@
 export default new Action({
   name: 'SendCancellationEmail',
-  description: 'Emails both parties when a booking is cancelled',
+  description: 'Notify both parties on email + inbox when a booking is cancelled',
 
   async handle(booking: any) {
-    if (!booking?.driver_email) return { success: false }
-    await mail.send({
-      to: booking.driver_email,
-      subject: `Booking ${booking.reference} cancelled`,
-      text: `Your booking ${booking.reference} has been cancelled. ${booking.cancellation_reason ? `Reason: ${booking.cancellation_reason}` : ''}`,
-    })
+    const email = booking?.driver_email
+    if (!email && !booking?.user_id) return { success: false }
+
+    const reason = booking.cancellation_reason ? ` Reason: ${booking.cancellation_reason}.` : ''
+
+    await notify(
+      { email, userId: booking.user_id },
+      {
+        subject: `Booking ${booking.reference} cancelled`,
+        body: `Your booking ${booking.reference} has been cancelled.${reason}`,
+        data: { booking_id: booking.id, reference: booking.reference },
+      },
+      ['email', 'database'],
+    )
+
     return { success: true }
   },
 })

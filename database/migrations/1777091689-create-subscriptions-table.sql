@@ -12,5 +12,7 @@ CREATE TABLE IF NOT EXISTS "subscriptions" (
   "ends_at" TEXT,
   "last_used_at" TEXT,
   "user_id" INTEGER,
+  "created_at" TEXT not null default CURRENT_TIMESTAMP,
+  "updated_at" TEXT,
   "uuid" TEXT
 );

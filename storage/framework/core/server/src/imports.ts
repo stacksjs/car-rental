@@ -372,6 +372,9 @@ export async function injectGlobalAutoImports(): Promise<void> {
     ['@stacksjs/types', ['Every', 'ExitCode']],
     ['@stacksjs/cli', ['quotes']],
     ['@stacksjs/database', ['db', 'sql']],
+    ['@stacksjs/notifications', ['notify', 'useNotification', 'useEmail', 'useSMS', 'useChat', 'useDatabase']],
+    ['@stacksjs/realtime', ['emit', 'emitToUser', 'emitToUsers', 'createChannel', 'dispatchBroadcast']],
+    ['@stacksjs/i18n', ['I18n', 'setLocale', 'getLocale']],
   ]
 
   for (const [pkg, names] of primitiveModules) {

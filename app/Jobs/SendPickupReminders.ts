@@ -1,11 +1,9 @@
 import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
-import { mail, template } from '@stacksjs/email'
-
 
 export default new Job({
   name: 'SendPickupReminders',
-  description: 'Email renters 24h before their pickup',
+  description: 'Notify renters (email + sms + database) 24h before their pickup',
   queue: 'default',
   tries: 3,
   backoff: 60,
@@ -21,15 +19,26 @@ export default new Job({
       .where('start_date', window)
       .get()
 
+    let sent = 0
     for (const b of bookings as any[]) {
-      if (!b.driver_email) continue
-      await mail.send({
-        to: b.driver_email,
-        subject: `Tomorrow: your Drivly pickup for ${b.reference}`,
-        text: `Your pickup is at ${b.pickup_time} on ${b.start_date}.`,
-      })
+      const email = b.driver_email
+      const phone = b.driver_phone
+      const channels: ('email' | 'sms' | 'database')[] = ['database']
+      if (email) channels.unshift('email')
+      if (phone) channels.push('sms')
+
+      await notify(
+        { email, phone, userId: b.user_id },
+        {
+          subject: `Tomorrow: your Drivly pickup for ${b.reference}`,
+          body: `Your pickup is at ${b.pickup_time ?? 'the agreed time'} on ${b.start_date}.`,
+          data: { booking_id: b.id, reference: b.reference, kind: 'pickup_reminder' },
+        },
+        channels,
+      )
+      sent++
     }
 
-    return { sent: (bookings as any[]).length }
+    return { sent }
   },
 })

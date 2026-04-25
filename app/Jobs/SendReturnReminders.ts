@@ -1,11 +1,9 @@
 import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
-import { mail, template } from '@stacksjs/email'
-
 
 export default new Job({
   name: 'SendReturnReminders',
-  description: 'Email renters ~2h before their return',
+  description: 'Notify renters (email + sms + database) ~2h before their return',
   queue: 'default',
   tries: 3,
   backoff: 60,
@@ -18,15 +16,26 @@ export default new Job({
       .where('end_date', today)
       .get()
 
+    let sent = 0
     for (const b of bookings as any[]) {
-      if (!b.driver_email) continue
-      await mail.send({
-        to: b.driver_email,
-        subject: `Today: return your Drivly car (${b.reference})`,
-        text: `Please return the car by ${b.return_time}.`,
-      })
+      const email = b.driver_email
+      const phone = b.driver_phone
+      const channels: ('email' | 'sms' | 'database')[] = ['database']
+      if (email) channels.unshift('email')
+      if (phone) channels.push('sms')
+
+      await notify(
+        { email, phone, userId: b.user_id },
+        {
+          subject: `Today: return your Drivly car (${b.reference})`,
+          body: `Please return the car by ${b.return_time ?? 'the agreed time'}.`,
+          data: { booking_id: b.id, reference: b.reference, kind: 'return_reminder' },
+        },
+        channels,
+      )
+      sent++
     }
 
-    return { sent: (bookings as any[]).length }
+    return { sent }
   },
 })
