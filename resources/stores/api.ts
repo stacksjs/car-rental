@@ -5,7 +5,9 @@
  * serialises JSON responses. Throws a structured error on non-2xx.
  */
 
-const TOKEN_KEY = 'drivly-token'
+// Matches `config.auth.defaultTokenName` so the framework's built-in
+// stx auth gate can read the same cookie this client writes.
+const TOKEN_KEY = 'auth-token'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30
 
 export function getToken(): string | null {

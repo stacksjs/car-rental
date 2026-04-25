@@ -10,13 +10,13 @@ export default defineMiddleware('auth', (ctx) => {
   const loginUrl = `/login?next=${next}`
 
   if (ctx.isServer) {
-    const token = ctx.cookies?.get?.('drivly-token')
+    const token = ctx.cookies?.get?.('auth-token')
     if (!token) return ctx.redirect(loginUrl)
     return
   }
 
   try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('drivly-token') : null
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('auth-token') : null
     const raw = typeof localStorage !== 'undefined' ? localStorage.getItem('drivly-session') : null
     const session = raw ? JSON.parse(raw) : null
     if (!token || !session?.user) return ctx.redirect(loginUrl)
