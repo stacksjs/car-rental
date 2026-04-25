@@ -1,6 +1,7 @@
 import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
-import { mail } from '@stacksjs/email'
+import { mail, template } from '@stacksjs/email'
+
 
 export default new Job({
   name: 'SendReturnReminders',

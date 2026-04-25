@@ -1,4 +1,3 @@
-import type { CLI } from '@stacksjs/types'
 import process from 'node:process'
 
 export default function (cli: CLI) {

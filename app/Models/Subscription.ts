@@ -9,7 +9,16 @@ export default defineModel({
   belongsTo: ['User'],
   traits: {
     useUuid: true,
+    useTimestamps: true,
+    useSeeder: { count: 8 },
+    useApi: {
+      uri: 'subscriptions',
+      routes: ['index', 'show', 'destroy'],
+    },
+    observe: true,
   },
+
+  dashboard: { highlight: true },
   attributes: {
     type: {
       fillable: true,

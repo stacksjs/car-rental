@@ -1,4 +1,3 @@
-import type { Events } from '@stacksjs/types'
 
 export default {
   'user:registered': ['SendWelcomeEmail'],

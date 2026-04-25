@@ -2,6 +2,7 @@ import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
 import { dispatch } from '@stacksjs/events'
 
+
 export default new Job({
   name: 'FinalizeBookings',
   description: 'Flip bookings that have completed to completed status and dispatch review request',

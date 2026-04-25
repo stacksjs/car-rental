@@ -11,11 +11,17 @@ export default defineModel({
   belongsTo: ['User'],
   hasMany: ['PaymentTransaction'],
   traits: {
-    useSeeder: {
-      count: 5,
-    },
     useUuid: true,
+    useTimestamps: true,
+    useSeeder: { count: 5 },
+    useApi: {
+      uri: 'payment-methods',
+      routes: ['index', 'show', 'destroy'],
+    },
+    observe: true,
   },
+
+  dashboard: { highlight: false },
   attributes: {
     type: {
       fillable: true,

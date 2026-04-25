@@ -12,6 +12,7 @@ import { response, route } from '@stacksjs/router'
 route.get('/', () => response.text('car-rental api'))
 
 route.group({ prefix: '/api' }, () => {
+  route.get('/debug/globals', 'Actions/DebugGlobals')
   route.get('/search/cars', 'Actions/Search/CarSearchAction')
   route.get('/cars/by-slug/{key}', 'Actions/Cars/CarShowBySlugAction')
   route.get('/cars/{id}/availability', 'Actions/Cars/CheckAvailabilityAction')

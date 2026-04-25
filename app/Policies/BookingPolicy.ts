@@ -1,4 +1,3 @@
-import type { UserModel } from '@stacksjs/orm'
 
 export class BookingPolicy {
   async view(user: UserModel | null, booking: any): Promise<boolean> {

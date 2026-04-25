@@ -1,8 +1,5 @@
-import type { CLI } from '@stacksjs/types'
 // triggered via `$your-cli inspire` and `buddy inspire`
 import process from 'node:process'
-import { log, quotes } from '@stacksjs/cli'
-import { ExitCode } from '@stacksjs/types'
 
 // for enhanced type-safety & autocompletion,
 // you may want to define the options' interface

@@ -2,6 +2,7 @@ import { config } from '@stacksjs/config'
 import { mail, template } from '@stacksjs/email'
 import { url } from '@stacksjs/router'
 
+
 export interface SubscriptionConfirmationOptions {
   to: string
   subscriberUuid: string

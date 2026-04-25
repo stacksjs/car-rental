@@ -2,6 +2,7 @@ import type { StacksEvents, WildcardHandler } from '@stacksjs/events'
 import { handleError } from '@stacksjs/error-handling'
 import { emitter } from '@stacksjs/events'
 import { path as p } from '@stacksjs/path'
+
 import events from './Events'
 
 // Cache resolved action modules to avoid repeated dynamic imports

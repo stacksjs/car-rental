@@ -1,6 +1,8 @@
 import process from 'node:process'
 import { schedule } from '@stacksjs/scheduler'
 
+import process from 'node:process'
+
 export default function () {
   schedule.job('Inspire').hourly().setTimeZone('America/Los_Angeles')
 

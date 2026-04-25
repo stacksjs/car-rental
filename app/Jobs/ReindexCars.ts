@@ -1,6 +1,7 @@
 import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
 
+
 export default new Job({
   name: 'ReindexCars',
   description: 'Bulk-reindex active cars into Meilisearch',

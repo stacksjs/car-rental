@@ -1,4 +1,3 @@
-import type { UserModel } from '@stacksjs/orm'
 
 export class HostProfilePolicy {
   async view(_user: UserModel | null, _profile: any): Promise<boolean> {

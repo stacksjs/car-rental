@@ -1,5 +1,6 @@
 import { storage } from '@stacksjs/storage'
 
+
 export default new Action({
   name: 'UploadPhotoAction',
   description: 'Upload a photo for a car (host-only)',

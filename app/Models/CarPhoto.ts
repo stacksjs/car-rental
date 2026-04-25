@@ -10,11 +10,15 @@ export default defineModel({
   traits: {
     useUuid: true,
     useTimestamps: true,
+    useSeeder: { count: 60 },
     useApi: {
       uri: 'car-photos',
       routes: ['index', 'store', 'show', 'destroy'],
     },
+    observe: true,
   },
+
+  dashboard: { highlight: false },
 
   belongsTo: ['Car'],
 

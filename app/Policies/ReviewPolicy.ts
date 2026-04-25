@@ -1,4 +1,3 @@
-import type { UserModel } from '@stacksjs/orm'
 
 export class ReviewPolicy {
   async view(_user: UserModel | null, _review: any): Promise<boolean> {

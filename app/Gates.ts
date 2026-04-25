@@ -1,4 +1,3 @@
-import type { UserModel } from '@stacksjs/orm'
 
 /**
  * Authorization Gates Configuration

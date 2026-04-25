@@ -10,6 +10,9 @@ Object.assign(globalThis, autoImports)
 
 // TypeScript declarations
 declare global {
+  const resolveAuthedUser: typeof autoImports.resolveAuthedUser
+  const authedUserId: typeof autoImports.authedUserId
+  const userIdFrom: typeof autoImports.userIdFrom
 }
 
 export {}

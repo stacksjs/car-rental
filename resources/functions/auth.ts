@@ -5,9 +5,13 @@
  * the Auth singleton having been primed, and it sometimes returns null even
  * after the middleware ran. To be bullet-proof, this helper re-derives the
  * user directly from the bearer token.
+ *
+ * Auth is lazy-imported inside `resolveAuthedUser` rather than at the top
+ * level so this file is safe to load via the framework auto-imports
+ * generator — top-level imports of @stacksjs/auth would otherwise pull in
+ * the orm package and trigger a circular evaluation through the model
+ * re-exports.
  */
-import { Auth } from '@stacksjs/auth'
-
 function extractBearerToken(request: any): string | null {
   const tryVal = (v: any): string | null => typeof v === 'string' && v.startsWith('Bearer ') ? v.substring(7) : null
   if (typeof request?.bearerToken === 'function') {
@@ -32,6 +36,7 @@ export async function resolveAuthedUser(request: any): Promise<any | null> {
   const token = extractBearerToken(request)
   if (token) {
     try {
+      const { Auth } = await import('@stacksjs/auth')
       const user = await Auth.getUserFromToken(token)
       if (user) {
         request._authenticatedUser = user

@@ -1,6 +1,9 @@
-import { mail, template } from '@stacksjs/email'
-import { log } from '@stacksjs/logging'
 import { Job } from '@stacksjs/queue'
+import { Every } from '@stacksjs/types'
+import { mail, template } from '@stacksjs/email'
+import { dispatch } from '@stacksjs/events'
+import { log } from '@stacksjs/logging'
+
 
 export default new Job({
   name: 'SendWelcomeEmail',

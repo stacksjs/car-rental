@@ -1,6 +1,7 @@
 import { Job } from '@stacksjs/queue'
 import { Every } from '@stacksjs/types'
 
+
 const quotes = [
   'Simplicity is the ultimate sophistication. — Leonardo da Vinci',
   'The best way to predict the future is to invent it. — Alan Kay',
