@@ -45,7 +45,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
   <div :show="!loading() && authed() && !notAHost()">
 
     <!-- Stripe Connect banner -->
-    <div :show="needsPayoutSetup()" class="mb-8 p-5 border border-amber-500/30 bg-amber-500/10 rounded-2xl flex items-center justify-between gap-4">
+    <div :show="needsPayoutSetup()" class="flex gap-4 items-center justify-between mb-8 p-5 bg-amber-500/10 border border-amber-500/30 rounded-2xl">
       <div>
         <p class="m-0 font-semibold text-[0.9375rem] text-amber-600 dark:text-amber-400">Finish payout setup</p>
         <p class="m-0 mt-1 text-sm text-[color:var(--text-muted)]">Connect a Stripe account so we can pay you out after each trip.</p>
