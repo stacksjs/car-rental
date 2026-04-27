@@ -8,17 +8,17 @@ import { generateAutoImportFiles, injectGlobalAutoImports } from '@stacksjs/serv
 const _options = parseOptions()
 const port = config.ports?.api || 3008
 
-// Regenerate the model + function auto-import manifest ONLY when the generated
-// index is missing — a live file watcher restart will already handle updates
-// through initiateImports(). Regenerating on every boot (and thus every
-// hot-reload cycle) triggers an infinite loop when a watcher is observing the
-// auto-imports directory.
+// Regenerate the model + function auto-import manifest ONLY when missing —
+// regenerating on every boot (and thus every hot-reload cycle) triggers an
+// infinite loop when a watcher is observing the auto-imports directory.
+// initiateImports() handles live updates under the bundler plugin.
 const modelsIndex = path.storagePath('framework/auto-imports/models.ts')
 if (!existsSync(modelsIndex))
   await generateAutoImportFiles()
 
-// Inject models (Car, Booking, User, …) + functions onto globalThis so user
-// actions can use them without explicit imports, matching framework defaults.
+// Inject models + framework primitives (Action, response, schema, Auth) onto
+// globalThis so user actions can use them without explicit imports, matching
+// the "no imports needed" ergonomics of framework default actions.
 await injectGlobalAutoImports()
 
 // Enable CORS middleware
