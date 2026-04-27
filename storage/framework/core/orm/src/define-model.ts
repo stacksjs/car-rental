@@ -88,6 +88,32 @@ function castAttributes(row: any, casts: Record<string, CastType | CasterInterfa
   return result
 }
 
+/**
+ * Add a Laravel-style static `Model.update(id, data)` to the model.
+ *
+ * bun-query-builder ships only `instance.update(data)` and
+ * `query.update(data)`, which means the common `Model.update(id, payload)`
+ * call site (used heavily across Stacks app actions) silently 404's. This
+ * wraps `where(pk, id).update(data)` so the ergonomic form just works and
+ * returns the updated row (or null if no row matched).
+ */
+function addStaticUpdate(baseModel: Record<string, unknown>, definition: BQBModelDefinition) {
+  if (typeof baseModel.update === 'function') return // upstream provided one
+
+  const pk = definition.primaryKey || 'id'
+
+  baseModel.update = async function (id: number | string, data: Record<string, unknown>) {
+    if (id == null) throw new Error(`[ORM] ${definition.name}.update requires an id as the first argument`)
+    if (!data || typeof data !== 'object' || Array.isArray(data))
+      throw new Error(`[ORM] ${definition.name}.update requires a data object as the second argument`)
+
+    const where = (baseModel.where as Function).call(baseModel, pk, id)
+    await where.update(data)
+    const find = baseModel.find as Function
+    return find ? await find.call(baseModel, id) : null
+  }
+}
+
 function wrapQueryMethodsWithCasts(baseModel: Record<string, unknown>, casts: Record<string, CastType | CasterInterface>) {
   const readMethods = ['find', 'first', 'get', 'all']
   const writeMethods = ['create', 'update']
@@ -191,6 +217,9 @@ export function defineModel<const TDef extends ModelDefinition>(definition: TDef
   // Create the base model from bun-query-builder (provides all typed query methods)
   // Note: createModel's return type is declared as void in .d.ts but actually returns an object at runtime
   const baseModel = createModel(defWithHooks as TDef & BQBModelDefinition) as unknown as Record<string, unknown>
+
+  // Provide Laravel-style `Model.update(id, data)` sugar.
+  addStaticUpdate(baseModel, defWithHooks as BQBModelDefinition)
 
   // Apply attribute casting if casts are defined
   if (definition.casts && Object.keys(definition.casts).length > 0) {
