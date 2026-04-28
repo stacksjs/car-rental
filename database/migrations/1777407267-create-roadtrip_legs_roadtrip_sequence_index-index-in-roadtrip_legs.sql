@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "roadtrip_legs_roadtrip_legs_roadtrip_sequence_index" ON "roadtrip_legs" ("roadtrip_id", "sequence");

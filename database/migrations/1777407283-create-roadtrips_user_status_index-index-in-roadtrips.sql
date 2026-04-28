@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "roadtrips_roadtrips_user_status_index" ON "roadtrips" ("user_id", "status");

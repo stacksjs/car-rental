@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "categorizable_models_categorizable_models_target_index" ON "categorizable_models" ("categorizable_id", "categorizable_type");

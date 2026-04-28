@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "roadtrip_legs_roadtrip_legs_relocation_index" ON "roadtrip_legs" ("relocation_id");

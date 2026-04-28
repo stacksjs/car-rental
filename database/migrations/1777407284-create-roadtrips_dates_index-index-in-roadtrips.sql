@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "roadtrips_roadtrips_dates_index" ON "roadtrips" ("earliest_start_date", "latest_end_date");

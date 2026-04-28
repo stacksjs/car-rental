@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "relocations_relocations_status_dates_index" ON "relocations" ("status", "earliest_pickup_date", "latest_dropoff_date");
