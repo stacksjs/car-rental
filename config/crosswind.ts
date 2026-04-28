@@ -6,10 +6,10 @@ import type { CrosswindConfig } from '@cwcss/crosswind'
  */
 const config: Partial<CrosswindConfig> = {
   content: [
-    './pages/**/*.stx',
-    './layouts/**/*.stx',
-    './components/**/*.stx',
-    './partials/**/*.stx',
+    './resources/views/**/*.stx',
+    './resources/layouts/**/*.stx',
+    './resources/components/**/*.stx',
+    './resources/views/components/**/*.stx',
   ],
   theme: {
     extend: {

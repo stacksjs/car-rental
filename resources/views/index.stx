@@ -224,7 +224,7 @@ const popularSearches = ['Tesla', 'Jeep Wrangler', 'Convertible', 'SUVs with 7 s
     <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
       @foreach (cities as city)
         <a href="/search?location={{ encodeURIComponent(city.name + ', ' + city.state) }}"
-           class="block overflow-hidden relative border rounded-2xl transition-all border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]" style="aspect-ratio: 4 / 3">
+           class="block overflow-hidden relative border rounded-2xl transition-all border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]" style="aspect-ratio: 4 / 3; background: var(--skeleton); background-size: 200% 100%; animation: sk 1.4s infinite">
           <img src="{{ city.image }}" alt="{{ city.name }}" loading="lazy" decoding="async"
                class="object-cover h-full w-full">
           <div class="absolute inset-0" style="background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)"></div>
