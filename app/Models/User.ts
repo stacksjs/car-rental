@@ -34,13 +34,26 @@ export default defineModel({
     },
     useApi: {
       uri: 'users',
-      routes: ['index', 'store', 'show'],
+      // All user-facing reads go through /api/me (which adds host_profile +
+      // is_admin context anyway). The auto-CRUD store/show/index would all
+      // leak PII without a per-row authz layer that the user-scoped
+      // ownership config below ONLY enforces on writes. /api/auth/register
+      // is the proper entry point for creating accounts.
+      routes: ['update'],
     },
     billable: true,
     observe: true,
   },
 
   hasOne: ['HostProfile'],
+
+  // /api/users/{id} is allowed only when the id matches the authed user.
+  // Admins bypass for support workflows.
+  ownership: {
+    field: 'id',
+    resolve: async (user: any) => Number(user?._attributes?.id ?? user?.id) || null,
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
 
   hasMany: [
     'PersonalAccessToken',

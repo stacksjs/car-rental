@@ -17,18 +17,36 @@ export default new Action({
     let event: any
     try {
       event = stripe.webhooks.constructEvent(rawBody, sig, secret)
-    } catch (err) {
+    }
+    catch (err) {
       return response.badRequest(`Signature verification failed: ${(err as Error).message}`)
+    }
+
+    // Same idempotency guard as the platform webhook — see StripeAction.ts.
+    // We use 'stripe-connect' as the provider key so the two endpoints
+    // can't collide on event ids that overlap across accounts.
+    try {
+      await db.insertInto('webhook_events').values({
+        provider: 'stripe-connect',
+        event_id: String(event.id),
+        event_type: String(event.type ?? ''),
+      }).execute()
+    }
+    catch (err) {
+      const msg = String((err as Error)?.message ?? '')
+      if (/UNIQUE constraint failed.*webhook_events/i.test(msg))
+        return response.json({ received: true, duplicate: true })
+      throw err
     }
 
     switch (event.type) {
       case 'account.updated': {
         const account = event.data.object
-        const profile = await HostProfile.query().where('stripe_account_id', account.id).first()
+        const profile = toAttrs<any>(await HostProfile.query().where('stripe_account_id', account.id).first())
         if (profile) {
-          await HostProfile.update((profile as any).id, {
-            chargesEnabled: !!account.charges_enabled,
-            payoutsEnabled: !!account.payouts_enabled,
+          await HostProfile.update(profile.id, {
+            charges_enabled: !!account.charges_enabled,
+            payouts_enabled: !!account.payouts_enabled,
           })
         }
         break

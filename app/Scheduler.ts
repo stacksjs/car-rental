@@ -6,6 +6,7 @@ export default function () {
 
   schedule.job('SendPickupReminders').hourly().setTimeZone('America/Los_Angeles')
   schedule.job('SendReturnReminders').hourly().setTimeZone('America/Los_Angeles')
+  schedule.job('SendRelocationReminders').hourly().setTimeZone('America/Los_Angeles')
   schedule.job('FinalizeBookings').daily().setTimeZone('America/Los_Angeles')
   schedule.job('ReindexCars').daily().setTimeZone('America/Los_Angeles')
 }

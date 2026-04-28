@@ -17,17 +17,17 @@ export default new Action({
     const key = (request as any).params?.id
     const limit = Math.min(Number(request.get('limit') ?? 6), 24)
 
-    const car = await resolveCar(key)
+    const car = toAttrs<any>(await resolveCar(key))
     if (!car) return response.notFound('Car not found')
 
-    const rows = await Car.query()
+    const rows = toAttrs<any[]>(await Car.query()
       .where('status', 'active')
-      .where('category', (car as any).category)
+      .where('category', car.category)
       .orderBy('rating', 'desc')
-      .get()
+      .get())
 
-    const data = (rows as any[])
-      .filter(c => Number(c.id) !== Number((car as any).id))
+    const data = rows
+      .filter(c => Number(c.id) !== Number(car.id))
       .slice(0, limit)
 
     return response.json({ data })

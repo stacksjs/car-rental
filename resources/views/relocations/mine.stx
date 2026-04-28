@@ -1,0 +1,130 @@
+<script server>
+const pageTitle = 'My driving · Drivly'
+const activePage = 'relocations-mine'
+
+definePageMeta({ middleware: ['auth'] })
+
+useSeoMeta({ title: pageTitle, robots: 'noindex' })
+
+const tabs = [
+  { key: 'active',       label: 'Active' },
+  { key: 'applications', label: 'Applications' },
+  { key: 'history',      label: 'History' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[1100px]">
+
+  <div class="mb-8">
+    <h1 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">My driving</h1>
+    <p class="m-0 text-[color:var(--text-muted)]">Relocations you've applied to or are actively driving.</p>
+  </div>
+
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading…</div>
+
+  <div :show="!loading()">
+    <div class="flex flex-wrap gap-1 mb-6 p-1 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      @foreach (tabs as t)
+        <button class="inline-flex gap-2 items-center px-3.5 py-2 font-semibold text-sm border-0 rounded-lg transition-colors cursor-pointer"
+                :class="tab() === '{{ t.key }}' ? 'bg-[#FF3E54] text-white' : 'bg-transparent text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]'"
+                @click="tab.set('{{ t.key }}')">{{ t.label }}<span class="inline-flex items-center px-1.5 py-0.5 font-semibold text-[0.6875rem] rounded-full"
+                :class="tab() === '{{ t.key }}' ? 'bg-white/25 text-white' : 'bg-[color:var(--bg-subtle)] text-[color:var(--text-muted)]'"
+                :text="(buckets()['{{ t.key }}']?.length || 0)"></span></button>
+      @endforeach
+    </div>
+
+    <!-- Active trips -->
+    <div :show="tab() === 'active'">
+      <p :show="(buckets().active?.length || 0) === 0" class="m-0 py-12 text-center text-[color:var(--text-muted)]">No active trips. <StxLink to="/relocations" class="font-semibold text-[#FF3E54]">Browse open jobs →</StxLink></p>
+      <div class="flex flex-col gap-3">
+        <template :foreach="r of buckets().active || []">
+          <a :href="'/relocations/' + r.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5">
+            <div class="flex flex-wrap gap-3 items-start justify-between mb-2">
+              <p class="m-0 font-semibold text-base" :text="r.car ? r.car.year + ' ' + r.car.make + ' ' + r.car.model : 'Trip #' + r.id"></p>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
+                    :class="r.status === 'in_progress' ? 'text-amber-500 bg-amber-500/10 border border-amber-500/25' : 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25'"
+                    :text="r.status === 'in_progress' ? 'En route' : 'Pick up'"></span>
+            </div>
+            <p class="m-0 text-[0.8125rem] text-[color:var(--text-muted)]" :text="r.pickup_address + '  →  ' + r.dropoff_address"></p>
+          </a>
+        </template>
+      </div>
+    </div>
+
+    <!-- Applications -->
+    <div :show="tab() === 'applications'">
+      <p :show="(buckets().applications?.length || 0) === 0" class="m-0 py-12 text-center text-[color:var(--text-muted)]">You haven't applied to any relocations yet.</p>
+      <div class="flex flex-col gap-3">
+        <template :foreach="a of buckets().applications || []">
+          <a :href="'/relocations/' + a.relocation?.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5">
+            <div class="flex flex-wrap gap-3 items-start justify-between mb-2">
+              <p class="m-0 font-semibold text-base" :text="a.relocation?.car ? a.relocation.car.year + ' ' + a.relocation.car.make + ' ' + a.relocation.car.model : 'Relocation #' + a.relocation_id"></p>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
+                    :class="a.status === 'approved' ? 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25' : a.status === 'pending' ? 'text-amber-500 bg-amber-500/10 border border-amber-500/25' : 'text-[color:var(--text-muted)] bg-[color:var(--bg-muted)] border border-[color:var(--border)]'"
+                    :text="a.status"></span>
+            </div>
+            <p class="m-0 text-[0.8125rem] text-[color:var(--text-muted)]" :text="a.relocation ? a.relocation.pickup_address + '  →  ' + a.relocation.dropoff_address : ''"></p>
+          </a>
+        </template>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div :show="tab() === 'history'">
+      <p :show="(buckets().history?.length || 0) === 0" class="m-0 py-12 text-center text-[color:var(--text-muted)]">No completed trips yet.</p>
+      <div class="flex flex-col gap-3">
+        <template :foreach="r of buckets().history || []">
+          <a :href="'/relocations/' + r.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5">
+            <div class="flex flex-wrap gap-3 items-start justify-between mb-2">
+              <p class="m-0 font-semibold text-base" :text="r.car ? r.car.year + ' ' + r.car.make + ' ' + r.car.model : 'Trip #' + r.id"></p>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)] bg-[color:var(--bg-muted)] border rounded-full border-[color:var(--border)]" :text="r.status"></span>
+            </div>
+            <div class="flex flex-wrap gap-3 items-center text-[0.8125rem] text-[color:var(--text-muted)]">
+              <span :text="r.pickup_address + '  →  ' + r.dropoff_address"></span>
+              <span :show="r.actual_miles_driven" :text="r.actual_miles_driven + ' mi'"></span>
+              <span :show="r.payout_amount" class="font-semibold text-emerald-500" :text="'+ $' + Number(r.payout_amount)"></span>
+            </div>
+          </a>
+        </template>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script client>
+  const tab = state('active')
+  const buckets = state({ active: [], applications: [], history: [] })
+  const loading = state(true)
+
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+
+  async function load() {
+    loading.set(true)
+    const t = token()
+    if (!t) { location.href = '/login?next=/relocations/mine'; return }
+    try {
+      const res = await fetch('/api/relocations/mine/driver', { headers: { Authorization: 'Bearer ' + t } })
+      if (!res.ok) throw new Error('failed')
+      const j = await res.json()
+      buckets.set({
+        active: j.active || [],
+        applications: j.applications || [],
+        history: j.history || [],
+      })
+    }
+    catch {
+      buckets.set({ active: [], applications: [], history: [] })
+    }
+    finally {
+      loading.set(false)
+    }
+  }
+
+  effect(() => { load() })
+</script>
+
+@endsection

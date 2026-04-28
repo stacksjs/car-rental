@@ -8,38 +8,42 @@ export default new Action({
     if (!key) return response.badRequest('key required')
 
     const asNum = Number(key)
-    let car: any | null = null
+    let carInstance: any | null = null
     if (Number.isFinite(asNum) && asNum > 0)
-      car = await Car.find(asNum)
-    if (!car)
-      car = await Car.query().where('slug', String(key)).first()
-    if (!car) return response.notFound('Car not found')
+      carInstance = await Car.find(asNum)
+    if (!carInstance)
+      carInstance = await Car.query().where('slug', String(key)).first()
+    if (!carInstance) return response.notFound('Car not found')
 
-    const photos = await CarPhoto.query()
+    // toAttrs() drops `hidden: true` attrs (license_plate, vin) which raw
+    // _attributes spread would leak into the public response.
+    const car = toAttrs<any>(carInstance)
+
+    const photos = toAttrs(await CarPhoto.query()
       .where('car_id', Number(car.id))
       .orderBy('position', 'asc')
-      .get()
+      .get())
 
     let host: any = null
     if (car.host_profile_id) {
-      const hp = await HostProfile.find(Number(car.host_profile_id))
+      const hp = toAttrs<any>(await HostProfile.find(Number(car.host_profile_id)))
       if (hp) {
-        const user = await User.find(Number((hp as any).user_id))
+        const user = toAttrs<any>(await User.find(Number(hp.user_id)))
         host = {
-          id: (hp as any).id,
-          name: (user as any)?.name,
-          joinedAt: (hp as any).joined_at,
-          trips: (hp as any).trips,
-          rating: (hp as any).rating,
-          responseRate: (hp as any).response_rate,
-          responseTime: (hp as any).response_time,
-          verified: !!(hp as any).verified,
-          allStar: !!(hp as any).all_star,
+          id: hp.id,
+          name: user?.name,
+          joinedAt: hp.joined_at,
+          trips: hp.trips,
+          rating: hp.rating,
+          responseRate: hp.response_rate,
+          responseTime: hp.response_time,
+          verified: !!hp.verified,
+          allStar: !!hp.all_star,
         }
       }
     }
 
-    const location = car.location_id ? await Location.find(Number(car.location_id)) : null
+    const location = car.location_id ? toAttrs(await Location.find(Number(car.location_id))) : null
 
     return response.json({ data: { ...car, photos, host, location } })
   },

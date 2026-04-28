@@ -9,7 +9,12 @@ export default new Action({
 
     const carId = Number((request as any).params?.carId)
     const likeable = (Car as any)._likeable
-    try { await likeable?.unlike?.(carId, userId) } catch { /* best effort */ }
+    try {
+      await likeable?.unlike?.(carId, userId)
+    }
+    catch {
+      // best effort — unliking something that isn't liked shouldn't 500
+    }
 
     return response.json({ success: true, carId })
   },

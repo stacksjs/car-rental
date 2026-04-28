@@ -156,7 +156,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
       notAHost.set(false)
       kpis.set(body.kpis || {})
       upcoming.set(body.upcoming || [])
-      myCars.set((body.cars || []).map(c => c._attributes ?? c))
+      myCars.set(body.cars || [])
       chargesEnabled.set(!!body.chargesEnabled)
       payoutsEnabled.set(!!body.payoutsEnabled)
     }

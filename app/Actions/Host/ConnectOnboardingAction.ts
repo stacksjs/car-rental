@@ -25,10 +25,23 @@ export default new Action({
       })
 
       // Re-read so the link generator sees the freshly-stamped account id.
-      const refreshed = await HostProfile.find(Number((hpRow as any)._attributes?.id ?? (hpRow as any).id))
+      const hpAttrs = toAttrs<any>(hpRow)
+      const refreshed = await HostProfile.find(Number(hpAttrs.id))
+      const refreshedAttrs = toAttrs<any>(refreshed)
+
+      // Stripe browser-redirects back here without our bearer token, so we
+      // include the freshly-stamped account id in the return URL and the
+      // ConnectReturnAction looks the host_profile up by it. The endpoint
+      // only triggers a Stripe→DB capability sync, so the worst a stranger
+      // can do is pull truthful state from Stripe — no impersonation risk.
+      const acct = refreshedAttrs?.stripe_account_id
+      const returnUrl = acct
+        ? `${appUrl}/api/host/connect/return?acct=${encodeURIComponent(acct)}`
+        : `${appUrl}/api/host/connect/return`
+
       const link = await billable.connectOnboardLink(refreshed, {
         refreshUrl: `${appUrl}/host/dashboard?connect=refresh`,
-        returnUrl: `${appUrl}/api/host/connect/return`,
+        returnUrl,
       })
       return response.json(link)
     }

@@ -47,7 +47,7 @@ export default defineModel({
       factory: faker => faker.lorem.sentence(),
     },
 
-    pricePerDay: {
+    price_per_day: {
       order: 4,
       fillable: true,
       validation: {

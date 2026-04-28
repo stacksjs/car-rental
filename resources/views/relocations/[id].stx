@@ -1,0 +1,348 @@
+<script server>
+const pageTitle = 'Relocation job · Drivly'
+const activePage = 'relocations'
+
+useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B.' })
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[1000px]">
+
+  <!-- Loading -->
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading…</div>
+
+  <!-- Not found -->
+  <div :show="!loading() && !reloc()" class="py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🚧</p>
+    <h3 class="m-0 mb-2 text-2xl serif">Relocation not found</h3>
+    <StxLink to="/relocations" class="inline-flex gap-2 items-center mt-4 px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] rounded-xl">Back to listings</StxLink>
+  </div>
+
+  <!-- Body -->
+  <div :show="!loading() && reloc()">
+
+    <!-- Header card -->
+    <div class="overflow-hidden mb-6 border rounded-3xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      <div class="grid gap-0 grid-cols-1 md:grid-cols-[280px_1fr]">
+        <img :show="reloc()?.car?.image" :attr:src="reloc()?.car?.image" class="object-cover h-48 md:h-full w-full" alt="">
+        <div class="p-7">
+          <div class="flex flex-wrap gap-2 items-center mb-3">
+            <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
+                  :class="statusBadgeClass(reloc()?.status)" :text="reloc()?.status"></span>
+            <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(reloc())"></span>
+          </div>
+
+          <h1 class="m-0 mb-2 text-3xl serif" :text="(reloc()?.car ? reloc().car.year + ' ' + reloc().car.make + ' ' + reloc().car.model : 'Relocation #' + reloc()?.id)"></h1>
+
+          <div class="grid gap-3 grid-cols-[auto_1fr] items-center text-sm">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="h-2.5 w-2.5 bg-emerald-500 rounded-full"></span>
+              <span class="flex-1 my-1 w-px bg-[color:var(--border-strong)]"></span>
+              <span class="h-2.5 w-2.5 bg-[#FF3E54] rounded-full"></span>
+            </div>
+            <div class="flex flex-col gap-2 min-w-0">
+              <p class="m-0" :text="reloc()?.pickup_address"></p>
+              <p class="m-0" :text="reloc()?.dropoff_address"></p>
+            </div>
+          </div>
+
+          <div class="grid gap-4 grid-cols-2 mt-5 sm:grid-cols-4">
+            <div>
+              <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Pickup window</p>
+              <p class="m-0 mt-1 text-sm tabular" :text="reloc()?.earliest_pickup_date"></p>
+            </div>
+            <div>
+              <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Drop by</p>
+              <p class="m-0 mt-1 text-sm tabular" :text="reloc()?.latest_dropoff_date"></p>
+            </div>
+            <div>
+              <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Distance</p>
+              <p class="m-0 mt-1 text-sm tabular" :text="(reloc()?.estimated_distance_miles || '—') + ' mi'"></p>
+            </div>
+            <div>
+              <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Min age</p>
+              <p class="m-0 mt-1 text-sm tabular" :text="reloc()?.min_age + '+'"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compensation breakdown -->
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-3 mb-6">
+      <div class="p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Compensation</p>
+        <p class="m-0 mt-2 font-bold text-2xl tabular" :text="payoutLabel(reloc())"></p>
+      </div>
+      <div class="p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Fuel allowance</p>
+        <p class="m-0 mt-2 font-bold text-2xl tabular" :text="'$' + Number(reloc()?.fuel_allowance || 0)"></p>
+      </div>
+      <div class="p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Free use</p>
+        <p class="m-0 mt-2 font-bold text-2xl tabular" :text="Number(reloc()?.max_extra_days || 0) + ' days'"></p>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div :show="reloc()?.notes" class="mb-6 p-5 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      <p class="m-0 mb-2 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Host notes</p>
+      <p class="m-0 leading-relaxed text-sm" :text="reloc()?.notes"></p>
+    </div>
+
+    <!-- Driver action panel — apply, or current trip controls -->
+    <div :show="!reloc()?.viewer?.isHostOwner" class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+
+      <!-- Already applied -->
+      <div :show="myApp() && reloc()?.status === 'open'">
+        <p class="m-0 mb-2 font-semibold text-[0.9375rem]">Your application is <span :text="myApp()?.status"></span></p>
+        <p :show="myApp()?.status === 'pending'" class="m-0 text-sm text-[color:var(--text-muted)]">The host will review your application soon. We'll notify you when they decide.</p>
+        <p :show="myApp()?.status === 'rejected'" class="m-0 text-sm text-[color:var(--text-muted)]">This application was declined. Other relocations are still open — keep browsing.</p>
+      </div>
+
+      <!-- Driver assigned to this trip -->
+      <div :show="iAmDriver() && reloc()?.status === 'claimed'">
+        <p class="m-0 mb-2 font-semibold text-[0.9375rem]">You won this relocation.</p>
+        <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]">Pick up the car from <strong :text="reloc()?.pickup_address"></strong> on or after <strong :text="reloc()?.earliest_pickup_date"></strong>. When you have the keys, record the odometer below.</p>
+        <div class="flex flex-wrap gap-3 items-end">
+          <label class="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+            <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Start odometer (mi)</span>
+            <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="startOdo" placeholder="e.g. 42000">
+          </label>
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="startTrip()">Start trip</button>
+        </div>
+      </div>
+
+      <div :show="iAmDriver() && reloc()?.status === 'in_progress'">
+        <p class="m-0 mb-2 font-semibold text-[0.9375rem]">Trip in progress · drive safe.</p>
+        <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]">When you arrive at <strong :text="reloc()?.dropoff_address"></strong>, record the final odometer to close out the trip and trigger your payout.</p>
+        <div class="flex flex-wrap gap-3 items-end">
+          <label class="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+            <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">End odometer (mi)</span>
+            <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="endOdo" placeholder="e.g. 42385">
+          </label>
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="completeTrip()">Complete trip</button>
+        </div>
+      </div>
+
+      <div :show="iAmDriver() && reloc()?.status === 'completed'" class="text-center">
+        <p class="m-0 mb-2 text-3xl">✅</p>
+        <p class="m-0 mb-1 font-semibold text-lg serif">Trip complete</p>
+        <p class="m-0 text-sm text-[color:var(--text-muted)]" :text="'You drove ' + (reloc()?.actual_miles_driven || 0) + ' miles. Payout: $' + (reloc()?.payout_amount || 0)"></p>
+      </div>
+
+      <!-- Eligible to apply -->
+      <div :show="!myApp() && !iAmDriver() && reloc()?.status === 'open'">
+        <p class="m-0 mb-3 font-semibold text-[0.9375rem]">Apply to drive this car</p>
+        <textarea class="px-4 py-3 w-full text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+                  rows="3" placeholder="Why are you a great fit? (optional)" x-model="applyMessage"></textarea>
+        <div class="flex justify-end mt-3">
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="apply()">Send application</button>
+        </div>
+      </div>
+
+      <!-- Closed/cancelled — read-only message -->
+      <div :show="!iAmDriver() && (reloc()?.status === 'claimed' || reloc()?.status === 'in_progress')" class="text-sm text-[color:var(--text-muted)]">
+        This relocation has already been claimed by another driver. Browse <StxLink to="/relocations" class="font-semibold text-[#FF3E54]">other open jobs</StxLink>.
+      </div>
+      <div :show="!iAmDriver() && (reloc()?.status === 'completed' || reloc()?.status === 'cancelled')" class="text-sm text-[color:var(--text-muted)]">
+        This relocation is no longer accepting applications.
+      </div>
+    </div>
+
+    <!-- Host owner panel — manage applications -->
+    <div :show="reloc()?.viewer?.isHostOwner" class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="m-0 font-bold text-lg">Applications · <span :text="(reloc()?.applications?.length || 0)"></span></h2>
+        <button :show="reloc()?.status === 'open' || reloc()?.status === 'claimed'"
+                class="px-3 py-1.5 font-semibold text-xs text-amber-600 bg-amber-500/10 border border-amber-500/30 rounded-lg cursor-pointer" @click="cancelPosting()">Cancel posting</button>
+      </div>
+
+      <p :show="(reloc()?.applications?.length || 0) === 0" class="m-0 text-sm text-[color:var(--text-muted)]">No applications yet — your posting just went live.</p>
+
+      <div class="flex flex-col gap-3">
+        <template :foreach="app of reloc()?.applications || []">
+          <div class="p-4 border rounded-xl bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
+            <div class="flex flex-wrap gap-3 items-center justify-between">
+              <div>
+                <p class="m-0 font-semibold text-sm" :text="app.applicant?.name || ('Driver #' + app.user_id)"></p>
+                <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" :text="'Applied ' + new Date(app.created_at).toLocaleDateString()"></p>
+              </div>
+              <div class="flex gap-2 items-center">
+                <span class="inline-flex items-center px-2 py-0.5 font-medium text-[0.6875rem] rounded-full"
+                      :class="appStatusClass(app.status)" :text="app.status"></span>
+                <button :show="app.status === 'pending' && reloc()?.status === 'open'"
+                        class="px-3 py-1.5 font-semibold text-xs text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg cursor-pointer disabled:opacity-60" :disabled="busy()" @click="approve(app.id)">Approve</button>
+                <button :show="app.status === 'pending' && reloc()?.status === 'open'"
+                        class="px-3 py-1.5 font-semibold text-xs text-[color:var(--text-secondary)] bg-transparent border rounded-lg cursor-pointer border-[color:var(--border-strong)] hover:bg-[color:var(--bg-hover)] disabled:opacity-60" :disabled="busy()" @click="reject(app.id)">Decline</button>
+              </div>
+            </div>
+            <p :show="app.message" class="m-0 mt-3 leading-relaxed text-sm" :text="app.message"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script client>
+  // ── Page state ────────────────────────────────────────────────────────
+  const reloc = state(null)
+  const loading = state(true)
+  const busy = state(false)
+  const applyMessage = state('')
+  const startOdo = state('')
+  const endOdo = state('')
+
+  // The auth helpers in the layout drop the token at this key — share it.
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+  function authHeaders(extra = {}) {
+    const t = token()
+    return { 'Content-Type': 'application/json', ...(t ? { Authorization: 'Bearer ' + t } : {}), ...extra }
+  }
+
+  // Pull the id from the path; the router doesn't expose params on a server
+  // signal here, so we read window.location at hydration time.
+  function relocId() {
+    const m = location.pathname.match(/\/relocations\/(\d+)/)
+    return m ? m[1] : null
+  }
+
+  const myApp = derived(() => {
+    const list = reloc()?.applications
+    return Array.isArray(list) && list.length === 1 ? list[0] : null
+  })
+  const iAmDriver = derived(() => {
+    const r = reloc()
+    if (!r) return false
+    // The detail action only sets `viewer.isAuthed` (not the user id),
+    // so we infer "I am the assigned driver" from `myApp` being approved.
+    return !!myApp() && myApp().status === 'approved' && r.driver_id != null
+  })
+
+  function payoutLabel(r) {
+    if (!r) return ''
+    if (r.compensation_type === 'flat') return '$' + Number(r.flat_fee || 0) + ' flat'
+    if (r.compensation_type === 'per_mile') return '$' + Number(r.per_mile_rate || 0).toFixed(2) + '/mi'
+    if (r.compensation_type === 'free') return 'Free use'
+    return r.compensation_type
+  }
+  function statusBadgeClass(s) {
+    if (s === 'open') return 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25'
+    if (s === 'claimed' || s === 'in_progress') return 'text-amber-500 bg-amber-500/10 border border-amber-500/25'
+    if (s === 'completed') return 'text-[color:var(--text-muted)] bg-[color:var(--bg-muted)] border border-[color:var(--border)]'
+    return 'text-rose-500 bg-rose-500/10 border border-rose-500/25'
+  }
+  function appStatusClass(s) {
+    if (s === 'approved') return 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25'
+    if (s === 'pending') return 'text-amber-500 bg-amber-500/10 border border-amber-500/25'
+    return 'text-rose-500 bg-rose-500/10 border border-rose-500/25'
+  }
+
+  async function load() {
+    loading.set(true)
+    try {
+      const id = relocId()
+      if (!id) { reloc.set(null); return }
+      const res = await fetch('/api/relocations/' + id, { headers: authHeaders() })
+      if (!res.ok) { reloc.set(null); return }
+      const body = await res.json()
+      reloc.set(body.data || null)
+    }
+    catch { reloc.set(null) }
+    finally { loading.set(false) }
+  }
+
+  async function callPost(path, body) {
+    busy.set(true)
+    try {
+      const res = await fetch(path, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body || {}) })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(j?.message || j?.error || 'Request failed')
+      return j
+    }
+    finally {
+      busy.set(false)
+    }
+  }
+
+  async function apply() {
+    const id = relocId()
+    if (!id) return
+    if (!token()) { location.href = '/login?next=' + encodeURIComponent(location.pathname); return }
+    try {
+      await callPost('/api/relocations/' + id + '/apply', { message: applyMessage() })
+      window._toast && window._toast('Application sent!', 'success')
+      applyMessage.set('')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not apply', 'error') }
+  }
+
+  async function approve(appId) {
+    const id = relocId()
+    if (!id || !appId) return
+    try {
+      await callPost('/api/relocations/' + id + '/applications/' + appId + '/approve', {})
+      window._toast && window._toast('Driver approved', 'success')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not approve', 'error') }
+  }
+
+  async function reject(appId) {
+    const id = relocId()
+    if (!id || !appId) return
+    try {
+      await callPost('/api/relocations/' + id + '/applications/' + appId + '/reject', {})
+      window._toast && window._toast('Application declined', 'success')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not decline', 'error') }
+  }
+
+  async function cancelPosting() {
+    const id = relocId()
+    if (!id) return
+    if (!confirm('Cancel this relocation? Pending applications will be auto-rejected.')) return
+    try {
+      await callPost('/api/relocations/' + id + '/cancel', {})
+      window._toast && window._toast('Posting cancelled', 'success')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not cancel', 'error') }
+  }
+
+  async function startTrip() {
+    const id = relocId()
+    if (!id) return
+    const odo = Number(startOdo())
+    if (!(odo > 0)) { window._toast && window._toast('Enter the current odometer reading', 'error'); return }
+    try {
+      await callPost('/api/relocations/' + id + '/start', { start_odometer: odo })
+      window._toast && window._toast('Trip started — drive safe!', 'success')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not start trip', 'error') }
+  }
+
+  async function completeTrip() {
+    const id = relocId()
+    if (!id) return
+    const odo = Number(endOdo())
+    if (!(odo > 0)) { window._toast && window._toast('Enter the final odometer reading', 'error'); return }
+    try {
+      const j = await callPost('/api/relocations/' + id + '/complete', { end_odometer: odo })
+      window._toast && window._toast('Trip complete · payout $' + (j?.data?.payout_amount || 0), 'success')
+      load()
+    }
+    catch (err) { window._toast && window._toast(err.message || 'Could not complete trip', 'error') }
+  }
+
+  effect(() => { load() })
+</script>
+
+@endsection

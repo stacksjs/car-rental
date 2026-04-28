@@ -36,10 +36,21 @@ export default defineModel({
   belongsTo: ['HostProfile', 'Location'],
   hasMany: ['CarPhoto', 'Booking', 'Review'],
 
+  casts: {
+    instant_book: 'boolean',
+    delivery_available: 'boolean',
+    daily_rate: 'integer',
+    seats: 'integer',
+    doors: 'integer',
+    rating: 'float',
+    review_count: 'integer',
+    trips: 'integer',
+    year: 'integer',
+  },
+
   // Auto-CRUD ownership stamp: when a host hits POST /api/cars without an
   // explicit `host_profile_id`, look up their HostProfile by user_id and
-  // attach it. Same goes for updates — prevents one host's edit from being
-  // accidentally re-parented to another host_profile_id.
+  // attach it.
   authedFill: {
     creating: {
       host_profile_id: async (user: any) => {
@@ -49,6 +60,21 @@ export default defineModel({
         return hp ? Number(hp._attributes?.id ?? hp.id) : null
       },
     },
+  },
+
+  // Auto-CRUD ownership enforcement: PATCH /api/cars/{id} + DELETE only
+  // succeed when `cars.host_profile_id` matches the authed user's host
+  // profile. Without this, any authed user could re-parent or delete
+  // someone else's listing.
+  ownership: {
+    field: 'host_profile_id',
+    resolve: async (user: any) => {
+      const userId = Number(user?._attributes?.id ?? user?.id)
+      if (!userId) return null
+      const hp = await HostProfile.query().where('user_id', userId).first() as any
+      return hp ? Number(hp._attributes?.id ?? hp.id) : null
+    },
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
   },
 
   attributes: {

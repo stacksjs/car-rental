@@ -1,0 +1,219 @@
+<script server>
+const pageTitle = 'Post a relocation · Drivly'
+const activePage = 'relocations'
+
+definePageMeta({ middleware: ['auth'] })
+
+useSeoMeta({ title: pageTitle, robots: 'noindex' })
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[820px]">
+
+  <div class="mb-8">
+    <StxLink to="/host/relocations" class="inline-flex gap-1 items-center mb-4 text-sm text-[color:var(--text-muted)] hover:text-[color:var(--text)]">← Back to my relocations</StxLink>
+    <h1 class="m-0 mb-2 text-4xl serif">Post a relocation</h1>
+    <p class="m-0 text-[color:var(--text-muted)]">Need a car driven from one city to another? List the trip and let drivers apply.</p>
+  </div>
+
+  <!-- Loading user's cars -->
+  <div :show="loadingCars()" class="py-12 text-center text-[color:var(--text-muted)]">Loading your cars…</div>
+
+  <!-- No cars yet -->
+  <div :show="!loadingCars() && myCars().length === 0" class="py-12 text-center">
+    <p class="m-0 mb-2 text-5xl">🚘</p>
+    <h3 class="m-0 mb-2 text-2xl serif">List a car first</h3>
+    <p class="m-0 mb-4 text-[color:var(--text-muted)]">You need at least one active listing before you can post a relocation for it.</p>
+    <StxLink to="/host/list" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] rounded-xl">List a car</StxLink>
+  </div>
+
+  <!-- Form -->
+  <form :show="!loadingCars() && myCars().length > 0" class="flex flex-col gap-6 p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" @submit.prevent="submit()">
+
+    <label class="flex flex-col gap-1.5">
+      <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Car</span>
+      <select class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="carId">
+        <template :foreach="c of myCars()">
+          <option :attr:value="c.id" :text="c.year + ' ' + c.make + ' ' + c.model"></option>
+        </template>
+      </select>
+    </label>
+
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Pickup address</span>
+        <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="pickup" placeholder="123 Main St, San Francisco, CA">
+      </label>
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Dropoff address</span>
+        <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="dropoff" placeholder="456 Sunset Blvd, Los Angeles, CA">
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Earliest pickup date</span>
+        <input type="date" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="earliest">
+      </label>
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Latest dropoff date</span>
+        <input type="date" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="latest">
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Estimated distance (mi)</span>
+        <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="distance" placeholder="e.g. 380">
+      </label>
+      <label class="flex flex-col gap-1.5">
+        <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Min driver age</span>
+        <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="minAge">
+      </label>
+    </div>
+
+    <!-- Compensation card -->
+    <div class="p-5 border rounded-xl bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
+      <p class="m-0 mb-3 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Compensation</p>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button type="button" class="px-4 py-2.5 font-medium text-sm border-[1.5px] rounded-xl transition-all cursor-pointer"
+                :class="compensation() === 'flat' ? 'bg-[color:var(--text)] text-[color:var(--bg)] border-[color:var(--text)]' : 'bg-transparent text-[color:var(--text)] border-[color:var(--border)] hover:bg-[color:var(--bg-hover)]'"
+                @click="compensation.set('flat')">Flat fee</button>
+        <button type="button" class="px-4 py-2.5 font-medium text-sm border-[1.5px] rounded-xl transition-all cursor-pointer"
+                :class="compensation() === 'per_mile' ? 'bg-[color:var(--text)] text-[color:var(--bg)] border-[color:var(--text)]' : 'bg-transparent text-[color:var(--text)] border-[color:var(--border)] hover:bg-[color:var(--bg-hover)]'"
+                @click="compensation.set('per_mile')">Per mile</button>
+        <button type="button" class="px-4 py-2.5 font-medium text-sm border-[1.5px] rounded-xl transition-all cursor-pointer"
+                :class="compensation() === 'free' ? 'bg-[color:var(--text)] text-[color:var(--bg)] border-[color:var(--text)]' : 'bg-transparent text-[color:var(--text)] border-[color:var(--border)] hover:bg-[color:var(--bg-hover)]'"
+                @click="compensation.set('free')">Free use</button>
+      </div>
+
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
+        <label class="flex flex-col gap-1.5" :show="compensation() === 'flat'">
+          <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Flat fee ($)</span>
+          <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="flatFee">
+        </label>
+        <label class="flex flex-col gap-1.5" :show="compensation() === 'per_mile'">
+          <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Per-mile rate ($)</span>
+          <input type="number" step="0.01" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="perMile">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Fuel allowance ($)</span>
+          <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="fuel">
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Free extra days for driver</span>
+          <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="extraDays">
+        </label>
+      </div>
+
+      <p class="m-0 mt-3 text-[0.8125rem] text-[color:var(--text-muted)]" :text="estimateText"></p>
+    </div>
+
+    <label class="flex flex-col gap-1.5">
+      <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Notes for drivers (optional)</span>
+      <textarea class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" rows="3" placeholder="Any special instructions, requirements, or context" x-model="notes"></textarea>
+    </label>
+
+    <div class="flex flex-wrap gap-3 justify-end pt-2 border-t border-[color:var(--border)]">
+      <StxLink to="/host/relocations" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-sm bg-transparent border rounded-xl border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">Cancel</StxLink>
+      <button type="submit" class="px-6 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="submitting()">
+        <span :show="!submitting()">Publish posting</span>
+        <span :show="submitting()">Publishing…</span>
+      </button>
+    </div>
+  </form>
+
+</div>
+
+<script client>
+  // ── Form state ────────────────────────────────────────────────────────
+  const myCars = state([])
+  const loadingCars = state(true)
+  const submitting = state(false)
+
+  const carId = state('')
+  const pickup = state('')
+  const dropoff = state('')
+  const earliest = state('')
+  const latest = state('')
+  const distance = state(380)
+  const minAge = state(21)
+  const compensation = state('flat')
+  const flatFee = state(250)
+  const perMile = state(0.50)
+  const fuel = state(50)
+  const extraDays = state(0)
+  const notes = state('')
+
+  // ── Derived "if you accept this you get $X" estimate so the host knows
+  // what the listing will look like to drivers before publishing.
+  const estimateText = derived(() => {
+    const miles = Number(distance() || 0)
+    const f = Number(fuel() || 0)
+    if (compensation() === 'flat') return 'Estimated driver payout: $' + (Number(flatFee() || 0) + f) + ' (flat fee + fuel)'
+    if (compensation() === 'per_mile') return 'Estimated driver payout: ~$' + Math.round(Number(perMile() || 0) * miles + f) + ' (' + miles + ' mi × $' + Number(perMile() || 0).toFixed(2) + ' + fuel)'
+    return 'Driver gets free use of the car' + (Number(extraDays() || 0) > 0 ? ' for ' + Number(extraDays() || 0) + ' extra days' : '') + (f > 0 ? ' + $' + f + ' fuel' : '')
+  })
+
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+  function authHeaders() {
+    const t = token()
+    return { 'Content-Type': 'application/json', ...(t ? { Authorization: 'Bearer ' + t } : {}) }
+  }
+
+  async function loadCars() {
+    loadingCars.set(true)
+    try {
+      // Reuse the host dashboard endpoint — it already returns the user's cars.
+      const r = await fetch('/api/host/dashboard', { headers: authHeaders() })
+      if (!r.ok) { myCars.set([]); return }
+      const j = await r.json()
+      const cars = j.cars || []
+      myCars.set(cars)
+      if (cars.length > 0 && !carId()) carId.set(cars[0].id)
+    }
+    catch { myCars.set([]) }
+    finally { loadingCars.set(false) }
+  }
+
+  async function submit() {
+    if (!carId()) { window._toast && window._toast('Pick a car first', 'error'); return }
+    if (!pickup() || !dropoff()) { window._toast && window._toast('Pickup and dropoff addresses are required', 'error'); return }
+    if (!earliest() || !latest()) { window._toast && window._toast('Pickup and dropoff dates are required', 'error'); return }
+    if (compensation() === 'flat' && !(Number(flatFee()) > 0)) { window._toast && window._toast('Flat fee must be > $0', 'error'); return }
+    if (compensation() === 'per_mile' && !(Number(perMile()) > 0)) { window._toast && window._toast('Per-mile rate must be > $0', 'error'); return }
+
+    submitting.set(true)
+    try {
+      const res = await fetch('/api/relocations', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          car_id: Number(carId()),
+          pickup_address: pickup(),
+          dropoff_address: dropoff(),
+          earliest_pickup_date: earliest(),
+          latest_dropoff_date: latest(),
+          estimated_distance_miles: Number(distance()) || null,
+          compensation_type: compensation(),
+          flat_fee: compensation() === 'flat' ? Number(flatFee()) : 0,
+          per_mile_rate: compensation() === 'per_mile' ? Number(perMile()) : 0,
+          fuel_allowance: Number(fuel()) || 0,
+          max_extra_days: Number(extraDays()) || 0,
+          min_age: Number(minAge()) || 21,
+          notes: notes(),
+        }),
+      })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(body?.message || body?.error || 'Could not publish')
+      window._toast && window._toast('Posting published!', 'success')
+      setTimeout(() => location.href = '/host/relocations', 400)
+    }
+    catch (err) {
+      window._toast && window._toast(err.message || 'Could not publish', 'error')
+    }
+    finally { submitting.set(false) }
+  }
+
+  effect(() => { loadCars() })
+</script>
+
+@endsection

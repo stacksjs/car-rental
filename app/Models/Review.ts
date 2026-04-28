@@ -13,7 +13,10 @@ export default defineModel({
     useSeeder: { count: 50 },
     useApi: {
       uri: 'reviews',
-      routes: ['index', 'store', 'show'],
+      // No `store` — the auto-CRUD doesn't enforce "renter owns the booking
+      // AND booking is completed" (only the dedicated ReviewStoreAction
+      // does). All POST /api/reviews go through that action.
+      routes: ['index', 'show'],
     },
     useSearch: {
       displayable: ['id', 'rating', 'body', 'car_id', 'booking_id', 'user_id'],

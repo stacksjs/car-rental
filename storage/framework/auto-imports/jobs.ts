@@ -2,6 +2,5 @@
 export { default as SendPickupReminders } from '../../../app/Jobs/SendPickupReminders'
 export { default as ReindexCars } from '../../../app/Jobs/ReindexCars'
 export { default as FinalizeBookings } from '../../../app/Jobs/FinalizeBookings'
-export { default as SendWelcomeEmail } from '../../../app/Jobs/SendWelcomeEmail'
 export { default as SendReturnReminders } from '../../../app/Jobs/SendReturnReminders'
 export { default as Inspire } from '../../../app/Jobs/Inspire'

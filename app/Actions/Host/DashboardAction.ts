@@ -1,5 +1,3 @@
-function attrs<T = any>(row: any): T { return (row?._attributes ?? row) as T }
-
 export default new Action({
   name: 'HostDashboardAction',
   description: 'Host earnings + upcoming bookings + KPIs',
@@ -9,22 +7,18 @@ export default new Action({
     const userId = await authedUserId(request)
     if (!userId) return response.unauthorized('Auth required')
 
-    const userRaw = await resolveAuthedUser(request)
-    const role = attrs<any>(userRaw)?.role
+    const role = toAttrs<any>(await resolveAuthedUser(request))?.role
     if (role !== 'host' && role !== 'admin') return response.forbidden('Hosts only')
 
-    const hpModel = await HostProfile.query().where('user_id', userId).first()
-    if (!hpModel) return response.json({ empty: true })
-    const hostProfile = attrs<any>(hpModel)
+    const hostProfile = toAttrs<any>(await HostProfile.query().where('user_id', userId).first())
+    if (!hostProfile) return response.json({ empty: true })
 
-    const carRows = await Car.query().where('host_profile_id', hostProfile.id).get()
-    const cars = (carRows as any[]).map(c => attrs<any>(c))
+    const cars = toAttrs<any[]>(await Car.query().where('host_profile_id', hostProfile.id).get())
     const carIds = cars.map(c => Number(c.id))
 
-    const bookingRows = carIds.length
-      ? await Booking.query().whereIn('car_id', carIds).orderBy('start_date', 'desc').get()
+    const bookings = carIds.length
+      ? toAttrs<any[]>(await Booking.query().whereIn('car_id', carIds).orderBy('start_date', 'desc').get())
       : []
-    const bookings = (bookingRows as any[]).map(b => attrs<any>(b))
 
     const completed = bookings.filter(b => b.status === 'completed')
     const totalEarnings = completed.reduce((sum, b) => sum + Number(b.payout_amount ?? 0), 0)

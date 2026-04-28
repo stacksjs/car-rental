@@ -19,7 +19,11 @@ export class BookingPolicy {
   async cancel(user: UserModel | null, booking: any): Promise<boolean> {
     if (!user) return false
     if ((user as any).role === 'admin') return true
-    if (booking?.status === 'completed' || booking?.status === 'cancelled') return false
+    // Once the trip is `active` (driver picked up the car) cancellation
+    // requires support — the host needs to be paid for the partial trip and
+    // the driver needs to return the car. Same for terminal states.
+    const status = booking?.status
+    if (status === 'active' || status === 'completed' || status === 'cancelled') return false
     return booking?.user_id === (user as any).id
   }
 }

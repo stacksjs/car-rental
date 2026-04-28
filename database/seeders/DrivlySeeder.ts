@@ -22,6 +22,20 @@ function slugify(s: string): string {
 function run(): void {
   console.log(`[DrivlySeeder] DB: ${dbPath}`)
 
+  // Safety guard: this seeder TRUNCATES bookings/reviews/users etc., which
+  // would silently destroy any non-fixture data created by manual testing
+  // or app runs. Skip unless the DB is empty OR --force is passed.
+  const force = process.argv.includes('--force')
+  const userCount = (db.query<{ c: number }, []>('SELECT COUNT(*) AS c FROM users').get() ?? { c: 0 }).c
+  if (userCount > 0 && !force) {
+    console.warn(
+      `[DrivlySeeder] users table already has ${userCount} rows. `
+      + `Re-run with \`--force\` to wipe + re-seed (DESTRUCTIVE).`,
+    )
+    db.close()
+    process.exit(0)
+  }
+
   db.exec('BEGIN')
   try {
     db.exec('DELETE FROM bookings')

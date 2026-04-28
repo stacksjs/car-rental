@@ -7,13 +7,20 @@ export default defineModel({
   primaryKey: 'id', // defaults to `id`
   autoIncrement: true, // defaults to true
   belongsTo: ['User'],
+  ownership: {
+    field: 'user_id',
+    resolve: async (user: any) => Number(user?._attributes?.id ?? user?.id) || null,
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
   traits: {
     useUuid: true,
     useTimestamps: true,
     useSeeder: { count: 8 },
     useApi: {
       uri: 'subscriptions',
-      routes: ['index', 'show', 'destroy'],
+      // No `index` — exposes other users' billing data. show + destroy
+      // are gated by ownership.
+      routes: ['show', 'destroy'],
     },
     observe: true,
   },

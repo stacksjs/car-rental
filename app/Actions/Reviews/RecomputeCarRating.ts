@@ -10,7 +10,7 @@ export default new Action({
     const sum = (reviews as any[]).reduce((s, r) => s + Number(r.rating), 0)
     const avg = count ? Number((sum / count).toFixed(2)) : 0
 
-    await Car.update(review.car_id, { rating: avg, reviewCount: count })
+    await Car.update(review.car_id, { rating: avg, review_count: count })
     return { success: true, car_id: review.car_id, rating: avg, count }
   },
 })

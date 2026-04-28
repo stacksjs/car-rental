@@ -6,7 +6,7 @@ export default new Action({
     const id = request.get('id')
     const name = request.get('name')
 
-    console.log(`[NotifyUser] User created:`, { id, name })
+    log.info(`[NotifyUser] User created`, { id, name })
 
     return { success: true }
   },

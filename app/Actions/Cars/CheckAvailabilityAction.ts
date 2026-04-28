@@ -18,20 +18,20 @@ export default new Action({
     const from = request.get('from') as string | undefined
     const to = request.get('to') as string | undefined
 
-    const car = await resolveCar(key)
+    const car = toAttrs<any>(await resolveCar(key))
     if (!car) return response.notFound('Car not found')
 
-    const overlapping = await Booking.query()
-      .where('car_id', Number((car as any).id))
+    const overlapping = toAttrs<any[]>(await Booking.query()
+      .where('car_id', Number(car.id))
       .whereIn('status', ['confirmed', 'active', 'pending'])
-      .get()
+      .get())
 
-    const busy = (overlapping as any[]).map(b => ({ from: b.start_date, to: b.end_date, status: b.status }))
+    const busy = overlapping.map(b => ({ from: b.start_date, to: b.end_date, status: b.status }))
 
     let isAvailable = true
     if (from && to)
       isAvailable = !busy.some(w => !(w.to < from || w.from > to))
 
-    return response.json({ carId: (car as any).id, slug: (car as any).slug, isAvailable, busy })
+    return response.json({ carId: car.id, slug: car.slug, isAvailable, busy })
   },
 })

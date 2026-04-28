@@ -246,6 +246,18 @@
     "hasDedicatedPage": false
   },
   {
+    "id": "relocation",
+    "name": "Relocation",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
+    "id": "relocation-application",
+    "name": "RelocationApplication",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
     "id": "review",
     "name": "Review",
     "icon": "star.fill",

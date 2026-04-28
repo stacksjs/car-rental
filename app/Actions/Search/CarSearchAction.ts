@@ -43,7 +43,7 @@ export default new Action({
     qb = qb.orderBy(sortCol, sortDir)
 
     const total = await Car.query().where('status', 'active').count()
-    const data = await qb.limit(limit).offset(offset).get()
+    const data = toAttrs(await qb.limit(limit).offset(offset).get())
 
     return response.json({ data, meta: { total, limit, offset } })
   },

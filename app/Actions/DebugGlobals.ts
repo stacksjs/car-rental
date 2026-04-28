@@ -15,6 +15,7 @@ export default new Action({
       authedUserId: typeof g.authedUserId,
       resolveAuthedUser: typeof g.resolveAuthedUser,
       defineModel: typeof g.defineModel,
+      toAttrs: typeof g.toAttrs,
       Middleware: typeof g.Middleware,
       log: typeof g.log,
     })

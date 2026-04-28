@@ -26,7 +26,11 @@ export default defineModel({
     },
     useApi: {
       uri: 'bookings',
-      routes: ['index', 'store', 'show', 'update'],
+      // No `index` — auto-CRUD's index can't scope to "the authed user's
+      // bookings" without a per-model authz layer. The /api/bookings/mine
+      // action is the user-scoped equivalent and already exists.
+      // No `destroy` — bookings are cancelled (status=cancelled), not deleted.
+      routes: ['store', 'show', 'update'],
     },
     useSearch: {
       displayable: ['id', 'reference', 'status', 'start_date', 'end_date', 'total'],
@@ -40,6 +44,24 @@ export default defineModel({
   belongsTo: ['Car', 'User'],
   belongsToMany: ['Extra'],
   hasMany: ['Review'],
+
+  // The renter owns the booking — only they (or an admin) can PATCH it
+  // through the auto-CRUD update endpoint.
+  ownership: {
+    field: 'user_id',
+    resolve: async (user: any) => Number(user?._attributes?.id ?? user?.id) || null,
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
+
+  casts: {
+    subtotal: 'integer',
+    protection_fee: 'integer',
+    extras_fee: 'integer',
+    taxes: 'integer',
+    total: 'integer',
+    platform_fee: 'integer',
+    payout_amount: 'integer',
+  },
 
   attributes: {
     reference: {

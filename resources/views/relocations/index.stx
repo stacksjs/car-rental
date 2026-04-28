@@ -1,0 +1,207 @@
+<script server>
+const pageTitle = 'Drive a relocation · Drivly'
+const pageDescription = 'Get paid to drive a car from city to city. Hosts pay flat or per-mile, plus fuel.'
+const activePage = 'relocations'
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: 'Drive a car for cash — Drivly Relocations',
+  ogDescription: pageDescription,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
+// Surface labels — drives both the filter pills and the per-row badges
+const compensationLabels = {
+  flat: 'Flat fee',
+  per_mile: 'Per mile',
+  free: 'Free use',
+}
+
+const sortOptions = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'payHigh', label: 'Pay (high → low)' },
+  { value: 'payLow', label: 'Pay (low → high)' },
+  { value: 'soonest', label: 'Pickup soonest' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section class="overflow-hidden relative pb-12 py-16">
+  <div class="absolute inset-0 pointer-events-none -z-1" aria-hidden="true">
+    <div class="absolute right-[-100px] top-[-100px] h-[420px] w-[420px] rounded-full blur-3xl"
+         style="background: radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 70%)"></div>
+  </div>
+
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <span class="inline-flex gap-2 items-center mb-5 px-3 py-1.5 font-medium text-emerald-500 text-xs bg-emerald-500/10 border border-emerald-500/25 rounded-full">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18m-7-7 7 7-7 7"/></svg>
+      Get paid to drive
+    </span>
+    <h1 class="m-0 mb-4 max-w-[18ch] leading-[1.03] text-5xl tracking-tight sm:text-6xl lg:text-7xl serif">
+      Drive someone else's car. Pocket the cash.
+    </h1>
+    <p class="m-0 max-w-[58ch] leading-relaxed text-lg text-[color:var(--text-secondary)]">
+      Hosts post one-way trips that need a driver. You pick the route, the dates, and the car — they pay you a flat fee, per-mile, or hand over the keys for a few free days.
+    </p>
+  </div>
+</section>
+
+<!-- ── BROWSE ─────────────────────────────────────────── -->
+<section class="pb-20">
+  <div class="mx-auto px-6 max-w-[1280px]">
+
+    <!-- Filter bar — controls the client-side fetcher. -->
+    <div class="grid gap-3 grid-cols-1 sm:grid-cols-[1fr_1fr_180px_180px_140px] mb-6 p-4 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+             placeholder="From city (e.g. San Francisco)" x-model="fromCity" @input="reload()">
+      <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+             placeholder="To city (e.g. Los Angeles)" x-model="toCity" @input="reload()">
+      <select class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="compensation" @change="reload()">
+        <option value="">Any compensation</option>
+        <option value="flat">Flat fee</option>
+        <option value="per_mile">Per mile</option>
+        <option value="free">Free use</option>
+      </select>
+      <select class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="sort" @change="reload()">
+        @foreach (sortOptions as opt)
+          <option value="{{ opt.value }}">{{ opt.label }}</option>
+        @endforeach
+      </select>
+      <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+             placeholder="Min $" x-model="minPay" @input="reload()">
+    </div>
+
+    <!-- Results -->
+    <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading relocation jobs…</div>
+
+    <div :show="!loading() && rows().length === 0" class="py-16 text-center">
+      <p class="m-0 mb-2 text-5xl">🛣️</p>
+      <h3 class="m-0 mb-2 text-2xl serif">No relocation jobs match those filters</h3>
+      <p class="m-0 text-[color:var(--text-muted)]">Try clearing the filters or check back tomorrow — new jobs post daily.</p>
+    </div>
+
+    <div :show="!loading() && rows().length > 0" class="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      <template :foreach="row of rows()">
+        <a :href="'/relocations/' + row.id"
+           class="block overflow-hidden p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+          <div class="flex gap-4 items-center mb-3">
+            <img :show="row.car?.image" :attr:src="row.car?.image" class="object-cover h-16 w-24 rounded-lg" alt="">
+            <div :show="!row.car?.image" class="flex items-center justify-center h-16 w-24 text-[color:var(--text-muted)] rounded-lg bg-[color:var(--bg-subtle)]">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zm10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17h2m4 0h6m4 0h2M3 17l1.5-7h15L21 17M6 10l1-3h10l1 3"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="m-0 font-semibold text-base" :text="row.car ? (row.car.year + ' ' + row.car.make + ' ' + row.car.model) : 'Vehicle TBD'"></p>
+              <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" :text="(row.car?.category || 'Car') + ' · ' + (row.estimated_distance_miles ? row.estimated_distance_miles + ' mi est.' : 'distance TBD')"></p>
+            </div>
+            <span class="inline-flex shrink-0 items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
+                  :class="row.compensation_type === 'free' ? 'text-amber-500 bg-amber-500/10 border border-amber-500/25' : 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25'"
+                  :text="payoutLabel(row)"></span>
+          </div>
+
+          <!-- Route stripe — pickup → dropoff, with the date window underneath -->
+          <div class="grid gap-2 grid-cols-[auto_1fr] items-center mb-3 text-sm">
+            <div class="flex flex-col items-center self-stretch">
+              <span class="h-2 w-2 bg-emerald-500 rounded-full"></span>
+              <span class="flex-1 my-1 w-px bg-[color:var(--border-strong)]"></span>
+              <span class="h-2 w-2 bg-[#FF3E54] rounded-full"></span>
+            </div>
+            <div class="flex flex-col gap-2 min-w-0">
+              <p class="m-0 truncate" :text="row.pickup_address"></p>
+              <p class="m-0 truncate" :text="row.dropoff_address"></p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 items-center pt-3 border-t text-xs border-[color:var(--border)] text-[color:var(--text-muted)]">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[color:var(--bg-subtle)]" :text="'Pickup ' + row.earliest_pickup_date"></span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[color:var(--bg-subtle)]" :text="'Drop ' + row.latest_dropoff_date"></span>
+            <span :show="Number(row.fuel_allowance) > 0" class="inline-flex items-center px-2 py-0.5 rounded-full bg-[color:var(--bg-subtle)]" :text="'+ $' + Number(row.fuel_allowance) + ' fuel'"></span>
+            <span :show="Number(row.max_extra_days) > 0" class="inline-flex items-center px-2 py-0.5 rounded-full bg-[color:var(--bg-subtle)]" :text="'+ ' + Number(row.max_extra_days) + ' free days'"></span>
+          </div>
+        </a>
+      </template>
+    </div>
+
+    <!-- Load-more pager (simple offset bump) -->
+    <div :show="!loading() && rows().length > 0 && hasMore()" class="mt-10 text-center">
+      <button class="px-6 py-3 font-semibold text-sm border rounded-xl transition-colors cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]" @click="loadMore()">Load more</button>
+    </div>
+
+  </div>
+</section>
+
+<script client>
+  const COMPENSATION_LABELS = {{ compensationLabels }}
+
+  // Filters — reactive state hooked to the form inputs.
+  const fromCity = state('')
+  const toCity = state('')
+  const compensation = state('')
+  const sort = state('newest')
+  const minPay = state('')
+
+  // Result state.
+  const rows = state([])
+  const loading = state(true)
+  const total = state(0)
+  const offset = state(0)
+  const PAGE = 24
+  const hasMore = derived(() => rows().length < total())
+
+  function payoutLabel(r) {
+    if (r.compensation_type === 'flat') return '$' + Number(r.flat_fee || 0) + ' flat'
+    if (r.compensation_type === 'per_mile') return '$' + Number(r.per_mile_rate || 0).toFixed(2) + '/mi'
+    if (r.compensation_type === 'free') return 'Free use'
+    return COMPENSATION_LABELS[r.compensation_type] || r.compensation_type
+  }
+
+  function buildQuery(off) {
+    const p = new URLSearchParams()
+    if (fromCity()) p.set('from', fromCity())
+    if (toCity()) p.set('to', toCity())
+    if (compensation()) p.set('compensation', compensation())
+    if (minPay()) p.set('minPay', String(minPay()))
+    p.set('sort', sort())
+    p.set('limit', String(PAGE))
+    p.set('offset', String(off))
+    return p.toString()
+  }
+
+  let reloadTimer = null
+  function reload() {
+    // Debounce text inputs — 250ms feels snappy, doesn't hammer the API per keystroke.
+    clearTimeout(reloadTimer)
+    reloadTimer = setTimeout(() => fetchPage(0, true), 250)
+  }
+
+  async function fetchPage(off, replace) {
+    loading.set(true)
+    try {
+      const res = await fetch('/api/relocations?' + buildQuery(off))
+      const body = await res.json()
+      const newRows = body.data || []
+      total.set(Number(body.meta?.total ?? newRows.length))
+      offset.set(off + newRows.length)
+      rows.set(replace ? newRows : [...rows(), ...newRows])
+    }
+    catch {
+      if (replace) { rows.set([]); total.set(0); offset.set(0) }
+    }
+    finally {
+      loading.set(false)
+    }
+  }
+
+  function loadMore() {
+    fetchPage(offset(), false)
+  }
+
+  effect(() => { fetchPage(0, true) })
+</script>
+
+@endsection

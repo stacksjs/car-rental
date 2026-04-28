@@ -18,9 +18,9 @@ export default defineModel({
       routes: ['index', 'show'],
     },
     useSearch: {
-      displayable: ['id', 'name', 'state', 'country', 'listingCount', 'image'],
+      displayable: ['id', 'name', 'state', 'country', 'listing_count', 'image'],
       searchable: ['name', 'state', 'country'],
-      sortable: ['listingCount', 'name'],
+      sortable: ['listing_count', 'name'],
       filterable: ['state', 'country'],
     },
   },
@@ -67,7 +67,7 @@ export default defineModel({
       factory: faker => faker.location.longitude(),
     },
 
-    listingCount: {
+    listing_count: {
       order: 6,
       fillable: false,
       factory: faker => faker.number.int({ min: 50, max: 5000 }),

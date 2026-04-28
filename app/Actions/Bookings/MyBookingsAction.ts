@@ -1,6 +1,6 @@
 export default new Action({
   name: 'MyBookingsAction',
-  description: "List the authed user's bookings with car details, grouped by tab (upcoming/past/cancelled)",
+  description: 'List the authed user bookings with car details, grouped by tab (upcoming/past/cancelled)',
   method: 'GET',
 
   async handle(request: RequestInstance) {
@@ -8,24 +8,20 @@ export default new Action({
     if (!userId) return response.unauthorized('Auth required')
 
     const today = new Date().toISOString().slice(0, 10)
-    const bookingRows = await Booking.query()
+    const bookings = toAttrs<any[]>(await Booking.query()
       .where('user_id', userId)
       .orderBy('start_date', 'desc')
-      .get()
-    const bookings = (bookingRows as any[]).map(b => b._attributes ?? b)
+      .get())
 
     const carIds = [...new Set(bookings.map(b => Number(b.car_id)).filter(Boolean))]
     const carRows = carIds.length
-      ? await Car.query().whereIn('id', carIds).get()
+      ? toAttrs<any[]>(await Car.query().whereIn('id', carIds).get())
       : []
     const carById = new Map<number, any>()
-    for (const c of carRows as any[]) {
-      const attrs = c._attributes ?? c
-      carById.set(Number(attrs.id), attrs)
-    }
+    for (const c of carRows as any[]) carById.set(Number(c.id), c)
 
     // Hydrate each booking with a compact `car` snapshot the drivly template expects.
-    const hydrated = bookings.map(b => ({
+    const hydrated = bookings.map((b: any) => ({
       ...b,
       // Drivly template expects these top-level aliases
       carId: carById.get(Number(b.car_id))?.slug ?? String(b.car_id),

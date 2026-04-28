@@ -1,0 +1,121 @@
+<script server>
+const pageTitle = 'My relocations · Drivly'
+const activePage = 'host-relocations'
+
+definePageMeta({ middleware: ['auth'] })
+
+useSeoMeta({ title: pageTitle, robots: 'noindex' })
+
+const tabs = [
+  { key: 'open',        label: 'Open' },
+  { key: 'claimed',     label: 'Claimed' },
+  { key: 'in_progress', label: 'In progress' },
+  { key: 'completed',   label: 'Completed' },
+  { key: 'cancelled',   label: 'Cancelled' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[1200px]">
+
+  <div class="flex flex-wrap gap-4 items-end justify-between mb-8">
+    <div>
+      <h1 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">My relocations</h1>
+      <p class="m-0 text-[color:var(--text-muted)]">Drive-away postings you've created and the drivers who applied.</p>
+    </div>
+    <StxLink to="/relocations/post" class="inline-flex gap-1.5 items-center px-4 py-2.5 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg transition-colors">+ New posting</StxLink>
+  </div>
+
+  <!-- Loading -->
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading…</div>
+
+  <div :show="!loading()">
+
+    <!-- Tab strip -->
+    <div class="flex flex-wrap gap-1 mb-6 p-1 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      @foreach (tabs as t)
+        <button class="inline-flex gap-2 items-center px-3.5 py-2 font-semibold text-sm border-0 rounded-lg transition-colors cursor-pointer"
+                :class="tab() === '{{ t.key }}' ? 'bg-[#FF3E54] text-white' : 'bg-transparent text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]'"
+                @click="tab.set('{{ t.key }}')">{{ t.label }}<span class="inline-flex items-center px-1.5 py-0.5 font-semibold text-[0.6875rem] rounded-full"
+                :class="tab() === '{{ t.key }}' ? 'bg-white/25 text-white' : 'bg-[color:var(--bg-subtle)] text-[color:var(--text-muted)]'"
+                :text="(groups()['{{ t.key }}']?.length || 0)"></span></button>
+      @endforeach
+    </div>
+
+    <p :show="(groups()[tab()]?.length || 0) === 0" class="m-0 py-12 text-center text-[color:var(--text-muted)]">No relocations in this bucket yet.</p>
+
+    <div class="flex flex-col gap-3" :show="(groups()[tab()]?.length || 0) > 0">
+      <template :foreach="r of groups()[tab()] || []">
+        <a :href="'/relocations/' + r.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+          <div class="flex flex-wrap gap-3 items-start justify-between mb-3">
+            <div class="flex gap-3 items-center">
+              <img :show="r.car?.image" :attr:src="r.car?.image" class="object-cover h-14 w-20 rounded-lg" alt="">
+              <div>
+                <p class="m-0 font-semibold text-base" :text="r.car ? r.car.year + ' ' + r.car.make + ' ' + r.car.model : 'Vehicle TBD'"></p>
+                <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" :text="r.pickup_address + '  →  ' + r.dropoff_address"></p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(r)"></span>
+              <span :show="Number(r.pending_applications) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-amber-500 bg-amber-500/10 border border-amber-500/25 rounded-full" :text="r.pending_applications + ' pending'"></span>
+              <span :show="r.status === 'completed' && Number(r.payout_amount) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-secondary)] bg-[color:var(--bg-subtle)] border rounded-full border-[color:var(--border)]" :text="'Paid out $' + Number(r.payout_amount)"></span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 items-center text-xs text-[color:var(--text-muted)]">
+            <span :text="'Pickup ' + r.earliest_pickup_date"></span>
+            <span :text="'Drop ' + r.latest_dropoff_date"></span>
+            <span :show="r.estimated_distance_miles" :text="r.estimated_distance_miles + ' mi est.'"></span>
+            <span :show="r.actual_miles_driven" :text="r.actual_miles_driven + ' mi actual'"></span>
+          </div>
+        </a>
+      </template>
+    </div>
+  </div>
+
+</div>
+
+<script client>
+  const tab = state('open')
+  const groups = state({ open: [], claimed: [], in_progress: [], completed: [], cancelled: [] })
+  const loading = state(true)
+
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+
+  function payoutLabel(r) {
+    if (!r) return ''
+    if (r.compensation_type === 'flat') return '$' + Number(r.flat_fee || 0) + ' flat'
+    if (r.compensation_type === 'per_mile') return '$' + Number(r.per_mile_rate || 0).toFixed(2) + '/mi'
+    if (r.compensation_type === 'free') return 'Free use'
+    return r.compensation_type
+  }
+
+  async function load() {
+    loading.set(true)
+    const t = token()
+    if (!t) { location.href = '/login?next=/host/relocations'; return }
+    try {
+      const res = await fetch('/api/relocations/mine/host', { headers: { Authorization: 'Bearer ' + t } })
+      if (!res.ok) throw new Error('failed')
+      const j = await res.json()
+      groups.set({
+        open: j.open || [],
+        claimed: j.claimed || [],
+        in_progress: j.in_progress || [],
+        completed: j.completed || [],
+        cancelled: j.cancelled || [],
+      })
+    }
+    catch {
+      groups.set({ open: [], claimed: [], in_progress: [], completed: [], cancelled: [] })
+    }
+    finally {
+      loading.set(false)
+    }
+  }
+
+  effect(() => { load() })
+</script>
+
+@endsection

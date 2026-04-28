@@ -9,13 +9,20 @@ export default defineModel({
   primaryKey: 'id', // defaults to `id`
   autoIncrement: true, // defaults to true
   belongsTo: ['User', 'PaymentMethod'],
+  ownership: {
+    field: 'user_id',
+    resolve: async (user: any) => Number(user?._attributes?.id ?? user?.id) || null,
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
   traits: {
     useUuid: true,
     useTimestamps: true,
     useSeeder: { count: 5 },
     useApi: {
       uri: 'payment-transactions',
-      routes: ['index', 'show'],
+      // No `index` — exposes other users' transaction history. `show` is
+      // gated by ownership for show-side reads (admin-only otherwise).
+      routes: ['show'],
     },
     observe: true,
   },

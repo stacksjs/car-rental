@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "relocations_driver_status_index" ON "relocations" ("driver_id", "status");

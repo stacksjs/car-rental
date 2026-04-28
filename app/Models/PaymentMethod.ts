@@ -10,13 +10,22 @@ export default defineModel({
   autoIncrement: true, // defaults to true
   belongsTo: ['User'],
   hasMany: ['PaymentTransaction'],
+  // Owner-scoped: a user can only see/manage their own payment methods.
+  ownership: {
+    field: 'user_id',
+    resolve: async (user: any) => Number(user?._attributes?.id ?? user?.id) || null,
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
   traits: {
     useUuid: true,
     useTimestamps: true,
     useSeeder: { count: 5 },
     useApi: {
       uri: 'payment-methods',
-      routes: ['index', 'show', 'destroy'],
+      // No `index` — the auto-CRUD can't filter to "the authed user's
+      // payment methods" (would expose other users' card metadata).
+      // Specific actions can list-mine if needed.
+      routes: ['show', 'destroy'],
     },
     observe: true,
   },

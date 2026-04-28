@@ -59,7 +59,10 @@ export async function resolveAuthedUser(request: any): Promise<any | null> {
 
 export function userIdFrom(user: any): number | null {
   if (!user) return null
-  const raw = user._attributes?.id ?? user.attributes?.id ?? user.id
+  // The Stacks ORM proxy exposes attributes directly on the instance, so
+  // `user.id` is the canonical read. `_attributes` is preserved as a fallback
+  // for raw rows that occasionally land here (e.g. test fixtures).
+  const raw = user.id ?? user._attributes?.id
   const n = Number(raw)
   return Number.isFinite(n) && n > 0 ? n : null
 }

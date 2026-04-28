@@ -7,7 +7,8 @@ export default new Action({
       const { useSearchEngine } = await import('@stacksjs/search-engine')
       const search = (useSearchEngine as any)()
       if (search?.add) await search.add('cars', car)
-    } catch {
+    }
+    catch {
       // search engine optional in dev
     }
     return { success: true }

@@ -9,6 +9,7 @@ export interface Middleware {
  */
 export default {
   'maintenance': 'Maintenance',
+  'request-id': 'RequestId',
   'auth': 'Auth',
   'guest': 'Guest',
   'api': 'Api',

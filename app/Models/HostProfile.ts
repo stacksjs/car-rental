@@ -28,6 +28,31 @@ export default defineModel({
   belongsTo: ['User'],
   hasMany: ['Car'],
 
+  // PATCH /api/host-profiles/{id} only succeeds when the row is the authed
+  // user's own host profile (admins bypass).
+  ownership: {
+    field: 'user_id',
+    resolve: async (user: any) => {
+      const id = Number(user?._attributes?.id ?? user?.id)
+      return id || null
+    },
+    bypass: (user: any) => (user?._attributes?.role ?? user?.role) === 'admin',
+  },
+
+  // SQLite stores booleans as text/int. Without casts, `!!"0"` evaluates to
+  // true (non-empty string), so `!!hostProfile.charges_enabled` would lie
+  // about a freshly-applied host who hasn't done Stripe Connect yet.
+  casts: {
+    verified: 'boolean',
+    all_star: 'boolean',
+    charges_enabled: 'boolean',
+    payouts_enabled: 'boolean',
+    trips: 'integer',
+    rating: 'float',
+    response_rate: 'integer',
+    platform_fee_bps: 'integer',
+  },
+
   attributes: {
     user_id: {
       order: 0,
@@ -41,7 +66,7 @@ export default defineModel({
       factory: faker => faker.lorem.sentences(2),
     },
 
-    joinedAt: {
+    joined_at: {
       order: 2,
       fillable: true,
       factory: faker => faker.date.past({ years: 4 }).toISOString(),
@@ -59,13 +84,13 @@ export default defineModel({
       factory: faker => faker.number.float({ min: 4.5, max: 5, fractionDigits: 2 }),
     },
 
-    responseRate: {
+    response_rate: {
       order: 5,
       fillable: false,
       factory: faker => faker.number.int({ min: 80, max: 100 }),
     },
 
-    responseTime: {
+    response_time: {
       order: 6,
       fillable: false,
       factory: faker => faker.helpers.arrayElement(['< 1 hour', '< 2 hours', '< 12 hours', '~ 24 hours']),
@@ -77,32 +102,32 @@ export default defineModel({
       factory: () => true,
     },
 
-    allStar: {
+    all_star: {
       order: 8,
       fillable: false,
       factory: faker => faker.datatype.boolean({ probability: 0.6 }),
     },
 
-    stripeAccountId: {
+    stripe_account_id: {
       order: 9,
       fillable: false,
       hidden: true,
       factory: () => null,
     },
 
-    chargesEnabled: {
+    charges_enabled: {
       order: 10,
       fillable: false,
       factory: () => false,
     },
 
-    payoutsEnabled: {
+    payouts_enabled: {
       order: 11,
       fillable: false,
       factory: () => false,
     },
 
-    platformFeeBps: {
+    platform_fee_bps: {
       order: 12,
       fillable: false,
       validation: {

@@ -8,16 +8,16 @@ export default new Action({
     if (!user) return response.unauthorized('Auth required')
 
     const bookingId = Number((request as any).params?.id)
-    const booking = await Booking.find(bookingId)
+    const booking = toAttrs<any>(await Booking.find(bookingId))
     if (!booking) return response.notFound('Booking not found')
-    if ((booking as any).user_id !== (user as any).id)
+    if (booking.user_id !== (user as any).id)
       return response.forbidden('Not your booking')
 
-    const car = await Car.find((booking as any).car_id)
+    const car = toAttrs<any>(await Car.find(booking.car_id))
     if (!car) return response.notFound('Car not found')
 
-    const hostProfile = await HostProfile.find((car as any).host_profile_id)
-    const hostAccountId = (hostProfile as any)?.stripe_account_id
+    const hostProfile = car.host_profile_id ? toAttrs<any>(await HostProfile.find(car.host_profile_id)) : null
+    const hostAccountId = hostProfile?.stripe_account_id
 
     const secret = (globalThis as any).process?.env?.STRIPE_SECRET_KEY
     if (!secret) return response.badRequest('Stripe not configured')
@@ -25,17 +25,17 @@ export default new Action({
     const Stripe = (await import('stripe')).default
     const stripe = new Stripe(secret, { apiVersion: '2024-06-20' } as any)
 
-    const amountCents = Math.round(Number((booking as any).total) * 100)
-    const platformFeeCents = Math.round(Number((booking as any).platform_fee ?? 0) * 100)
+    const amountCents = Math.round(Number(booking.total) * 100)
+    const platformFeeCents = Math.round(Number(booking.platform_fee ?? 0) * 100)
 
     const params: any = {
       amount: amountCents,
       currency: 'usd',
       automatic_payment_methods: { enabled: true },
-      metadata: { booking_id: String(bookingId), booking_ref: (booking as any).reference },
+      metadata: { booking_id: String(bookingId), booking_ref: booking.reference },
     }
 
-    if (hostAccountId && (hostProfile as any).charges_enabled && (hostProfile as any).payouts_enabled) {
+    if (hostAccountId && hostProfile?.charges_enabled && hostProfile?.payouts_enabled) {
       params.application_fee_amount = platformFeeCents
       params.transfer_data = { destination: hostAccountId }
     }

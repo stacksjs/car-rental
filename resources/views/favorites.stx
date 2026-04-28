@@ -77,7 +77,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
         const res = await fetch('/api/favorites', { headers: { Authorization: 'Bearer ' + token } })
         if (res.ok) {
           const body = await res.json()
-          cars.set((body?.data || []).map(c => c._attributes ?? c))
+          cars.set(body?.data || [])
           return
         }
       }
@@ -90,8 +90,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
           const r = await fetch(/^\d+$/.test(String(id)) ? `/api/cars/${id}` : `/api/cars/by-slug/${id}`)
           if (r.ok) {
             const body = await r.json()
-            const attrs = body?.data?._attributes ?? body?.data
-            if (attrs) out.push(attrs)
+            if (body?.data) out.push(body.data)
           }
         } catch { /* ignore */ }
       }

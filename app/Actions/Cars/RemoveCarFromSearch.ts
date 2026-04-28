@@ -7,7 +7,8 @@ export default new Action({
       const { useSearchEngine } = await import('@stacksjs/search-engine')
       const search = (useSearchEngine as any)()
       if (search?.delete) await search.delete('cars', car?.id)
-    } catch {
+    }
+    catch {
       // search engine optional
     }
     return { success: true }

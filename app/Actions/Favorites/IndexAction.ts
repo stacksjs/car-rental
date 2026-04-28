@@ -14,10 +14,9 @@ export default new Action({
     }
     catch { return response.json({ data: [] }) }
 
-    const rows = carIds.length
-      ? await Car.query().whereIn('id', carIds).get()
+    const data = carIds.length
+      ? toAttrs(await Car.query().whereIn('id', carIds).get())
       : []
-    const data = (rows as any[]).map(c => c._attributes ?? c)
 
     return response.json({ data })
   },
