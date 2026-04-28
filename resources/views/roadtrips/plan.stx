@@ -1,0 +1,200 @@
+<script server>
+const pageTitle = 'Plan a roadtrip · Drivly'
+const activePage = 'roadtrips'
+
+useSeoMeta({ title: pageTitle, description: 'Find a chain of relocations that covers your trip.' })
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[1100px]">
+
+  <div class="mb-8">
+    <StxLink to="/roadtrips" class="inline-flex gap-1 items-center mb-4 text-sm text-[color:var(--text-muted)] hover:text-[color:var(--text)]">← Back to roadtrips</StxLink>
+    <h1 class="m-0 mb-2 text-4xl serif">Plan a roadtrip</h1>
+    <p class="m-0 text-[color:var(--text-muted)]">Tell us where and when. We'll find chains of open relocations that get you there.</p>
+  </div>
+
+  <!-- Planner form -->
+  <form class="grid gap-3 grid-cols-1 sm:grid-cols-[1fr_1fr_180px_180px_140px] mb-6 p-4 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]" @submit.prevent="searchPlan()">
+    <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+           placeholder="From city (e.g. Los Angeles)" x-model="fromCity">
+    <input class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+           placeholder="To city (e.g. New York)" x-model="toCity">
+    <input type="date" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+           x-model="earliest" placeholder="Earliest">
+    <input type="date" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
+           x-model="latest" placeholder="Latest">
+    <button type="submit" class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="loading()">
+      <span :show="!loading()">Search</span>
+      <span :show="loading()">Searching…</span>
+    </button>
+  </form>
+
+  <!-- Empty / not-yet-searched -->
+  <div :show="!searched() && !loading()" class="py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🗺️</p>
+    <h3 class="m-0 mb-2 text-2xl serif">Where to?</h3>
+    <p class="m-0 text-[color:var(--text-muted)]">Fill in the form above and hit Search to see chains we can stitch together for you.</p>
+  </div>
+
+  <!-- Results -->
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Looking for chains…</div>
+
+  <div :show="!loading() && searched() && chains().length === 0" class="py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🛣️</p>
+    <h3 class="m-0 mb-2 text-2xl serif">No chains found</h3>
+    <p class="m-0 mb-1 text-[color:var(--text-muted)]">No combination of open relocations covers that trip in your date window.</p>
+    <p class="m-0 text-[color:var(--text-muted)]">Try widening the dates, or check <StxLink to="/relocations" class="font-semibold text-[#FF3E54]">all open jobs</StxLink>.</p>
+  </div>
+
+  <div :show="!loading() && chains().length > 0">
+    <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]">
+      <span :text="chains().length"></span> chain<span :show="chains().length !== 1">s</span> found · scanned <span :text="meta()?.candidates_scanned || 0"></span> open relocations
+    </p>
+
+    <div class="flex flex-col gap-4">
+      <template :foreach="(chain, idx) of chains()">
+        <article class="overflow-hidden border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+
+          <!-- Header strip — pay + miles + leg count -->
+          <header class="flex flex-wrap gap-3 items-center justify-between px-5 py-4 border-b bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
+            <div class="flex flex-wrap gap-2 items-center">
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="chain.leg_count + (chain.leg_count === 1 ? ' leg' : ' legs')"></span>
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="'≈ $' + chain.total_pay + ' total'"></span>
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)] bg-[color:var(--bg-elevated)] border border-[color:var(--border)] rounded-full" :text="chain.total_miles + ' mi'"></span>
+            </div>
+            <button class="px-4 py-2 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="saveChain(chain)">Save this trip</button>
+          </header>
+
+          <!-- Stops timeline -->
+          <div class="px-5 py-4 border-b border-[color:var(--border)]">
+            <div class="flex flex-wrap gap-2 items-center text-sm">
+              <template :foreach="(stop, j) of chain.stops">
+                <span class="inline-flex items-center font-semibold capitalize" :text="stop"></span>
+                <span :show="j < chain.stops.length - 1" class="text-[color:var(--text-muted)]">→</span>
+              </template>
+            </div>
+          </div>
+
+          <!-- Per-leg cards -->
+          <div class="grid gap-0 grid-cols-1 divide-y divide-[color:var(--border)]">
+            <template :foreach="(leg, j) of chain.legs">
+              <div class="flex flex-wrap gap-4 items-center px-5 py-4">
+                <span class="inline-flex items-center justify-center h-8 w-8 font-bold text-sm text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="j + 1"></span>
+                <img :show="leg.car?.image" :attr:src="leg.car?.image" class="object-cover h-12 w-20 rounded-lg" alt="">
+                <div :show="!leg.car?.image" class="flex items-center justify-center h-12 w-20 text-[color:var(--text-muted)] rounded-lg bg-[color:var(--bg-subtle)]">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zm10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17h2m4 0h6m4 0h2M3 17l1.5-7h15L21 17M6 10l1-3h10l1 3"/></svg>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                  <p class="m-0 font-semibold text-sm" :text="leg.car ? (leg.car.year + ' ' + leg.car.make + ' ' + leg.car.model) : 'Vehicle TBD'"></p>
+                  <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" :text="leg.pickup_address + '  →  ' + leg.dropoff_address"></p>
+                </div>
+                <div class="text-right">
+                  <p class="m-0 font-semibold text-sm tabular text-emerald-500" :text="'$' + leg.estimated_pay"></p>
+                  <p class="m-0 mt-0.5 text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]" :text="leg.estimated_distance_miles + ' mi'"></p>
+                </div>
+              </div>
+            </template>
+          </div>
+        </article>
+      </template>
+    </div>
+  </div>
+
+</div>
+
+<script client>
+  const fromCity = state('')
+  const toCity = state('')
+  const earliest = state('')
+  const latest = state('')
+
+  const chains = state([])
+  const meta = state(null)
+  const loading = state(false)
+  const busy = state(false)
+  const searched = state(false)
+
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+  function authHeaders() {
+    const t = token()
+    return { 'Content-Type': 'application/json', ...(t ? { Authorization: 'Bearer ' + t } : {}) }
+  }
+
+  function readQs() {
+    try {
+      const sp = new URLSearchParams(location.search)
+      if (sp.get('from')) fromCity.set(sp.get('from'))
+      if (sp.get('to')) toCity.set(sp.get('to'))
+      if (sp.get('earliest')) earliest.set(sp.get('earliest'))
+      if (sp.get('latest')) latest.set(sp.get('latest'))
+    }
+    catch { /* ignore */ }
+  }
+
+  async function searchPlan() {
+    if (!fromCity() || !toCity() || !earliest() || !latest()) {
+      window._toast && window._toast('Fill in from, to, and both dates', 'error')
+      return
+    }
+    loading.set(true)
+    searched.set(true)
+    try {
+      const p = new URLSearchParams({
+        from: fromCity(),
+        to: toCity(),
+        earliest: earliest(),
+        latest: latest(),
+      })
+      const res = await fetch('/api/roadtrips/plan?' + p.toString())
+      const j = await res.json()
+      chains.set(j.data || [])
+      meta.set(j.meta || null)
+    }
+    catch (err) {
+      window._toast && window._toast(err.message || 'Search failed', 'error')
+      chains.set([])
+    }
+    finally { loading.set(false) }
+  }
+
+  async function saveChain(chain) {
+    if (!token()) {
+      const next = '/roadtrips/plan?' + new URLSearchParams({ from: fromCity(), to: toCity(), earliest: earliest(), latest: latest() }).toString()
+      location.href = '/login?next=' + encodeURIComponent(next)
+      return
+    }
+    busy.set(true)
+    try {
+      const body = {
+        title: fromCity() + ' → ' + toCity(),
+        origin_address: chain.legs[0].pickup_address,
+        origin_city: chain.legs[0].pickup_city,
+        destination_address: chain.legs[chain.legs.length - 1].dropoff_address,
+        destination_city: chain.legs[chain.legs.length - 1].dropoff_city,
+        earliest_start_date: earliest(),
+        latest_end_date: latest(),
+        total_estimated_miles: chain.total_miles,
+        legs: chain.legs.map(l => ({ relocation_id: l.relocation_id })),
+      }
+      const res = await fetch('/api/roadtrips', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) })
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(j?.message || j?.error || 'Could not save trip')
+      window._toast && window._toast('Roadtrip saved!', 'success')
+      setTimeout(() => location.href = '/roadtrips/' + j.data.id, 400)
+    }
+    catch (err) {
+      window._toast && window._toast(err.message || 'Could not save trip', 'error')
+    }
+    finally { busy.set(false) }
+  }
+
+  effect(() => {
+    readQs()
+    if (fromCity() && toCity() && earliest() && latest()) searchPlan()
+  })
+</script>
+
+@endsection

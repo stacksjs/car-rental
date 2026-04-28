@@ -11,6 +11,8 @@ export { default as PaymentTransaction } from '../../../app/Models/PaymentTransa
 export { default as Review } from '../../../app/Models/Review'
 export { default as Author } from '../../../app/Models/Author'
 export { default as RelocationApplication } from '../../../app/Models/RelocationApplication'
+export { default as Roadtrip } from '../../../app/Models/Roadtrip'
+export { default as RoadtripLeg } from '../../../app/Models/RoadtripLeg'
 export { default as GiftCard } from '../../../app/Models/GiftCard'
 export { default as Booking } from '../../../app/Models/Booking'
 export { default as Coupon } from '../../../app/Models/Coupon'

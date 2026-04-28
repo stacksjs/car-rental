@@ -43,6 +43,11 @@ route.group({ prefix: '/api', middleware: ['request-id'] }, () => {
   route.get('/relocations', 'Actions/Relocations/IndexAction')
   route.get('/relocations/{id}', 'Actions/Relocations/ShowAction')
 
+  // Roadtrips: multi-leg journeys stitched together from open relocations.
+  // The planner is public so users can preview chains before signing up;
+  // owning/editing a trip is auth-gated below.
+  route.get('/roadtrips/plan', 'Actions/Roadtrips/PlanAction')
+
   // Stripe Connect return URL — Stripe browser-redirects here without our
   // bearer token, so this MUST stay outside the `auth` group. The action
   // resolves the host via the `?acct=` query param it stamped onto the
@@ -87,6 +92,15 @@ route.group({ prefix: '/api', middleware: ['request-id'] }, () => {
     route.post('/relocations/{id}/apply', 'Actions/Relocations/ApplyAction')
     route.post('/relocations/{id}/start', 'Actions/Relocations/StartAction')
     route.post('/relocations/{id}/complete', 'Actions/Relocations/CompleteAction')
+
+    // Roadtrips — owned by the planning user
+    route.get('/roadtrips', 'Actions/Roadtrips/IndexAction')
+    route.get('/roadtrips/{id}', 'Actions/Roadtrips/ShowAction')
+    route.post('/roadtrips', 'Actions/Roadtrips/StoreAction')
+    route.post('/roadtrips/{id}/cancel', 'Actions/Roadtrips/CancelAction')
+    route.post('/roadtrips/{id}/legs', 'Actions/Roadtrips/AddLegAction')
+    route.delete('/roadtrips/{id}/legs/{legId}', 'Actions/Roadtrips/RemoveLegAction')
+    route.post('/roadtrips/{id}/apply', 'Actions/Roadtrips/ApplyAllAction')
   })
 
   route.post('/webhooks/stripe', 'Actions/Webhooks/StripeAction')

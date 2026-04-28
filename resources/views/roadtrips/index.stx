@@ -1,0 +1,69 @@
+<script server>
+const pageTitle = 'Plan a Drivly Roadtrip'
+const pageDescription = 'Stitch open relocations together into one cross-country trip. Get paid to drive each leg.'
+const activePage = 'roadtrips'
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: 'Stitch a Roadtrip from Drivly Relocations',
+  ogDescription: pageDescription,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section class="overflow-hidden relative pb-12 py-16">
+  <div class="absolute inset-0 pointer-events-none -z-1" aria-hidden="true">
+    <div class="absolute right-[-100px] top-[-100px] h-[420px] w-[420px] rounded-full blur-3xl"
+         style="background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%)"></div>
+  </div>
+
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <span class="inline-flex gap-2 items-center mb-5 px-3 py-1.5 font-medium text-violet-500 text-xs bg-violet-500/10 border border-violet-500/25 rounded-full">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18m-7-7 7 7-7 7"/></svg>
+      Multi-leg trips
+    </span>
+    <h1 class="m-0 mb-4 max-w-[20ch] leading-[1.03] text-5xl tracking-tight sm:text-6xl lg:text-7xl serif">
+      One roadtrip. Many cars. All paid for.
+    </h1>
+    <p class="m-0 max-w-[60ch] leading-relaxed text-lg text-[color:var(--text-secondary)]">
+      Heading from LA to NYC? Hop a relocation from LA to OKC, pick up a different one from OKC to NYC. Drivly chains open one-way jobs into a single multi-stop trip you can apply to with a single click.
+    </p>
+
+    <div class="flex flex-wrap gap-3 mt-8">
+      <StxLink to="/roadtrips/plan" class="inline-flex gap-2 items-center px-6 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl">Plan a roadtrip →</StxLink>
+      <StxLink to="/roadtrips/mine" class="inline-flex gap-2 items-center px-6 py-3 font-semibold text-sm bg-transparent border rounded-xl border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">My roadtrips</StxLink>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────── -->
+<section class="pb-20">
+  <div class="mx-auto px-6 max-w-[1280px]">
+    <div class="grid gap-6 grid-cols-1 md:grid-cols-3">
+      <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">1</span>
+        <h3 class="m-0 mb-2 text-xl serif">Pick A → B and a date window</h3>
+        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">Tell us where you're starting, where you want to end up, and the earliest/latest dates that work. We'll search every open relocation that fits.</p>
+      </div>
+      <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">2</span>
+        <h3 class="m-0 mb-2 text-xl serif">Pick a chain</h3>
+        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">We'll show you candidate chains — direct trips first, then 2- or 3-leg combos with stops at cities in between. Compare payout, miles, and stops.</p>
+      </div>
+      <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+        <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">3</span>
+        <h3 class="m-0 mb-2 text-xl serif">Apply once, drive a roadtrip</h3>
+        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">One click submits an application to every leg's host. As they approve, your trip locks in. Drive each leg, get paid each leg.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+@endsection

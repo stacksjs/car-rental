@@ -1,0 +1,119 @@
+<script server>
+const pageTitle = 'My roadtrips · Drivly'
+const activePage = 'roadtrips-mine'
+
+definePageMeta({ middleware: ['auth'] })
+
+useSeoMeta({ title: pageTitle, robots: 'noindex' })
+
+const tabs = [
+  { key: 'planning',    label: 'Planning' },
+  { key: 'confirmed',   label: 'Confirmed' },
+  { key: 'in_progress', label: 'On the road' },
+  { key: 'completed',   label: 'Completed' },
+  { key: 'cancelled',   label: 'Cancelled' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-20 px-6 py-8 max-w-[1100px]">
+
+  <div class="flex flex-wrap gap-3 items-center justify-between mb-8">
+    <div>
+      <h1 class="m-0 mb-1.5 text-4xl sm:text-5xl serif">My roadtrips</h1>
+      <p class="m-0 text-[color:var(--text-muted)]">Multi-stop trips you've planned out from open relocations.</p>
+    </div>
+    <StxLink to="/roadtrips/plan" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl">+ Plan a new roadtrip</StxLink>
+  </div>
+
+  <div :show="loading()" class="py-16 text-center text-[color:var(--text-muted)]">Loading…</div>
+
+  <div :show="!loading() && total() === 0" class="py-16 text-center">
+    <p class="m-0 mb-2 text-5xl">🗺️</p>
+    <h3 class="m-0 mb-2 text-2xl serif">No roadtrips yet</h3>
+    <p class="m-0 mb-4 text-[color:var(--text-muted)]">Plan your first multi-leg trip — we'll find the relocations.</p>
+    <StxLink to="/roadtrips/plan" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl">Plan a roadtrip →</StxLink>
+  </div>
+
+  <div :show="!loading() && total() > 0">
+    <div class="flex flex-wrap gap-1 mb-6 p-1 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
+      @foreach (tabs as t)
+        <button class="inline-flex gap-2 items-center px-3.5 py-2 font-semibold text-sm border-0 rounded-lg transition-colors cursor-pointer"
+                :class="tab() === '{{ t.key }}' ? 'bg-[#FF3E54] text-white' : 'bg-transparent text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]'"
+                @click="tab.set('{{ t.key }}')">{{ t.label }}<span class="inline-flex items-center px-1.5 py-0.5 font-semibold text-[0.6875rem] rounded-full"
+                :class="tab() === '{{ t.key }}' ? 'bg-white/25 text-white' : 'bg-[color:var(--bg-subtle)] text-[color:var(--text-muted)]'"
+                :text="(buckets()['{{ t.key }}']?.length || 0)"></span></button>
+      @endforeach
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <p :show="(buckets()[tab()]?.length || 0) === 0" class="m-0 py-12 text-center text-[color:var(--text-muted)]">No trips in this state.</p>
+      <template :foreach="t of buckets()[tab()] || []">
+        <a :href="'/roadtrips/' + t.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]">
+          <div class="flex flex-wrap gap-3 items-start justify-between mb-3">
+            <p class="m-0 font-semibold text-base" :text="t.title || ('Trip #' + t.id)"></p>
+            <div class="flex flex-wrap gap-2 items-center">
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
+                    :class="statusClass(t.status)" :text="t.status"></span>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="t.leg_count + (t.leg_count === 1 ? ' leg' : ' legs')"></span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 items-center text-sm">
+            <template :foreach="(stop, j) of t.stops || []">
+              <span class="inline-flex items-center capitalize" :text="stop"></span>
+              <span :show="j < (t.stops?.length || 0) - 1" class="text-[color:var(--text-muted)]">→</span>
+            </template>
+          </div>
+          <p class="m-0 mt-2 text-[0.8125rem] text-[color:var(--text-muted)]" :text="(t.earliest_start_date || '') + ' to ' + (t.latest_end_date || '') + ' · ' + (t.total_estimated_miles || 0) + ' mi'"></p>
+        </a>
+      </template>
+    </div>
+  </div>
+</div>
+
+<script client>
+  const tab = state('planning')
+  const buckets = state({ planning: [], confirmed: [], in_progress: [], completed: [], cancelled: [] })
+  const total = state(0)
+  const loading = state(true)
+
+  function token() { try { return localStorage.getItem('drivly-token') } catch { return null } }
+
+  function statusClass(s) {
+    if (s === 'planning') return 'text-violet-500 bg-violet-500/10 border border-violet-500/25'
+    if (s === 'confirmed') return 'text-amber-500 bg-amber-500/10 border border-amber-500/25'
+    if (s === 'in_progress') return 'text-emerald-500 bg-emerald-500/10 border border-emerald-500/25'
+    if (s === 'completed') return 'text-[color:var(--text-muted)] bg-[color:var(--bg-muted)] border border-[color:var(--border)]'
+    return 'text-rose-500 bg-rose-500/10 border border-rose-500/25'
+  }
+
+  async function load() {
+    loading.set(true)
+    const t = token()
+    if (!t) { location.href = '/login?next=/roadtrips/mine'; return }
+    try {
+      const res = await fetch('/api/roadtrips', { headers: { Authorization: 'Bearer ' + t } })
+      if (!res.ok) throw new Error('failed')
+      const j = await res.json()
+      buckets.set({
+        planning: j.planning || [],
+        confirmed: j.confirmed || [],
+        in_progress: j.in_progress || [],
+        completed: j.completed || [],
+        cancelled: j.cancelled || [],
+      })
+      total.set(Number(j.total || 0))
+    }
+    catch {
+      buckets.set({ planning: [], confirmed: [], in_progress: [], completed: [], cancelled: [] })
+      total.set(0)
+    }
+    finally { loading.set(false) }
+  }
+
+  effect(() => { load() })
+</script>
+
+@endsection

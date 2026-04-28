@@ -264,6 +264,18 @@
     "hasDedicatedPage": true
   },
   {
+    "id": "roadtrip",
+    "name": "Roadtrip",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
+    "id": "roadtrip-leg",
+    "name": "RoadtripLeg",
+    "icon": "tablecells.fill",
+    "hasDedicatedPage": false
+  },
+  {
     "id": "shipping-method",
     "name": "ShippingMethod",
     "icon": "shippingbox.fill",
