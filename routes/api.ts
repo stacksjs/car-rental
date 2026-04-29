@@ -7,9 +7,21 @@ import { response, route } from '@stacksjs/router'
  * storage/framework/defaults/routes/. useApi auto-CRUD endpoints (/api/cars,
  * /api/bookings, /api/locations, /api/reviews, etc.) are generated from
  * model definitions in app/Models/*. Only custom endpoints live here.
+ *
+ * Note: `/` is intentionally NOT registered here. The STX server serves the
+ * home view at `resources/views/index.stx`, and registering an API stub at
+ * `/` would shadow it.
  */
 
-route.get('/', () => response.text('car-rental api'))
+// `/cars` is the canonical browse URL but the page lives at views/search.stx
+// so we don't have both /cars/index.stx and /search.stx duplicating the
+// 200+ line filter UI. Keep the redirect on the server side so deep links
+// from the marketing site don't bounce users through a SPA-side flicker.
+route.get('/cars', (req: any) => {
+  const url = new URL(req.url)
+  const target = `/search${url.search}`
+  return new Response(null, { status: 302, headers: { Location: target } })
+})
 
 // Health probes — useful for k8s liveness/readiness probes, ALB target
 // groups, and uptime monitors. Public on purpose. /healthz is just "the
