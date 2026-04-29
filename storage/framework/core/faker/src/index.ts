@@ -1,9 +1,9 @@
-import { faker as baseFaker } from 'ts-mocker'
-import type { Faker as BaseFaker } from 'ts-mocker'
+import { faker as baseFaker } from '@stacksjs/ts-faker'
+import type { Faker as BaseFaker } from '@stacksjs/ts-faker'
 
 /**
  * Compatibility layer for @faker-js/faker API
- * ts-mocker uses different module names, so we create aliases
+ * @stacksjs/ts-faker uses different module names, so we create aliases
  */
 
 // datatype module for boolean, number generation (compatibility with @faker-js/faker)
@@ -80,7 +80,7 @@ const company = {
     return baseFaker.company.name()
   },
   catchPhrase(): string {
-    // ts-mocker might not have catchPhrase, generate similar content
+    // @stacksjs/ts-faker might not have catchPhrase, generate similar content
     return baseFaker.company.buzzPhrase?.() ?? `${baseFaker.word.adjective()} ${baseFaker.word.noun()}`
   },
   buzzPhrase(): string {
