@@ -1,10 +1,13 @@
+import { syncLegsForUserAndRelocation } from '../Roadtrips/_legSync'
+
 /**
  * Driver picks up the car. Records the start odometer + start_at timestamp
  * and moves the relocation to `in_progress`.
  *
  * Only the approved driver can start. Body accepts `start_odometer` (number,
  * required) — the driver checks the dashboard before driving away so the
- * end-of-trip mileage is honest.
+ * end-of-trip mileage is honest. Mirrors any matching roadtrip legs onto
+ * `in_progress` so the trip view stays in sync.
  */
 
 export default new Action({
@@ -36,6 +39,12 @@ export default new Action({
       started_at: new Date().toISOString(),
       start_odometer: startOdometer,
     }))
+
+    await syncLegsForUserAndRelocation({
+      userId: Number(userId),
+      relocationId: id,
+      legStatus: 'in_progress',
+    })
 
     dispatch('relocation:started', updated)
     return response.json({ data: updated })

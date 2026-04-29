@@ -1,6 +1,10 @@
+import { syncLegsForUserAndRelocation } from '../Roadtrips/_legSync'
+
 /**
  * Host rejects a single application without affecting the relocation status.
- * The driver sees `rejected` next time they refresh their applications list.
+ * The driver sees `rejected` next time they refresh their applications list,
+ * and any roadtrip legs that referenced this relocation flip to `rejected`
+ * too so the trip view stays accurate.
  */
 
 export default new Action({
@@ -34,6 +38,12 @@ export default new Action({
       status: 'rejected',
       rejected_at: new Date().toISOString(),
     }))
+
+    await syncLegsForUserAndRelocation({
+      userId: Number(app.user_id),
+      relocationId: relocId,
+      legStatus: 'rejected',
+    })
 
     dispatch('relocation:application:rejected', { relocation: reloc, application: updated })
     return response.json({ data: updated })

@@ -1,3 +1,5 @@
+import { syncLegsForUserAndRelocation } from '../Roadtrips/_legSync'
+
 /**
  * Driver applies to a relocation. The application is "pending" until the
  * host approves (or rejects) it via the host UI.
@@ -7,6 +9,10 @@
  *   - Driver is not the host themselves (no self-driving your own posting).
  *   - One pending application per (relocation, user) — re-applying after a
  *     rejection re-uses the same row instead of duplicating it.
+ *
+ * If the user has this relocation on a roadtrip leg (status `planned` or
+ * `rejected`), the leg is mirrored to `applied` so the trip view stays
+ * in sync with what they've actually pursued.
  */
 
 export default new Action({
@@ -55,6 +61,12 @@ export default new Action({
         message,
       }))
     }
+
+    await syncLegsForUserAndRelocation({
+      userId: Number(userId),
+      relocationId: id,
+      legStatus: 'applied',
+    })
 
     dispatch('relocation:application:created', { relocation: reloc, application: app })
     return response.json({ data: app })

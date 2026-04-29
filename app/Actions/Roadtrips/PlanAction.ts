@@ -8,32 +8,26 @@
  *   1. Pull every open relocation whose pickup window overlaps the user's
  *      [earliest, latest] range.
  *   2. Index by normalized pickup_city.
- *   3. DFS from origin to destination, max depth 4 legs, time-ordering each
- *      next leg's earliest_pickup_date >= the previous leg's earliest pickup.
- *   4. Score each chain (fewer legs > more pay > shorter total miles) and
- *      return the top N.
+ *   3. DFS from origin to destination, max depth MAX_DEPTH legs. Between
+ *      legs we enforce a real schedule: the next leg's earliest_pickup_date
+ *      must be on or after the prior leg's earliest_pickup_date plus the
+ *      prior leg's estimated drive time (see _helpers.ts:earliestNextPickup).
+ *      The final leg's latest_dropoff_date must also fit inside the user's
+ *      `[earliest, latest]` window — chains that would land past the user's
+ *      deadline are dropped instead of being shown as "you might make it."
+ *   4. Score each chain (more pay > shorter total miles > fewer legs as a
+ *      soft tiebreaker) and return the top N.
  *
- * The matcher is intentionally a substring match on the city name — addresses
- * are user-typed strings ("123 Main St, Los Angeles, CA") so we extract the
- * "city" component and compare lowercased. Direct chains (LA → NYC, no stops)
- * are always returned first when present.
+ * The matcher is intentionally a substring match on the city name —
+ * addresses are user-typed strings ("123 Main St, Los Angeles, CA") so
+ * we extract the "city" component and compare lowercased. Direct chains
+ * (LA → NYC, no stops) sort to the top when present.
  */
+
+import { computePay, earliestNextPickup, extractCity, normCity } from './_helpers'
 
 const MAX_DEPTH = 4
 const MAX_RESULTS = 10
-
-function normCity(s: string | null | undefined): string {
-  return String(s ?? '').trim().toLowerCase()
-}
-
-// Address shape we expect: "123 Street, City, ST" or "City, ST" — pull the
-// "City" segment. If it doesn't parse, fall back to the whole string lowered.
-function extractCity(address: string | null | undefined): string {
-  const parts = String(address ?? '').split(',').map(p => p.trim()).filter(Boolean)
-  if (parts.length >= 3) return normCity(parts[parts.length - 2])
-  if (parts.length === 2) return normCity(parts[0])
-  return normCity(parts[0] ?? '')
-}
 
 interface Leg {
   id: number
@@ -60,11 +54,20 @@ interface Chain {
   latestEnd: string
 }
 
+/**
+ * Soft ranking score. Drivers don't see this number — it just orders the
+ * results list. Higher is better. We weight pay heaviest, deduct a tiny
+ * per-mile cost (longer trips at the same pay are less attractive), and
+ * apply a small leg-count tiebreaker because more handovers mean more
+ * paperwork even if the dollars line up.
+ *
+ * No platform-side pay bonus is baked in — total_pay shown to the driver
+ * is exactly the sum of what each host posted. (See the design discussion
+ * with the product owner: pay = whatever the host is willing to pay.)
+ */
 function chainScore(c: Chain): number {
-  // Fewer legs win on tie-break; each leg adds a "switching cost" of 50.
-  // After that, more pay > shorter trip.
-  const switchPenalty = (c.legs.length - 1) * 50
-  return c.totalPay - switchPenalty - c.totalMiles * 0.05
+  const tiebreaker = (c.legs.length - 1) * 5
+  return c.totalPay - c.totalMiles * 0.05 - tiebreaker
 }
 
 export default new Action({
@@ -120,43 +123,42 @@ export default new Action({
       else byPickup.set(leg.pickup_city, [leg])
     }
 
-    // Estimated payout for a single leg (before per-mile multiplier needs
-    // actual_miles_driven, so we approximate using estimated_distance_miles).
-    const legPay = (leg: Leg): number => {
-      if (leg.compensation_type === 'flat') return leg.flat_fee + leg.fuel_allowance
-      if (leg.compensation_type === 'per_mile')
-        return Math.round(leg.per_mile_rate * leg.estimated_distance_miles) + leg.fuel_allowance
-      return leg.fuel_allowance
-    }
-
     const chains: Chain[] = []
     const visited = new Set<number>()
 
-    // DFS — accumulate legs that match the chain rules.
-    function dfs(currentCity: string, soFar: Leg[], lastDate: string) {
+    function dfs(currentCity: string, soFar: Leg[], earliestNext: string) {
       if (soFar.length > MAX_DEPTH) return
       if (soFar.length > 0 && currentCity === toCity) {
+        const last = soFar[soFar.length - 1]
+        // Reject chains whose last leg can run past the user's hard deadline —
+        // a chain that "might just barely make it" is worse UX than not
+        // showing it at all (driver thinks they can book and then can't).
+        if (last.latest_dropoff_date && latest && last.latest_dropoff_date > latest)
+          return
         const totalMiles = soFar.reduce((s, l) => s + l.estimated_distance_miles, 0)
-        const totalPay = soFar.reduce((s, l) => s + legPay(l), 0)
+        const totalPay = soFar.reduce((s, l) => s + computePay(l), 0)
         chains.push({
           legs: [...soFar],
           totalMiles,
           totalPay,
           earliestStart: soFar[0].earliest_pickup_date,
-          latestEnd: soFar[soFar.length - 1].latest_dropoff_date,
+          latestEnd: last.latest_dropoff_date,
         })
         return
       }
       const candidates = byPickup.get(currentCity) ?? []
       for (const next of candidates) {
         if (visited.has(next.id)) continue
-        // Time-order constraint — each subsequent leg starts no earlier than
-        // the previous leg's earliest pickup. (Loose; doesn't enforce that
-        // prior leg's dropoff window precedes the next leg.)
-        if (lastDate && next.earliest_pickup_date < lastDate) continue
+        // Schedule feasibility — the next leg's earliest pickup must be on or
+        // after when we'd realistically arrive. Without this check the planner
+        // would suggest "drive 1500 mi today, pick up the next car tomorrow."
+        if (earliestNext && next.earliest_pickup_date < earliestNext) continue
+        // The next leg also has to dropoff inside the user's window — pruning
+        // here saves recursing into chains we'd reject at the leaf anyway.
+        if (latest && next.latest_dropoff_date > latest && next.dropoff_city === toCity) continue
         visited.add(next.id)
         soFar.push(next)
-        dfs(next.dropoff_city, soFar, next.earliest_pickup_date)
+        dfs(next.dropoff_city, soFar, earliestNextPickup(next.earliest_pickup_date, next.estimated_distance_miles))
         soFar.pop()
         visited.delete(next.id)
       }
@@ -164,17 +166,9 @@ export default new Action({
 
     dfs(fromCity, [], earliest)
 
-    // Score, dedupe by leg-id signature, take top N.
-    const seen = new Set<string>()
     const ranked = chains
       .map(c => ({ chain: c, score: chainScore(c) }))
       .sort((a, b) => b.score - a.score)
-      .filter(({ chain }) => {
-        const key = chain.legs.map(l => l.id).join('-')
-        if (seen.has(key)) return false
-        seen.add(key)
-        return true
-      })
       .slice(0, MAX_RESULTS)
 
     // Pull car snapshots for the legs we're returning (compact display in UI).
@@ -198,7 +192,7 @@ export default new Action({
         per_mile_rate: l.per_mile_rate,
         fuel_allowance: l.fuel_allowance,
         max_extra_days: l.max_extra_days,
-        estimated_pay: legPay(l),
+        estimated_pay: computePay(l),
         car: l.car_id ? carById.get(l.car_id) ?? null : null,
       })),
       stops: [
@@ -207,6 +201,9 @@ export default new Action({
       ],
       total_miles: chain.totalMiles,
       total_pay: chain.totalPay,
+      // Sum of bonus free days across legs — surfaced as a value indicator
+      // ("+5 free days") in the UI, not folded into total_pay.
+      total_extra_days: chain.legs.reduce((s, l) => s + Number(l.max_extra_days ?? 0), 0),
       leg_count: chain.legs.length,
       earliest_start: chain.earliestStart,
       latest_end: chain.latestEnd,

@@ -26,7 +26,7 @@ useSeoMeta({ title: pageTitle, description: 'Find a chain of relocations that co
            x-model="earliest" placeholder="Earliest">
     <input type="date" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
            x-model="latest" placeholder="Latest">
-    <button type="submit" class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="loading()">
+    <button type="submit" class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="loading()">
       <span :show="!loading()">Search</span>
       <span :show="loading()">Searching…</span>
     </button>
@@ -61,18 +61,18 @@ useSeoMeta({ title: pageTitle, description: 'Find a chain of relocations that co
           <!-- Header strip — pay + miles + leg count -->
           <header class="flex flex-wrap gap-3 items-center justify-between px-5 py-4 border-b bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
             <div class="flex flex-wrap gap-2 items-center">
-              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="chain.leg_count + (chain.leg_count === 1 ? ' leg' : ' legs')"></span>
-              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="'≈ $' + chain.total_pay + ' total'"></span>
-              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)] bg-[color:var(--bg-elevated)] border border-[color:var(--border)] rounded-full" :text="chain.total_miles + ' mi'"></span>
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] text-violet-500 tracking-wider uppercase bg-violet-500/10 border border-violet-500/25 rounded-full" :text="chain.leg_count + (chain.leg_count === 1 ? ' leg' : ' legs')"></span>
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] text-emerald-500 tracking-wider uppercase bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="'≈ $' + chain.total_pay + ' total'"></span>
+              <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase border rounded-full bg-[color:var(--bg-elevated)] border-[color:var(--border)] text-[color:var(--text-muted)]" :text="chain.total_miles + ' mi'"></span>
             </div>
-            <button class="px-4 py-2 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="saveChain(chain)">Save this trip</button>
+            <button class="px-4 py-2 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-lg disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="busy()" @click="saveChain(chain)">Save this trip</button>
           </header>
 
           <!-- Stops timeline -->
           <div class="px-5 py-4 border-b border-[color:var(--border)]">
             <div class="flex flex-wrap gap-2 items-center text-sm">
               <template :foreach="(stop, j) of chain.stops">
-                <span class="inline-flex items-center font-semibold capitalize" :text="stop"></span>
+                <span class="inline-flex items-center capitalize font-semibold" :text="stop"></span>
                 <span :show="j < chain.stops.length - 1" class="text-[color:var(--text-muted)]">→</span>
               </template>
             </div>
@@ -84,7 +84,7 @@ useSeoMeta({ title: pageTitle, description: 'Find a chain of relocations that co
               <div class="flex flex-wrap gap-4 items-center px-5 py-4">
                 <span class="inline-flex items-center justify-center h-8 w-8 font-bold text-sm text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="j + 1"></span>
                 <img :show="leg.car?.image" :attr:src="leg.car?.image" class="object-cover h-12 w-20 rounded-lg" alt="">
-                <div :show="!leg.car?.image" class="flex items-center justify-center h-12 w-20 text-[color:var(--text-muted)] rounded-lg bg-[color:var(--bg-subtle)]">
+                <div :show="!leg.car?.image" class="flex items-center justify-center h-12 w-20 rounded-lg bg-[color:var(--bg-subtle)] text-[color:var(--text-muted)]">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zm10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17h2m4 0h6m4 0h2M3 17l1.5-7h15L21 17M6 10l1-3h10l1 3"/></svg>
                 </div>
                 <div class="flex-1 min-w-[200px]">
@@ -92,7 +92,7 @@ useSeoMeta({ title: pageTitle, description: 'Find a chain of relocations that co
                   <p class="m-0 mt-0.5 text-[0.8125rem] text-[color:var(--text-muted)]" :text="leg.pickup_address + '  →  ' + leg.dropoff_address"></p>
                 </div>
                 <div class="text-right">
-                  <p class="m-0 font-semibold text-sm tabular text-emerald-500" :text="'$' + leg.estimated_pay"></p>
+                  <p class="m-0 font-semibold text-emerald-500 text-sm tabular" :text="'$' + leg.estimated_pay"></p>
                   <p class="m-0 mt-0.5 text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]" :text="leg.estimated_distance_miles + ' mi'"></p>
                 </div>
               </div>

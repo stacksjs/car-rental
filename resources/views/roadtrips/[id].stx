@@ -45,7 +45,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
       </div>
       <div class="p-4 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
         <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Est. payout</p>
-        <p class="m-0 mt-1.5 font-bold text-2xl tabular text-emerald-500" :text="'$' + (trip()?.total_pay || 0)"></p>
+        <p class="m-0 mt-1.5 font-bold text-2xl text-emerald-500 tabular" :text="'$' + (trip()?.total_pay || 0)"></p>
       </div>
       <div class="p-4 border rounded-xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
         <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Stops</p>
@@ -58,7 +58,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
       <p class="m-0 mb-3 font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Route</p>
       <div class="flex flex-wrap gap-2 items-center">
         <template :foreach="(stop, j) of trip()?.stops || []">
-          <span class="inline-flex items-center px-2.5 py-1 font-semibold text-sm capitalize rounded-full bg-[color:var(--bg-subtle)] border border-[color:var(--border)]" :text="stop"></span>
+          <span class="inline-flex items-center px-2.5 py-1 capitalize font-semibold text-sm border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)]" :text="stop"></span>
           <span :show="j < (trip()?.stops?.length || 0) - 1" class="text-[color:var(--text-muted)]">→</span>
         </template>
       </div>
@@ -72,8 +72,8 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
       </div>
       <div class="flex flex-wrap gap-2">
         <button :show="trip()?.status === 'planning' && (trip()?.leg_count || 0) > 0"
-                class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="applyAll()">Apply to all legs</button>
-        <button class="px-5 py-3 font-semibold text-sm text-amber-600 bg-amber-500/10 border border-amber-500/30 rounded-xl cursor-pointer disabled:opacity-60" :disabled="busy()" @click="cancelTrip()">Cancel trip</button>
+                class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="busy()" @click="applyAll()">Apply to all legs</button>
+        <button class="px-5 py-3 font-semibold text-amber-600 text-sm bg-amber-500/10 border border-amber-500/30 rounded-xl disabled:opacity-60 cursor-pointer" :disabled="busy()" @click="cancelTrip()">Cancel trip</button>
       </div>
     </div>
 
@@ -83,8 +83,8 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
 
       <template :foreach="(leg, idx) of trip()?.legs || []">
         <article class="overflow-hidden border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
-          <div class="grid gap-0 grid-cols-1 md:grid-cols-[64px_1fr_auto] items-center">
-            <div class="flex items-center justify-center h-full p-5 bg-[color:var(--bg-subtle)] border-r border-[color:var(--border)]">
+          <div class="grid gap-0 grid-cols-1 items-center md:grid-cols-[64px_1fr_auto]">
+            <div class="flex items-center justify-center p-5 h-full border-r bg-[color:var(--bg-subtle)] border-[color:var(--border)]">
               <span class="inline-flex items-center justify-center h-10 w-10 font-bold text-base text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full" :text="idx + 1"></span>
             </div>
             <div class="p-5">
@@ -106,7 +106,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
             <div class="flex flex-col gap-2 px-5 py-4 md:border-l border-[color:var(--border)]">
               <a :show="leg.relocation_id" :href="'/relocations/' + leg.relocation_id" class="inline-flex gap-1.5 items-center px-3 py-2 font-semibold text-xs bg-transparent border rounded-lg cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">View leg →</a>
               <button :show="trip()?.status === 'planning'"
-                      class="inline-flex gap-1.5 items-center px-3 py-2 font-semibold text-xs text-rose-500 bg-rose-500/10 border border-rose-500/25 rounded-lg cursor-pointer disabled:opacity-60" :disabled="busy()" @click="removeLeg(leg.id)">Remove</button>
+                      class="inline-flex gap-1.5 items-center px-3 py-2 font-semibold text-rose-500 text-xs bg-rose-500/10 border border-rose-500/25 rounded-lg disabled:opacity-60 cursor-pointer" :disabled="busy()" @click="removeLeg(leg.id)">Remove</button>
             </div>
           </div>
         </article>

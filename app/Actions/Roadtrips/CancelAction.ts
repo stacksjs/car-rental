@@ -1,10 +1,15 @@
+import { withdrawApplication } from './_legSync'
+
 /**
- * Cancel a roadtrip. Allowed while not yet completed. Cancelling does
- * NOT cancel the underlying relocation applications — those continue
- * on their own lifecycle (the user can withdraw via the relocation UI).
+ * Cancel a roadtrip. Allowed while not yet completed.
+ *
+ * Cancelling fans out: each leg's underlying relocation application is
+ * withdrawn (so hosts don't keep waiting on you and approved relocations
+ * revert to `open` for someone else to claim). Legs flip to `cancelled`
+ * inside withdrawApplication via the leg-sync helper.
  */
 
-const CANCELABLE = new Set(['planning', 'confirmed'])
+const CANCELABLE = new Set(['planning', 'confirmed', 'in_progress'])
 
 export default new Action({
   name: 'RoadtripsCancelAction',
@@ -27,18 +32,34 @@ export default new Action({
 
     const updated = toAttrs<any>(await Roadtrip.update(id, { status: 'cancelled' }))
 
-    // Mark every still-planned leg as cancelled too so the trip view doesn't
-    // show stale "planned" pills under a cancelled trip.
+    // Walk each leg and withdraw the linked application. The leg-sync helper
+    // also flips the leg's status to 'cancelled' for legs we successfully
+    // withdrew. We collect per-leg results so the caller can see which
+    // applications were live (vs already terminal).
+    const legs = toAttrs<any[]>(await RoadtripLeg.query().where('roadtrip_id', id).get())
+    const withdrawResults: any[] = []
+    for (const leg of legs) {
+      if (!leg.relocation_id) continue
+      const w = await withdrawApplication({
+        relocationId: Number(leg.relocation_id),
+        userId: Number(userId),
+      })
+      withdrawResults.push({ leg_id: Number(leg.id), ok: w.ok, reason: w.reason })
+    }
+
+    // Mark every still-live leg as cancelled — covers legs that didn't have an
+    // application yet (status === 'planned'), which withdrawApplication wouldn't
+    // touch.
     try {
       await db.updateTable('roadtrip_legs')
         .set({ status: 'cancelled', updated_at: new Date().toISOString() })
         .where('roadtrip_id', '=', id)
-        .where('status', 'in', ['planned', 'applied'])
+        .where('status', 'in', ['planned', 'applied', 'approved'])
         .execute()
     }
     catch { /* non-fatal */ }
 
     dispatch('roadtrip:cancelled', updated)
-    return response.json({ data: updated })
+    return response.json({ data: updated, withdrawals: withdrawResults })
   },
 })

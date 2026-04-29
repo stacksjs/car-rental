@@ -1,3 +1,5 @@
+import { syncLegsForApproval } from '../Roadtrips/_legSync'
+
 /**
  * Host approves one of the pending applications.
  *
@@ -5,6 +7,9 @@
  *   1. The chosen application's status flips to `approved` + approved_at stamped.
  *   2. The relocation transitions to `claimed` and `driver_id` is set.
  *   3. All other pending applications for this relocation are auto-rejected.
+ *   4. Roadtrip legs that reference this relocation are mirrored — the
+ *      winning driver's legs to `approved`, every other driver's legs to
+ *      `rejected` so trip views don't show stale "applied" pills.
  *
  * Re-approving the same application is a no-op (idempotent on the happy path).
  */
@@ -61,6 +66,8 @@ export default new Action({
       status: 'claimed',
       driver_id: Number(app.user_id),
     }))
+
+    await syncLegsForApproval({ relocationId: relocId, approvedUserId: Number(app.user_id) })
 
     dispatch('relocation:approved', { relocation: updatedReloc, application: approved })
     return response.json({ data: { relocation: updatedReloc, application: approved } })

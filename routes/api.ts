@@ -90,6 +90,7 @@ route.group({ prefix: '/api', middleware: ['request-id'] }, () => {
     // Relocations — driver-side
     route.get('/relocations/mine/driver', 'Actions/Relocations/MyDriverAction')
     route.post('/relocations/{id}/apply', 'Actions/Relocations/ApplyAction')
+    route.post('/relocations/{id}/withdraw', 'Actions/Relocations/WithdrawAction')
     route.post('/relocations/{id}/start', 'Actions/Relocations/StartAction')
     route.post('/relocations/{id}/complete', 'Actions/Relocations/CompleteAction')
 

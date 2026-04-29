@@ -1,19 +1,14 @@
+import { extractCity, snapshotLegFromRelocation } from './_helpers'
+
 /**
  * Create a new roadtrip plan owned by the authed user.
  *
- * Optionally accepts a `legs` array — each entry is a relocation_id
- * the user has already chosen via the planner. We snapshot the
- * relocation's pickup/dropoff into the leg row so the plan stays
- * stable even if the relocation text is edited afterwards.
+ * Optionally accepts a `legs` array — each entry is a relocation_id the
+ * user has already chosen via the planner. The relocation's pickup,
+ * dropoff, dates and pricing are snapshotted onto the leg (see
+ * _helpers.ts:snapshotLegFromRelocation) so the plan stays stable
+ * even if the relocation is edited afterwards.
  */
-
-function extractCity(address: string | null | undefined): string {
-  const parts = String(address ?? '').split(',').map(p => p.trim()).filter(Boolean)
-  if (parts.length >= 3) return parts[parts.length - 2].toLowerCase()
-  if (parts.length === 2) return parts[0].toLowerCase()
-  return String(parts[0] ?? '').toLowerCase()
-}
-
 export default new Action({
   name: 'RoadtripsStoreAction',
   description: 'Create a new roadtrip plan',
@@ -67,14 +62,10 @@ export default new Action({
       stagedLegs = ordered.map((r, i) => ({
         sequence: i,
         relocation_id: Number(r.id),
-        from_address: r.pickup_address,
-        from_city: extractCity(r.pickup_address),
-        to_address: r.dropoff_address,
-        to_city: extractCity(r.dropoff_address),
-        estimated_distance_miles: Number(r.estimated_distance_miles ?? 0),
         status: 'planned',
+        ...snapshotLegFromRelocation(r),
       }))
-      totalMiles = stagedLegs.reduce((s, l) => s + l.estimated_distance_miles, 0)
+      totalMiles = stagedLegs.reduce((s, l) => s + Number(l.estimated_distance_miles ?? 0), 0)
     }
 
     const trip = toAttrs<any>(await Roadtrip.create({

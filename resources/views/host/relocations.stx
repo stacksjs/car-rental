@@ -58,9 +58,9 @@ const tabs = [
               </div>
             </div>
             <div class="flex flex-wrap gap-1.5 items-center">
-              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(r)"></span>
-              <span :show="Number(r.pending_applications) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-amber-500 bg-amber-500/10 border border-amber-500/25 rounded-full" :text="r.pending_applications + ' pending'"></span>
-              <span :show="r.status === 'completed' && Number(r.payout_amount) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-secondary)] bg-[color:var(--bg-subtle)] border rounded-full border-[color:var(--border)]" :text="'Paid out $' + Number(r.payout_amount)"></span>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] text-emerald-500 tracking-wider uppercase bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(r)"></span>
+              <span :show="Number(r.pending_applications) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] text-amber-500 tracking-wider uppercase bg-amber-500/10 border border-amber-500/25 rounded-full" :text="r.pending_applications + ' pending'"></span>
+              <span :show="r.status === 'completed' && Number(r.payout_amount) > 0" class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase border rounded-full bg-[color:var(--bg-subtle)] border-[color:var(--border)] text-[color:var(--text-secondary)]" :text="'Paid out $' + Number(r.payout_amount)"></span>
             </div>
           </div>
           <div class="flex flex-wrap gap-3 items-center text-xs text-[color:var(--text-muted)]">

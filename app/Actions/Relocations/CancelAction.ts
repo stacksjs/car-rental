@@ -1,10 +1,16 @@
+import { syncAllLegsForRelocation } from '../Roadtrips/_legSync'
+
 /**
  * Host cancels their own posting. Allowed only while the relocation hasn't
  * been picked up yet (`open` or `claimed`). Once the driver is en route
  * (`in_progress`) or it's `completed`, cancellation goes through support.
  *
- * Side effect: any pending applications for this relocation are auto-rejected
- * so drivers see a clear final status instead of a dangling "pending".
+ * Side effects:
+ *   - Any pending applications for this relocation are auto-rejected so
+ *     drivers see a clear final status instead of a dangling "pending".
+ *   - Every roadtrip leg pointing at this relocation is mirrored to
+ *     `cancelled` (across every driver's trips, not just one) so trip
+ *     views don't show stale "applied"/"approved" pills.
  */
 
 const CANCELABLE = new Set(['open', 'claimed'])
@@ -44,6 +50,8 @@ export default new Action({
         .execute()
     }
     catch { /* non-fatal */ }
+
+    await syncAllLegsForRelocation({ relocationId: id, legStatus: 'cancelled' })
 
     dispatch('relocation:cancelled', updated)
     return response.json({ data: updated })

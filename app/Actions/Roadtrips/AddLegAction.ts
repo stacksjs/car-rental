@@ -1,18 +1,15 @@
+import { snapshotLegFromRelocation } from './_helpers'
+
 /**
  * Add a relocation as a new leg of the roadtrip.
  *
- * The leg is appended to the end (sequence = max + 1) unless the caller
- * specifies an explicit position. The trip's total_estimated_miles is
- * recomputed after the leg lands.
+ * The leg is appended to the end (sequence = max + 1). The relocation's
+ * address + pricing terms are snapshotted onto the leg (see
+ * _helpers.ts:snapshotLegFromRelocation) so a host edit afterwards
+ * doesn't change the deal the driver agreed to. The trip's
+ * total_estimated_miles is recomputed from the snapshots after the
+ * leg lands.
  */
-
-function extractCity(address: string | null | undefined): string {
-  const parts = String(address ?? '').split(',').map(p => p.trim()).filter(Boolean)
-  if (parts.length >= 3) return parts[parts.length - 2].toLowerCase()
-  if (parts.length === 2) return parts[0].toLowerCase()
-  return String(parts[0] ?? '').toLowerCase()
-}
-
 export default new Action({
   name: 'RoadtripsAddLegAction',
   description: 'Append a relocation as a new leg of a roadtrip',
@@ -52,17 +49,16 @@ export default new Action({
       roadtrip_id: tripId,
       relocation_id: relocId,
       sequence: nextSeq,
-      from_address: reloc.pickup_address,
-      from_city: extractCity(reloc.pickup_address),
-      to_address: reloc.dropoff_address,
-      to_city: extractCity(reloc.dropoff_address),
-      estimated_distance_miles: Number(reloc.estimated_distance_miles ?? 0),
       status: 'planned',
+      ...snapshotLegFromRelocation(reloc),
     }))
 
-    // Recompute the trip's total mileage so the index/show summaries stay correct.
-    const totalMiles = [...existing.map(l => Number(l.estimated_distance_miles ?? 0)), Number(reloc.estimated_distance_miles ?? 0)]
-      .reduce((s, n) => s + n, 0)
+    // Recompute the trip's total mileage from leg snapshots so the
+    // index/show summaries stay correct after add.
+    const totalMiles = [
+      ...existing.map(l => Number(l.estimated_distance_miles ?? 0)),
+      Number(reloc.estimated_distance_miles ?? 0),
+    ].reduce((s, n) => s + n, 0)
     await Roadtrip.update(tripId, { total_estimated_miles: totalMiles })
 
     dispatch('roadtrip:leg:added', leg)

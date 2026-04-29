@@ -50,17 +50,17 @@ useSeoMeta({
       <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
         <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">1</span>
         <h3 class="m-0 mb-2 text-xl serif">Pick A → B and a date window</h3>
-        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">Tell us where you're starting, where you want to end up, and the earliest/latest dates that work. We'll search every open relocation that fits.</p>
+        <p class="m-0 leading-relaxed text-sm text-[color:var(--text-muted)]">Tell us where you're starting, where you want to end up, and the earliest/latest dates that work. We'll search every open relocation that fits.</p>
       </div>
       <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
         <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">2</span>
         <h3 class="m-0 mb-2 text-xl serif">Pick a chain</h3>
-        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">We'll show you candidate chains — direct trips first, then 2- or 3-leg combos with stops at cities in between. Compare payout, miles, and stops.</p>
+        <p class="m-0 leading-relaxed text-sm text-[color:var(--text-muted)]">We'll show you candidate chains — direct trips first, then 2- or 3-leg combos with stops at cities in between. Compare payout, miles, and stops.</p>
       </div>
       <div class="p-6 border rounded-2xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
         <span class="inline-flex items-center justify-center mb-4 h-10 w-10 font-bold text-lg text-violet-500 bg-violet-500/10 border border-violet-500/25 rounded-full">3</span>
         <h3 class="m-0 mb-2 text-xl serif">Apply once, drive a roadtrip</h3>
-        <p class="m-0 text-sm leading-relaxed text-[color:var(--text-muted)]">One click submits an application to every leg's host. As they approve, your trip locks in. Drive each leg, get paid each leg.</p>
+        <p class="m-0 leading-relaxed text-sm text-[color:var(--text-muted)]">One click submits an application to every leg's host. As they approve, your trip locks in. Drive each leg, get paid each leg.</p>
       </div>
     </div>
   </div>

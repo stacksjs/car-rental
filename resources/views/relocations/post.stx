@@ -114,7 +114,7 @@ useSeoMeta({ title: pageTitle, robots: 'noindex' })
 
     <div class="flex flex-wrap gap-3 justify-end pt-2 border-t border-[color:var(--border)]">
       <StxLink to="/host/relocations" class="inline-flex gap-2 items-center px-5 py-3 font-semibold text-sm bg-transparent border rounded-xl border-[color:var(--border-strong)] text-[color:var(--text)] hover:bg-[color:var(--bg-subtle)]">Cancel</StxLink>
-      <button type="submit" class="px-6 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="submitting()">
+      <button type="submit" class="px-6 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="submitting()">
         <span :show="!submitting()">Publish posting</span>
         <span :show="submitting()">Publishing…</span>
       </button>

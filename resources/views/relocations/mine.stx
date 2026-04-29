@@ -80,7 +80,7 @@ const tabs = [
           <a :href="'/relocations/' + r.id" class="block p-5 border rounded-2xl transition-all bg-[color:var(--bg-elevated)] border-[color:var(--border)] hover:-translate-y-0.5">
             <div class="flex flex-wrap gap-3 items-start justify-between mb-2">
               <p class="m-0 font-semibold text-base" :text="r.car ? r.car.year + ' ' + r.car.make + ' ' + r.car.model : 'Trip #' + r.id"></p>
-              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)] bg-[color:var(--bg-muted)] border rounded-full border-[color:var(--border)]" :text="r.status"></span>
+              <span class="inline-flex items-center px-2 py-0.5 font-semibold text-[0.6875rem] tracking-wider uppercase border rounded-full bg-[color:var(--bg-muted)] border-[color:var(--border)] text-[color:var(--text-muted)]" :text="r.status"></span>
             </div>
             <div class="flex flex-wrap gap-3 items-center text-[0.8125rem] text-[color:var(--text-muted)]">
               <span :text="r.pickup_address + '  →  ' + r.dropoff_address"></span>

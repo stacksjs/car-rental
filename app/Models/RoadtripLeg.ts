@@ -4,16 +4,19 @@ import { schema } from '@stacksjs/validation'
 /**
  * RoadtripLeg = one segment of a Roadtrip, backed by a Relocation.
  *
- * Sequence ordering is per-roadtrip (0-based). The from_X / to_X fields
- * are snapshotted off the underlying Relocation at add-time so the
- * trip view stays stable even if the relocation's address text
- * changes later. status mirrors the leg's relocation lifecycle:
- *   - planned   :: leg added, no application yet
- *   - applied   :: driver has applied to the underlying relocation
- *   - approved  :: host accepted the driver for this relocation
+ * Sequence ordering is per-roadtrip (0-based). The from_X / to_X / pricing
+ * fields are snapshotted off the underlying Relocation at add-time (see
+ * _helpers.ts:snapshotLegFromRelocation) so the trip view + the deal
+ * the driver agreed to stay stable even if the host edits the
+ * relocation row later. status mirrors the leg's relocation lifecycle:
+ *   - planned     :: leg added, no application yet
+ *   - applied     :: driver has applied to the underlying relocation
+ *   - approved    :: host accepted the driver for this relocation
+ *   - rejected    :: host rejected the driver, or another driver was picked
  *   - in_progress :: driver started the relocation trip
- *   - completed :: relocation completed
- *   - cancelled :: leg removed or relocation cancelled
+ *   - completed   :: relocation completed
+ *   - cancelled   :: leg removed by user, relocation cancelled by host,
+ *                    or trip cancelled by user
  */
 export default defineModel({
   name: 'RoadtripLeg',
@@ -49,6 +52,11 @@ export default defineModel({
     relocation_id: 'integer',
     sequence: 'integer',
     estimated_distance_miles: 'integer',
+    flat_fee: 'integer',
+    per_mile_rate: 'float',
+    fuel_allowance: 'integer',
+    max_extra_days: 'integer',
+    estimated_pay: 'integer',
   },
 
   attributes: {
@@ -90,8 +98,25 @@ export default defineModel({
       factory: faker => faker.number.int({ min: 80, max: 1200 }),
     },
 
+    // Snapshot of the underlying relocation's pickup/dropoff window. Stored
+    // here so the trip view stays stable + the planner can verify timing
+    // without joining against the live relocation row.
+    earliest_pickup_date: { order: 9, fillable: true, factory: () => null },
+    latest_dropoff_date: { order: 10, fillable: true, factory: () => null },
+
+    // Snapshot of the relocation's pricing terms at add-time. Recorded
+    // verbatim so a host edit (e.g. lowering flat_fee) can't quietly change
+    // the deal an active driver already committed to. See _helpers.ts:
+    // snapshotLegFromRelocation.
+    compensation_type: { order: 11, fillable: true, factory: () => null },
+    flat_fee: { order: 12, fillable: true, factory: () => 0 },
+    per_mile_rate: { order: 13, fillable: true, factory: () => 0 },
+    fuel_allowance: { order: 14, fillable: true, factory: () => 0 },
+    max_extra_days: { order: 15, fillable: true, factory: () => 0 },
+    estimated_pay: { order: 16, fillable: true, factory: () => 0 },
+
     status: {
-      order: 9,
+      order: 17,
       fillable: true,
       validation: { rule: schema.string().required() },
       factory: () => 'planned',

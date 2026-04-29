@@ -26,12 +26,12 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
     <!-- Header card -->
     <div class="overflow-hidden mb-6 border rounded-3xl bg-[color:var(--bg-elevated)] border-[color:var(--border)]">
       <div class="grid gap-0 grid-cols-1 md:grid-cols-[280px_1fr]">
-        <img :show="reloc()?.car?.image" :attr:src="reloc()?.car?.image" class="object-cover h-48 md:h-full w-full" alt="">
+        <img :show="reloc()?.car?.image" :attr:src="reloc()?.car?.image" class="object-cover h-48 w-full md:h-full" alt="">
         <div class="p-7">
           <div class="flex flex-wrap gap-2 items-center mb-3">
             <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase rounded-full"
                   :class="statusBadgeClass(reloc()?.status)" :text="reloc()?.status"></span>
-            <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] tracking-wider uppercase text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(reloc())"></span>
+            <span class="inline-flex items-center px-2.5 py-1 font-semibold text-[0.6875rem] text-emerald-500 tracking-wider uppercase bg-emerald-500/10 border border-emerald-500/25 rounded-full" :text="payoutLabel(reloc())"></span>
           </div>
 
           <h1 class="m-0 mb-2 text-3xl serif" :text="(reloc()?.car ? reloc().car.year + ' ' + reloc().car.make + ' ' + reloc().car.model : 'Relocation #' + reloc()?.id)"></h1>
@@ -48,7 +48,7 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
             </div>
           </div>
 
-          <div class="grid gap-4 grid-cols-2 mt-5 sm:grid-cols-4">
+          <div class="grid gap-4 grid-cols-2 sm:grid-cols-4 mt-5">
             <div>
               <p class="m-0 font-semibold text-[0.6875rem] tracking-wider uppercase text-[color:var(--text-muted)]">Pickup window</p>
               <p class="m-0 mt-1 text-sm tabular" :text="reloc()?.earliest_pickup_date"></p>
@@ -107,11 +107,11 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
         <p class="m-0 mb-2 font-semibold text-[0.9375rem]">You won this relocation.</p>
         <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]">Pick up the car from <strong :text="reloc()?.pickup_address"></strong> on or after <strong :text="reloc()?.earliest_pickup_date"></strong>. When you have the keys, record the odometer below.</p>
         <div class="flex flex-wrap gap-3 items-end">
-          <label class="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+          <label class="flex flex-1 flex-col gap-1.5 min-w-[180px]">
             <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">Start odometer (mi)</span>
             <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="startOdo" placeholder="e.g. 42000">
           </label>
-          <button class="px-5 py-3 font-semibold text-sm text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="startTrip()">Start trip</button>
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="busy()" @click="startTrip()">Start trip</button>
         </div>
       </div>
 
@@ -119,11 +119,11 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
         <p class="m-0 mb-2 font-semibold text-[0.9375rem]">Trip in progress · drive safe.</p>
         <p class="m-0 mb-4 text-sm text-[color:var(--text-muted)]">When you arrive at <strong :text="reloc()?.dropoff_address"></strong>, record the final odometer to close out the trip and trigger your payout.</p>
         <div class="flex flex-wrap gap-3 items-end">
-          <label class="flex flex-col gap-1.5 flex-1 min-w-[180px]">
+          <label class="flex flex-1 flex-col gap-1.5 min-w-[180px]">
             <span class="font-semibold text-xs tracking-wider uppercase text-[color:var(--text-muted)]">End odometer (mi)</span>
             <input type="number" class="px-4 py-3 text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]" x-model="endOdo" placeholder="e.g. 42385">
           </label>
-          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="completeTrip()">Complete trip</button>
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="busy()" @click="completeTrip()">Complete trip</button>
         </div>
       </div>
 
@@ -139,7 +139,7 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
         <textarea class="px-4 py-3 w-full text-sm border rounded-xl bg-[color:var(--input-bg)] border-[color:var(--border)] text-[color:var(--text)]"
                   rows="3" placeholder="Why are you a great fit? (optional)" x-model="applyMessage"></textarea>
         <div class="flex justify-end mt-3">
-          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" :disabled="busy()" @click="apply()">Send application</button>
+          <button class="px-5 py-3 font-semibold text-sm text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed" :disabled="busy()" @click="apply()">Send application</button>
         </div>
       </div>
 
@@ -157,7 +157,7 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
       <div class="flex items-center justify-between mb-4">
         <h2 class="m-0 font-bold text-lg">Applications · <span :text="(reloc()?.applications?.length || 0)"></span></h2>
         <button :show="reloc()?.status === 'open' || reloc()?.status === 'claimed'"
-                class="px-3 py-1.5 font-semibold text-xs text-amber-600 bg-amber-500/10 border border-amber-500/30 rounded-lg cursor-pointer" @click="cancelPosting()">Cancel posting</button>
+                class="px-3 py-1.5 font-semibold text-amber-600 text-xs bg-amber-500/10 border border-amber-500/30 rounded-lg cursor-pointer" @click="cancelPosting()">Cancel posting</button>
       </div>
 
       <p :show="(reloc()?.applications?.length || 0) === 0" class="m-0 text-sm text-[color:var(--text-muted)]">No applications yet — your posting just went live.</p>
@@ -174,9 +174,9 @@ useSeoMeta({ title: pageTitle, description: 'Apply to drive this car from A to B
                 <span class="inline-flex items-center px-2 py-0.5 font-medium text-[0.6875rem] rounded-full"
                       :class="appStatusClass(app.status)" :text="app.status"></span>
                 <button :show="app.status === 'pending' && reloc()?.status === 'open'"
-                        class="px-3 py-1.5 font-semibold text-xs text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg cursor-pointer disabled:opacity-60" :disabled="busy()" @click="approve(app.id)">Approve</button>
+                        class="px-3 py-1.5 font-semibold text-white text-xs bg-emerald-500 hover:bg-emerald-600 rounded-lg disabled:opacity-60 cursor-pointer" :disabled="busy()" @click="approve(app.id)">Approve</button>
                 <button :show="app.status === 'pending' && reloc()?.status === 'open'"
-                        class="px-3 py-1.5 font-semibold text-xs text-[color:var(--text-secondary)] bg-transparent border rounded-lg cursor-pointer border-[color:var(--border-strong)] hover:bg-[color:var(--bg-hover)] disabled:opacity-60" :disabled="busy()" @click="reject(app.id)">Decline</button>
+                        class="px-3 py-1.5 font-semibold text-xs bg-transparent border rounded-lg disabled:opacity-60 cursor-pointer border-[color:var(--border-strong)] text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-hover)]" :disabled="busy()" @click="reject(app.id)">Decline</button>
               </div>
             </div>
             <p :show="app.message" class="m-0 mt-3 leading-relaxed text-sm" :text="app.message"></p>
