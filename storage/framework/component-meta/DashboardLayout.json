@@ -1,0 +1,111 @@
+{
+  "props": [
+    {
+      "name": "isMobileMenuOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "isMobile?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "currentPath?",
+      "description": "",
+      "type": "string",
+      "default": "'/'",
+      "required": false
+    },
+    {
+      "name": "isDark?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "fullWidth?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "pageTitle?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "pageDescription?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "noPadding?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "showSidebar?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "showNavbar?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "showWindowControls?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "isSidebarCollapsed?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "header",
+      "description": ""
+    },
+    {
+      "name": "header-actions",
+      "description": ""
+    },
+    {
+      "name": "default",
+      "description": ""
+    },
+    {
+      "name": "footer",
+      "description": ""
+    },
+    {
+      "name": "overlays",
+      "description": ""
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "props": [
+    {
+      "name": "to?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "active?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

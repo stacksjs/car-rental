@@ -327,7 +327,7 @@
         "@stacksjs/ts-cache": "^0.1.3",
       },
     },
-    "storage/framework/core/calendar": {
+    "storage/framework/core/calendar-api": {
       "name": "@stacksjs/calendar-api",
       "version": "0.70.23",
       "devDependencies": {
@@ -705,13 +705,6 @@
         "stripe": "^21.0.1",
       },
     },
-    "storage/framework/core/plugins": {
-      "name": "@stacksjs/slugs",
-      "version": "0.70.23",
-      "devDependencies": {
-        "better-dx": "^0.2.5",
-      },
-    },
     "storage/framework/core/push": {
       "name": "@stacksjs/push",
       "version": "0.70.23",
@@ -857,6 +850,13 @@
         "@stacksjs/path": "workspace:*",
         "@stacksjs/strings": "workspace:*",
         "@stacksjs/utils": "workspace:*",
+        "better-dx": "^0.2.5",
+      },
+    },
+    "storage/framework/core/slugs": {
+      "name": "@stacksjs/slugs",
+      "version": "0.70.23",
+      "devDependencies": {
         "better-dx": "^0.2.5",
       },
     },
@@ -1207,7 +1207,7 @@
 
     "@stacksjs/cache": ["@stacksjs/cache@workspace:storage/framework/core/cache"],
 
-    "@stacksjs/calendar-api": ["@stacksjs/calendar-api@workspace:storage/framework/core/calendar"],
+    "@stacksjs/calendar-api": ["@stacksjs/calendar-api@workspace:storage/framework/core/calendar-api"],
 
     "@stacksjs/chat": ["@stacksjs/chat@workspace:storage/framework/core/chat"],
 
@@ -1327,7 +1327,7 @@
 
     "@stacksjs/slug": ["@stacksjs/slug@workspace:storage/framework/core/slug"],
 
-    "@stacksjs/slugs": ["@stacksjs/slugs@workspace:storage/framework/core/plugins"],
+    "@stacksjs/slugs": ["@stacksjs/slugs@workspace:storage/framework/core/slugs"],
 
     "@stacksjs/sms": ["@stacksjs/sms@workspace:storage/framework/core/sms"],
 

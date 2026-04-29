@@ -1,0 +1,244 @@
+{
+  "props": [
+    {
+      "name": "type?",
+      "description": "",
+      "type": "string",
+      "default": "'serverless'",
+      "required": false
+    },
+    {
+      "name": "driver?",
+      "description": "",
+      "type": "string",
+      "default": "'aws'",
+      "required": false
+    },
+    {
+      "name": "environments?",
+      "description": "",
+      "type": "string",
+      "default": "'production,staging,development'",
+      "required": false
+    },
+    {
+      "name": "apiDescription?",
+      "description": "",
+      "type": "string",
+      "default": "'My awesome Stacks API'",
+      "required": false
+    },
+    {
+      "name": "apiPrefix?",
+      "description": "",
+      "type": "string",
+      "default": "'api'",
+      "required": false
+    },
+    {
+      "name": "apiMemorySize?",
+      "description": "",
+      "type": "string",
+      "default": "'512'",
+      "required": false
+    },
+    {
+      "name": "apiPrewarm?",
+      "description": "",
+      "type": "string",
+      "default": "'10'",
+      "required": false
+    },
+    {
+      "name": "apiTimeout?",
+      "description": "",
+      "type": "string",
+      "default": "'30'",
+      "required": false
+    },
+    {
+      "name": "firewallRateLimit?",
+      "description": "",
+      "type": "string",
+      "default": "'1000'",
+      "required": false
+    },
+    {
+      "name": "firewallCountryCodes?",
+      "description": "",
+      "type": "string",
+      "default": "'RU,IN'",
+      "required": false
+    },
+    {
+      "name": "firewallIpAddresses?",
+      "description": "",
+      "type": "string",
+      "default": "'56.123.456.789'",
+      "required": false
+    },
+    {
+      "name": "firewallQueryString?",
+      "description": "",
+      "type": "string",
+      "default": "'foo,bar'",
+      "required": false
+    },
+    {
+      "name": "firewallHttpHeaders?",
+      "description": "",
+      "type": "string",
+      "default": "'x-foo,x-bar'",
+      "required": false
+    },
+    {
+      "name": "cdnAllowedMethods?",
+      "description": "",
+      "type": "string",
+      "default": "'ALL'",
+      "required": false
+    },
+    {
+      "name": "cdnCachedMethods?",
+      "description": "",
+      "type": "string",
+      "default": "'GET_HEAD'",
+      "required": false
+    },
+    {
+      "name": "cdnOriginShieldRegion?",
+      "description": "",
+      "type": "string",
+      "default": "'us-east-1'",
+      "required": false
+    },
+    {
+      "name": "cdnDefaultTTL?",
+      "description": "",
+      "type": "string",
+      "default": "'86400'",
+      "required": false
+    },
+    {
+      "name": "cdnMinTTL?",
+      "description": "",
+      "type": "string",
+      "default": "'0'",
+      "required": false
+    },
+    {
+      "name": "cdnMaxTTL?",
+      "description": "",
+      "type": "string",
+      "default": "'31536000'",
+      "required": false
+    },
+    {
+      "name": "cdnCookieBehavior?",
+      "description": "",
+      "type": "string",
+      "default": "'none'",
+      "required": false
+    },
+    {
+      "name": "cdnCookies?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "cdnHeaders?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "cdnQueryStrings?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "cdnSamplingRate?",
+      "description": "",
+      "type": "string",
+      "default": "'1'",
+      "required": false
+    },
+    {
+      "name": "enableAI?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "enableCLI?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "enableDocs?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "enableFileSystem?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "apiDeploy?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "firewallEnabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "firewallIpReputation?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "firewallBadInputs?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "cdnCompress?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "cdnRealTimeLogsEnabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

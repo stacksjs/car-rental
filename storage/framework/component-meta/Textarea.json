@@ -1,0 +1,104 @@
+{
+  "props": [
+    {
+      "name": "value?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "label?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "placeholder?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "error?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "hint?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "disabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "readonly?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "required?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "rows?",
+      "description": "",
+      "type": "number",
+      "default": "3",
+      "required": false
+    },
+    {
+      "name": "maxLength?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    },
+    {
+      "name": "showCount?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "resize?",
+      "description": "",
+      "type": "'none' | 'vertical' | 'horizontal' | 'both'",
+      "default": "'vertical'",
+      "required": false
+    },
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "id?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

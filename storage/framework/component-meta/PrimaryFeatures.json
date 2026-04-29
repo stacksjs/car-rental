@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "features?",
+      "description": "",
+      "type": "string",
+      "default": "[, selectedIndex = 0",
+      "required": false
+    },
+    {
+      "name": "selectedIndex?",
+      "description": "",
+      "type": "number",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

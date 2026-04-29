@@ -1,0 +1,83 @@
+{
+  "props": [
+    {
+      "name": "defaultQueue?",
+      "description": "",
+      "type": "string",
+      "default": "'sync'",
+      "required": false
+    },
+    {
+      "name": "databaseTable?",
+      "description": "",
+      "type": "string",
+      "default": "'jobs'",
+      "required": false
+    },
+    {
+      "name": "databaseQueue?",
+      "description": "",
+      "type": "string",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "redisConnection?",
+      "description": "",
+      "type": "string",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "redisQueue?",
+      "description": "",
+      "type": "string",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "sqsKey?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sqsSecret?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sqsPrefix?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sqsSuffix?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sqsQueue?",
+      "description": "",
+      "type": "string",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "sqsRegion?",
+      "description": "",
+      "type": "string",
+      "default": "'us-east-1'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,55 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "link?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "topicCount?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    },
+    {
+      "name": "postCount?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    },
+    {
+      "name": "icon?",
+      "description": "",
+      "type": "string",
+      "default": "'i-hugeicons-chat'",
+      "required": false
+    },
+    {
+      "name": "latestTopic?",
+      "description": "",
+      "type": "any",
+      "default": "null",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

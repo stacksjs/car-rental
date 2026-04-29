@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "currentPath?",
+      "description": "",
+      "type": "string",
+      "default": "'/settings/ai'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

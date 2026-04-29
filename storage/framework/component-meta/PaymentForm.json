@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "productId?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "price?",
+      "description": "",
+      "type": "string",
+      "default": "'$0.00'",
+      "required": false
+    },
+    {
+      "name": "paymentIntent?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

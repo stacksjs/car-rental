@@ -1,0 +1,39 @@
+{
+  "props": [
+    {
+      "name": "align?",
+      "description": "",
+      "type": "'left' | 'right'",
+      "default": "'left'",
+      "required": false
+    },
+    {
+      "name": "width?",
+      "description": "",
+      "type": "'auto' | 'sm' | 'md' | 'lg' | 'full'",
+      "default": "'auto'",
+      "required": false
+    },
+    {
+      "name": "disabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "id?",
+      "description": "",
+      "type": "string",
+      "default": "'dropdown-' + Math.random().toString(36).slice(2, 11)",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

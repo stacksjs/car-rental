@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "showDropdown?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "isDark?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "theme?",
+      "description": "",
+      "type": "string",
+      "default": "'light'",
+      "required": false
+    },
+    {
+      "name": "isSidebarCollapsed?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "currentPath?",
+      "description": "",
+      "type": "string",
+      "default": "'/'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

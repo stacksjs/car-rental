@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "activeFolder?",
+      "description": "",
+      "type": "string",
+      "default": "'inbox'",
+      "required": false
+    },
+    {
+      "name": "folders?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "unreadCounts?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "{}",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

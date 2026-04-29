@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "width?",
+      "description": "",
+      "type": "number",
+      "default": "16",
+      "required": false
+    },
+    {
+      "name": "height?",
+      "description": "",
+      "type": "number",
+      "default": "4",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

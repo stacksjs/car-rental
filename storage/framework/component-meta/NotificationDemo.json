@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "position?",
+      "description": "",
+      "type": "string",
+      "default": "'top-right'",
+      "required": false
+    },
+    {
+      "name": "theme?",
+      "description": "",
+      "type": "string",
+      "default": "'light'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

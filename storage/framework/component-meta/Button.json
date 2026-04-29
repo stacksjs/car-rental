@@ -1,0 +1,67 @@
+{
+  "props": [
+    {
+      "name": "variant?",
+      "description": "",
+      "type": "'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success'",
+      "default": "'primary'",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'xs' | 'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "disabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "fullWidth?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "iconOnly?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "href?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "type?",
+      "description": "",
+      "type": "string",
+      "default": "'button'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

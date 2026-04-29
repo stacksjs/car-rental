@@ -1,0 +1,83 @@
+{
+  "props": [
+    {
+      "name": "value?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "options?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "placeholder?",
+      "description": "",
+      "type": "string",
+      "default": "'Select an option'",
+      "required": false
+    },
+    {
+      "name": "label?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "error?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "hint?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "disabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "required?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'xs' | 'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "id?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

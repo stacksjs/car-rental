@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "'My Custom CLI'",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "'My Custom CLI'",
+      "required": false
+    },
+    {
+      "name": "command?",
+      "description": "",
+      "type": "string",
+      "default": "'my-custom-cli'",
+      "required": false
+    },
+    {
+      "name": "deploy?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

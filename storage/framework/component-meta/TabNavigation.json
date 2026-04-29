@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "modelValue?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "tabs?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

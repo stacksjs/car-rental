@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "currentPage?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "totalPages?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "pages?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "errors?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "searchQuery?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "statusFilter?",
+      "description": "",
+      "type": "string",
+      "default": "'all'",
+      "required": false
+    },
+    {
+      "name": "typeFilter?",
+      "description": "",
+      "type": "string",
+      "default": "'all'",
+      "required": false
+    },
+    {
+      "name": "sortBy?",
+      "description": "",
+      "type": "string",
+      "default": "'last_seen'",
+      "required": false
+    },
+    {
+      "name": "sortOrder?",
+      "description": "",
+      "type": "string",
+      "default": "'desc'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

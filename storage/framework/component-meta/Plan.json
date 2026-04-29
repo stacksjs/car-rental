@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "price?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "href?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "features?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "featured?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

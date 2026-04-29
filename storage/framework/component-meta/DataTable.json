@@ -1,0 +1,60 @@
+{
+  "props": [
+    {
+      "name": "columns?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "data?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "striped?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "emptyTitle?",
+      "description": "",
+      "type": "string",
+      "default": "'No data found'",
+      "required": false
+    },
+    {
+      "name": "emptyDescription?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "emptyIcon?",
+      "description": "",
+      "type": "string",
+      "default": "'i-hugeicons-folder-02'",
+      "required": false
+    },
+    {
+      "name": "hoverable?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

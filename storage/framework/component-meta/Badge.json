@@ -1,0 +1,46 @@
+{
+  "props": [
+    {
+      "name": "variant?",
+      "description": "",
+      "type": "'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'xs' | 'sm' | 'md' | 'lg'",
+      "default": "'sm'",
+      "required": false
+    },
+    {
+      "name": "rounded?",
+      "description": "",
+      "type": "'default' | 'full'",
+      "default": "'full'",
+      "required": false
+    },
+    {
+      "name": "outline?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "dot?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

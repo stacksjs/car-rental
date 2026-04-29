@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "stats?",
+      "description": "",
+      "type": "string",
+      "default": "{, popularTopics = [], onlineUsers = []",
+      "required": false
+    },
+    {
+      "name": "popularTopics?",
+      "description": "",
+      "type": "any[]",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "onlineUsers?",
+      "description": "",
+      "type": "any[]",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

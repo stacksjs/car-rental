@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "currentPath?",
+      "description": "",
+      "type": "string",
+      "default": "'/'",
+      "required": false
+    },
+    {
+      "name": "user?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "notificationCount?",
+      "description": "",
+      "type": "number",
+      "default": "3",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

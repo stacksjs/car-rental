@@ -1,0 +1,97 @@
+{
+  "props": [
+    {
+      "name": "defaultDisk?",
+      "description": "",
+      "type": "string",
+      "default": "'local'",
+      "required": false
+    },
+    {
+      "name": "localDriver?",
+      "description": "",
+      "type": "string",
+      "default": "'local'",
+      "required": false
+    },
+    {
+      "name": "localRoot?",
+      "description": "",
+      "type": "string",
+      "default": "'storage'",
+      "required": false
+    },
+    {
+      "name": "publicDriver?",
+      "description": "",
+      "type": "string",
+      "default": "'public'",
+      "required": false
+    },
+    {
+      "name": "publicRoot?",
+      "description": "",
+      "type": "string",
+      "default": "'storage/public'",
+      "required": false
+    },
+    {
+      "name": "privateDriver?",
+      "description": "",
+      "type": "string",
+      "default": "'private'",
+      "required": false
+    },
+    {
+      "name": "privateRoot?",
+      "description": "",
+      "type": "string",
+      "default": "'storage/private'",
+      "required": false
+    },
+    {
+      "name": "efsDriver?",
+      "description": "",
+      "type": "string",
+      "default": "'local'",
+      "required": false
+    },
+    {
+      "name": "efsRoot?",
+      "description": "",
+      "type": "string",
+      "default": "'/mnt/efs'",
+      "required": false
+    },
+    {
+      "name": "s3Driver?",
+      "description": "",
+      "type": "string",
+      "default": "'s3'",
+      "required": false
+    },
+    {
+      "name": "s3Root?",
+      "description": "",
+      "type": "string",
+      "default": "'s3'",
+      "required": false
+    },
+    {
+      "name": "publicVisibility?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "privateVisibility?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,67 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "value?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "subtitle?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "trendLabel?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "icon?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "iconBg?",
+      "description": "",
+      "type": "'primary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral'",
+      "default": "'primary'",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "trend?",
+      "description": "",
+      "type": "any",
+      "default": "null",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

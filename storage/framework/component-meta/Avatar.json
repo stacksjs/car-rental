@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "src?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "alt?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "rounded?",
+      "description": "",
+      "type": "'sm' | 'md' | 'lg' | 'full'",
+      "default": "'full'",
+      "required": false
+    },
+    {
+      "name": "status?",
+      "description": "",
+      "type": "'online' | 'offline' | 'away' | 'busy'",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

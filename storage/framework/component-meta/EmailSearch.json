@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "modelValue?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "timeRange?",
+      "description": "",
+      "type": "'day' | 'week' | 'month' | 'year'",
+      "default": "'day'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

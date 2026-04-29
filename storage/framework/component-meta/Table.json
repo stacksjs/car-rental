@@ -1,0 +1,103 @@
+{
+  "props": [
+    {
+      "name": "columns?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "data?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "selectable?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "striped?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "bordered?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "compact?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "stickyHeader?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "emptyTitle?",
+      "description": "",
+      "type": "string",
+      "default": "'No data'",
+      "required": false
+    },
+    {
+      "name": "emptyDescription?",
+      "description": "",
+      "type": "string",
+      "default": "'There are no items to display.'",
+      "required": false
+    },
+    {
+      "name": "rowKey?",
+      "description": "",
+      "type": "string",
+      "default": "'id'",
+      "required": false
+    },
+    {
+      "name": "hoverable?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "actions",
+      "description": ""
+    },
+    {
+      "name": "empty",
+      "description": ""
+    },
+    {
+      "name": "footer",
+      "description": ""
+    }
+  ]
+}

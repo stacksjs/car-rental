@@ -1,0 +1,83 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "'Create an account'",
+      "required": false
+    },
+    {
+      "name": "subtitle?",
+      "description": "",
+      "type": "string",
+      "default": "'Get started with your free account'",
+      "required": false
+    },
+    {
+      "name": "name?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "email?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "password?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "passwordConfirmation?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "agreeToTerms?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "isLoading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "error?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "errors?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "{}",
+      "required": false
+    },
+    {
+      "name": "showLogin?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

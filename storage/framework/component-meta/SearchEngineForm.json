@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "defaultEngine?",
+      "description": "",
+      "type": "string",
+      "default": "'opensearch'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

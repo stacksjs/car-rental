@@ -1,0 +1,46 @@
+{
+  "props": [
+    {
+      "name": "variant?",
+      "description": "",
+      "type": "'default' | 'elevated' | 'outline' | 'ghost' | 'vibrancy'",
+      "default": "'default'",
+      "required": false
+    },
+    {
+      "name": "padding?",
+      "description": "",
+      "type": "'none' | 'sm' | 'md' | 'lg' | 'xl'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "rounded?",
+      "description": "",
+      "type": "'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'",
+      "default": "'lg'",
+      "required": false
+    },
+    {
+      "name": "hoverable?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "clickable?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

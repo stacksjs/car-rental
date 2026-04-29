@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "fromName?",
+      "description": "",
+      "type": "string",
+      "default": "'Stacks'",
+      "required": false
+    },
+    {
+      "name": "fromAddress?",
+      "description": "",
+      "type": "string",
+      "default": "'no-reply@stacksjs.com'",
+      "required": false
+    },
+    {
+      "name": "mailboxes?",
+      "description": "",
+      "type": "string",
+      "default": "'chris@stacksjs.com,blake@stacksjs.com,glenn@stacksjs.com'",
+      "required": false
+    },
+    {
+      "name": "url?",
+      "description": "",
+      "type": "string",
+      "default": "'http:, charset = 'UTF-8', scanServer = true",
+      "required": false
+    },
+    {
+      "name": "charset?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "scanServer?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,18 @@
+{
+  "props": [
+    {
+      "name": "route?",
+      "description": "",
+      "type": "string",
+      "default": "'forum'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

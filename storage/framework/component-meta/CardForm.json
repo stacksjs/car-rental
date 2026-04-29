@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "clientSecret?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

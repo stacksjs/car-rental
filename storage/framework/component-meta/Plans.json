@@ -1,0 +1,76 @@
+{
+  "props": [
+    {
+      "name": "currentPlan?",
+      "description": "",
+      "type": "any",
+      "default": "null",
+      "required": false
+    },
+    {
+      "name": "hasPaymentMethods?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "updatingPlanState?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "hobbyMonthlyPrice?",
+      "description": "",
+      "type": "number",
+      "default": "39",
+      "required": false
+    },
+    {
+      "name": "hobbyYearlyPrice?",
+      "description": "",
+      "type": "number",
+      "default": "379",
+      "required": false
+    },
+    {
+      "name": "hobbyLifetimePrice?",
+      "description": "",
+      "type": "number",
+      "default": "479",
+      "required": false
+    },
+    {
+      "name": "proMonthlyPrice?",
+      "description": "",
+      "type": "number",
+      "default": "59",
+      "required": false
+    },
+    {
+      "name": "proYearlyPrice?",
+      "description": "",
+      "type": "number",
+      "default": "579",
+      "required": false
+    },
+    {
+      "name": "proLifetimePrice?",
+      "description": "",
+      "type": "number",
+      "default": "749",
+      "required": false
+    },
+    {
+      "name": "showPlans?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

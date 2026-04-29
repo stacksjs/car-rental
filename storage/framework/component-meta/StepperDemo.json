@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "currentStep?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    },
+    {
+      "name": "steps?",
+      "description": "",
+      "type": "string",
+      "default": "[",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

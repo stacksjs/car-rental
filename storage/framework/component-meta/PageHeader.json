@@ -1,0 +1,55 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "backLink?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "backLabel?",
+      "description": "",
+      "type": "string",
+      "default": "'Back'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "icon",
+      "description": ""
+    },
+    {
+      "name": "tags",
+      "description": ""
+    },
+    {
+      "name": "actions",
+      "description": ""
+    },
+    {
+      "name": "tabs",
+      "description": ""
+    },
+    {
+      "name": "filters",
+      "description": ""
+    }
+  ]
+}

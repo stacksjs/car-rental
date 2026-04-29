@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "driver?",
+      "description": "",
+      "type": "string",
+      "default": "'Fathom'",
+      "required": false
+    },
+    {
+      "name": "googleAnalyticsId?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "fathomSiteId?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "rates?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

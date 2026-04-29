@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "timeRange?",
+      "description": "",
+      "type": "'day' | 'week' | 'month' | 'year'",
+      "default": "'day'",
+      "required": false
+    },
+    {
+      "name": "isLoading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "chartOptions?",
+      "description": "",
+      "type": "string",
+      "default": "{",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

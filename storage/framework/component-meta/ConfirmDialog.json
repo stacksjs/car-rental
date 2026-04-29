@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "'Are you sure?'",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "'This action cannot be undone.'",
+      "required": false
+    },
+    {
+      "name": "confirmLabel?",
+      "description": "",
+      "type": "string",
+      "default": "'Delete'",
+      "required": false
+    },
+    {
+      "name": "cancelLabel?",
+      "description": "",
+      "type": "string",
+      "default": "'Cancel'",
+      "required": false
+    },
+    {
+      "name": "variant?",
+      "description": "",
+      "type": "'danger' | 'warning'",
+      "default": "'danger'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

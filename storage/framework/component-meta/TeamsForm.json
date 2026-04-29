@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "teamMembers?",
+      "description": "",
+      "type": "string",
+      "default": "[",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

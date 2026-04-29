@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "selectedCount?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    },
+    {
+      "name": "defaultActions?",
+      "description": "",
+      "type": "string",
+      "default": "[, actions",
+      "required": false
+    },
+    {
+      "name": "actions?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

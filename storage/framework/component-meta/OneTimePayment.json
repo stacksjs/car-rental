@@ -1,0 +1,25 @@
+{
+  "props": [
+    {
+      "name": "product?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "{}",
+      "required": false
+    },
+    {
+      "name": "paymentIntent?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "paymentForm",
+      "description": ""
+    }
+  ]
+}

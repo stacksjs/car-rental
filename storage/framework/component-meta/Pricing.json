@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "plans?",
+      "description": "",
+      "type": "string",
+      "default": "[",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

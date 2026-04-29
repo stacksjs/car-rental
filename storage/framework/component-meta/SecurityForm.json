@@ -1,0 +1,62 @@
+{
+  "props": [
+    {
+      "name": "rateLimitPerMinute?",
+      "description": "",
+      "type": "string",
+      "default": "'1000'",
+      "required": false
+    },
+    {
+      "name": "countryCodes?",
+      "description": "",
+      "type": "string",
+      "default": "'RU,IN'",
+      "required": false
+    },
+    {
+      "name": "ipAddresses?",
+      "description": "",
+      "type": "string",
+      "default": "'56.123.456.789'",
+      "required": false
+    },
+    {
+      "name": "queryString?",
+      "description": "",
+      "type": "string",
+      "default": "'foo,bar'",
+      "required": false
+    },
+    {
+      "name": "httpHeaders?",
+      "description": "",
+      "type": "string",
+      "default": "'x-foo,x-bar'",
+      "required": false
+    },
+    {
+      "name": "firewallEnabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "useIpReputationLists?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "useKnownBadInputs?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

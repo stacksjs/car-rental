@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "visible?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "currentTransition?",
+      "description": "",
+      "type": "string",
+      "default": "'fade'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

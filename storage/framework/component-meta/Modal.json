@@ -1,0 +1,46 @@
+{
+  "props": [
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'sm' | 'md' | 'lg' | 'xl' | 'full'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "closable?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

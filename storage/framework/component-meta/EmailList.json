@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "emails?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "activeFolder?",
+      "description": "",
+      "type": "string",
+      "default": "'inbox'",
+      "required": false
+    },
+    {
+      "name": "searchQuery?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

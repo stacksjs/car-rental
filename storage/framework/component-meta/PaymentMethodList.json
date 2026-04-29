@@ -1,0 +1,36 @@
+{
+  "props": [
+    {
+      "name": "userId?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "paymentMethods?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "loading",
+      "description": ""
+    },
+    {
+      "name": "cardBrand",
+      "description": ""
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "showButtons?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "greeting?",
+      "description": "",
+      "type": "string",
+      "default": "'Welcome!'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

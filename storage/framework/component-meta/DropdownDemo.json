@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "menuItems?",
+      "description": "",
+      "type": "string",
+      "default": "[, isOpen = false",
+      "required": false
+    },
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

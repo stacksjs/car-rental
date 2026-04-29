@@ -1,0 +1,62 @@
+{
+  "props": [
+    {
+      "name": "mysqlHost?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks'",
+      "required": false
+    },
+    {
+      "name": "mysqlPort?",
+      "description": "",
+      "type": "string",
+      "default": "'3306'",
+      "required": false
+    },
+    {
+      "name": "mysqlUsername?",
+      "description": "",
+      "type": "string",
+      "default": "'root'",
+      "required": false
+    },
+    {
+      "name": "mysqlPassword?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "mysqlDatabase?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sqliteHost?",
+      "description": "",
+      "type": "string",
+      "default": "'127.0.0.1'",
+      "required": false
+    },
+    {
+      "name": "sqlitePrefix?",
+      "description": "",
+      "type": "string",
+      "default": "'sqlite'",
+      "required": false
+    },
+    {
+      "name": "sqliteDatabase?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

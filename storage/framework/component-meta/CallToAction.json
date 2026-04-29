@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "backgroundImage?",
+      "description": "",
+      "type": "string",
+      "default": "'/images/background-call-to-action.jpg'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "title",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": true
+    },
+    {
+      "name": "value",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": true
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "trend?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "icon?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

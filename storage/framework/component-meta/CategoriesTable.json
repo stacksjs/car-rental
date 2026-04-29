@@ -1,0 +1,55 @@
+{
+  "props": [
+    {
+      "name": "categories?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "searchQuery?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "featuredFilter?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sortBy?",
+      "description": "",
+      "type": "string",
+      "default": "'name'",
+      "required": false
+    },
+    {
+      "name": "sortOrder?",
+      "description": "",
+      "type": "string",
+      "default": "'asc'",
+      "required": false
+    },
+    {
+      "name": "currentPage?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "itemsPerPage?",
+      "description": "",
+      "type": "number",
+      "default": "10",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

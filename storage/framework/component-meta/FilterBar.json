@@ -1,0 +1,46 @@
+{
+  "props": [
+    {
+      "name": "searchPlaceholder?",
+      "description": "",
+      "type": "string",
+      "default": "'Search...'",
+      "required": false
+    },
+    {
+      "name": "searchValue?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "itemsPerPage?",
+      "description": "",
+      "type": "number",
+      "default": "10",
+      "required": false
+    },
+    {
+      "name": "itemsPerPageOptions?",
+      "description": "",
+      "type": "string",
+      "default": "[10, 25, 50, 100]",
+      "required": false
+    },
+    {
+      "name": "showItemsPerPage?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

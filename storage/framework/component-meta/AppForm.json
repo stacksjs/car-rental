@@ -1,0 +1,97 @@
+{
+  "props": [
+    {
+      "name": "appName?",
+      "description": "",
+      "type": "string",
+      "default": "'Stacks'",
+      "required": false
+    },
+    {
+      "name": "appKey?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "appUrl?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks.localhost'",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "environment?",
+      "description": "",
+      "type": "string",
+      "default": "'local'",
+      "required": false
+    },
+    {
+      "name": "redirectUrls?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks.localhost,localhost:3000,stack.com'",
+      "required": false
+    },
+    {
+      "name": "timezone?",
+      "description": "",
+      "type": "string",
+      "default": "'America/Los_Angeles'",
+      "required": false
+    },
+    {
+      "name": "locale?",
+      "description": "",
+      "type": "string",
+      "default": "'en'",
+      "required": false
+    },
+    {
+      "name": "fallbackLocale?",
+      "description": "",
+      "type": "string",
+      "default": "'en'",
+      "required": false
+    },
+    {
+      "name": "cipher?",
+      "description": "",
+      "type": "string",
+      "default": "'aes-256-cbc'",
+      "required": false
+    },
+    {
+      "name": "appDebug?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "maintenanceMode?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "docMode?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "selectedModel?",
+      "description": "",
+      "type": "string",
+      "default": "'meta.llama2-70b-chat-v1'",
+      "required": false
+    },
+    {
+      "name": "deployAI?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,29 @@
+{
+  "props": [
+    {
+      "name": "id?",
+      "description": "",
+      "type": "string",
+      "default": "'modal-' + Math.random().toString(36).slice(2, 11)",
+      "required": false
+    },
+    {
+      "name": "show?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "body",
+      "description": ""
+    },
+    {
+      "name": "actions",
+      "description": ""
+    }
+  ]
+}

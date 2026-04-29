@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "deployments?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

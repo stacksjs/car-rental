@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "notificationId?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "notificationType?",
+      "description": "",
+      "type": "string",
+      "default": "'email'",
+      "required": false
+    },
+    {
+      "name": "errorMessage?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sentAt?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

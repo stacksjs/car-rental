@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "email?",
+      "description": "",
+      "type": "string",
+      "default": "{",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

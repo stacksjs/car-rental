@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "brand?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "width?",
+      "description": "",
+      "type": "number",
+      "default": "4",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

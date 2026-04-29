@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "placeholder?",
+      "description": "",
+      "type": "string",
+      "default": "'Search...'",
+      "required": false
+    },
+    {
+      "name": "searchQuery?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

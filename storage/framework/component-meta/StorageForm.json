@@ -1,0 +1,97 @@
+{
+  "props": [
+    {
+      "name": "defaultStorage?",
+      "description": "",
+      "type": "string",
+      "default": "'s3'",
+      "required": false
+    },
+    {
+      "name": "s3Key?",
+      "description": "",
+      "type": "string",
+      "default": "'JKHJK$KJAHKS'",
+      "required": false
+    },
+    {
+      "name": "s3Secret?",
+      "description": "",
+      "type": "string",
+      "default": "'kldsanko3njksdasjfasdn2m'",
+      "required": false
+    },
+    {
+      "name": "s3Region?",
+      "description": "",
+      "type": "string",
+      "default": "'us-east-1'",
+      "required": false
+    },
+    {
+      "name": "s3Bucket?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks'",
+      "required": false
+    },
+    {
+      "name": "s3Url?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks.s3.amazonaws.com'",
+      "required": false
+    },
+    {
+      "name": "dropboxKey?",
+      "description": "",
+      "type": "string",
+      "default": "'JKHJK$KJAHKS'",
+      "required": false
+    },
+    {
+      "name": "dropboxSecret?",
+      "description": "",
+      "type": "string",
+      "default": "'kldsanko3njksdasjfasdn2m'",
+      "required": false
+    },
+    {
+      "name": "dropboxBox?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks'",
+      "required": false
+    },
+    {
+      "name": "meemaKey?",
+      "description": "",
+      "type": "string",
+      "default": "'HJDSU41HJJKAD'",
+      "required": false
+    },
+    {
+      "name": "meemaSecret?",
+      "description": "",
+      "type": "string",
+      "default": "'jkhnb523nbmnb9dsanmeop'",
+      "required": false
+    },
+    {
+      "name": "meemaRegion?",
+      "description": "",
+      "type": "string",
+      "default": "'us-east-1'",
+      "required": false
+    },
+    {
+      "name": "meemaBucket?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

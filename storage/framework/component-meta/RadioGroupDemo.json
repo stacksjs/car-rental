@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "plans?",
+      "description": "",
+      "type": "string",
+      "default": "[, selected = plans[0]",
+      "required": false
+    },
+    {
+      "name": "selected?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

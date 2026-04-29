@@ -1,0 +1,26 @@
+{
+  "props": [
+    {
+      "name": "showModal?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "deployScript",
+      "description": ""
+    },
+    {
+      "name": "deploymentHistory",
+      "description": ""
+    },
+    {
+      "name": "modal",
+      "description": ""
+    }
+  ]
+}

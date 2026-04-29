@@ -1,0 +1,62 @@
+{
+  "props": [
+    {
+      "name": "orders?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "searchQuery?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "statusFilter?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "sortBy?",
+      "description": "",
+      "type": "string",
+      "default": "'id'",
+      "required": false
+    },
+    {
+      "name": "sortOrder?",
+      "description": "",
+      "type": "string",
+      "default": "'desc'",
+      "required": false
+    },
+    {
+      "name": "currentPage?",
+      "description": "",
+      "type": "number",
+      "default": "1",
+      "required": false
+    },
+    {
+      "name": "itemsPerPage?",
+      "description": "",
+      "type": "number",
+      "default": "10",
+      "required": false
+    },
+    {
+      "name": "statuses?",
+      "description": "",
+      "type": "string",
+      "default": "['Completed', 'Processing', 'Shipped', 'Cancelled', 'Refunded']",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

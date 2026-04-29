@@ -1,0 +1,39 @@
+{
+  "props": [
+    {
+      "name": "label?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "position?",
+      "description": "",
+      "type": "string",
+      "default": "'bottom'",
+      "required": false
+    },
+    {
+      "name": "dark?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "alignment?",
+      "description": "",
+      "type": "string",
+      "default": "'center'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

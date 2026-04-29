@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "nameservers?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "aRecords?",
+      "description": "",
+      "type": "string",
+      "default": "[",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

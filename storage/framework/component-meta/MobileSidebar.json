@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "companyLogo?",
+      "description": "",
+      "type": "string",
+      "default": "'https:, companyName = 'Your Company'",
+      "required": false
+    },
+    {
+      "name": "companyName?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

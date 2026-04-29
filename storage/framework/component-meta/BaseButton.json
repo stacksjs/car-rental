@@ -1,0 +1,27 @@
+{
+  "props": [
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "buttonText?",
+      "description": "",
+      "type": "string",
+      "default": "'Submit'",
+      "required": false
+    },
+    {
+      "name": "classString?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

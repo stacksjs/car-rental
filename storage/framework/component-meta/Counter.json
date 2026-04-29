@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "count?",
+      "description": "",
+      "type": "number",
+      "default": "0",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

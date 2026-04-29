@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "backgroundImage?",
+      "description": "",
+      "type": "string",
+      "default": "'/images/screenshots/background-features.jpg'",
+      "required": false
+    },
+    {
+      "name": "screenshotPayroll?",
+      "description": "",
+      "type": "string",
+      "default": "'/images/screenshots/payroll.webp'",
+      "required": false
+    },
+    {
+      "name": "features?",
+      "description": "",
+      "type": "string",
+      "default": "[, selectedIndex = 0, tabOrientation = 'vertical'",
+      "required": false
+    },
+    {
+      "name": "selectedIndex?",
+      "description": "",
+      "type": "number",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "tabOrientation?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

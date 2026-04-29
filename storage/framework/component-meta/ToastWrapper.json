@@ -1,0 +1,25 @@
+{
+  "props": [
+    {
+      "name": "width?",
+      "description": "",
+      "type": "number",
+      "default": "30",
+      "required": false
+    },
+    {
+      "name": "position?",
+      "description": "",
+      "type": "'center' | 'top' | 'top-right' | 'top-left'",
+      "default": "'top-right'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "body",
+      "description": ""
+    }
+  ]
+}

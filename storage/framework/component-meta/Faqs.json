@@ -1,0 +1,20 @@
+{
+  "props": [
+    {
+      "name": "backgroundImage?",
+      "description": "",
+      "type": "string",
+      "default": "'/images/background-faqs.jpg'",
+      "required": false
+    },
+    {
+      "name": "faqs?",
+      "description": "",
+      "type": "string",
+      "default": "[",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

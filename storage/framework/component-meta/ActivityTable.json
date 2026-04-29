@@ -1,0 +1,25 @@
+{
+  "props": [
+    {
+      "name": "activities?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "'Recent Activity'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "actions",
+      "description": ""
+    }
+  ]
+}

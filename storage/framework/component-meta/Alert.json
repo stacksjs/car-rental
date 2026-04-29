@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "description?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "type?",
+      "description": "",
+      "type": "'info' | 'warning' | 'danger' | 'success' | 'error'",
+      "default": "'info'",
+      "required": false
+    },
+    {
+      "name": "confirmationText?",
+      "description": "",
+      "type": "string",
+      "default": "'Confirm'",
+      "required": false
+    },
+    {
+      "name": "abortText?",
+      "description": "",
+      "type": "string",
+      "default": "'Cancel'",
+      "required": false
+    },
+    {
+      "name": "show?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

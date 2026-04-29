@@ -1,0 +1,22 @@
+{
+  "props": [
+    {
+      "name": "isPreviewMode?",
+      "description": "",
+      "type": "boolean",
+      "default": "true",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    },
+    {
+      "name": "code",
+      "description": ""
+    }
+  ]
+}

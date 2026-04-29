@@ -1,0 +1,97 @@
+{
+  "props": [
+    {
+      "name": "dynamoHost?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks.s3.amazonaws.com'",
+      "required": false
+    },
+    {
+      "name": "dynamoKey?",
+      "description": "",
+      "type": "string",
+      "default": "'kldsanko3njksdasjfasdn2m'",
+      "required": false
+    },
+    {
+      "name": "dynamoSecret?",
+      "description": "",
+      "type": "string",
+      "default": "'kldsanko3njksdasjfasdn2m'",
+      "required": false
+    },
+    {
+      "name": "dynamoRegion?",
+      "description": "",
+      "type": "string",
+      "default": "'us-east-1'",
+      "required": false
+    },
+    {
+      "name": "dynamoTable?",
+      "description": "",
+      "type": "string",
+      "default": "'cache'",
+      "required": false
+    },
+    {
+      "name": "memcachedPersistentId?",
+      "description": "",
+      "type": "string",
+      "default": "'hj3jknkjh1kjh5'",
+      "required": false
+    },
+    {
+      "name": "memcachedUsername?",
+      "description": "",
+      "type": "string",
+      "default": "'username'",
+      "required": false
+    },
+    {
+      "name": "memcachedPassword?",
+      "description": "",
+      "type": "string",
+      "default": "'test@123'",
+      "required": false
+    },
+    {
+      "name": "memcachedHost?",
+      "description": "",
+      "type": "string",
+      "default": "'stacks.s3.amazonaws.com'",
+      "required": false
+    },
+    {
+      "name": "memcachedPort?",
+      "description": "",
+      "type": "string",
+      "default": "'11211'",
+      "required": false
+    },
+    {
+      "name": "redisHost?",
+      "description": "",
+      "type": "string",
+      "default": "'127.0.0.1'",
+      "required": false
+    },
+    {
+      "name": "redisPort?",
+      "description": "",
+      "type": "string",
+      "default": "'6379'",
+      "required": false
+    },
+    {
+      "name": "redisPassword?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

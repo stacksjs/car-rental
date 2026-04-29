@@ -1,0 +1,51 @@
+{
+  "props": [
+    {
+      "name": "defaultPaymentMethod?",
+      "description": "",
+      "type": "any",
+      "default": "null",
+      "required": false
+    },
+    {
+      "name": "paymentMethods?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "showCardForm?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "loading",
+      "description": ""
+    },
+    {
+      "name": "cardBrand",
+      "description": ""
+    },
+    {
+      "name": "paymentMethodList",
+      "description": ""
+    },
+    {
+      "name": "cardForm",
+      "description": ""
+    }
+  ]
+}

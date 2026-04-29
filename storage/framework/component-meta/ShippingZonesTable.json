@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "zones?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,25 @@
+{
+  "props": [
+    {
+      "name": "inter?",
+      "description": "",
+      "type": "string",
+      "default": "{, lexend = {",
+      "required": false
+    },
+    {
+      "name": "lexend?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

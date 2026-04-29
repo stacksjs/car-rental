@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "live?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "lang?",
+      "description": "",
+      "type": "string",
+      "default": "'typescript'",
+      "required": false
+    },
+    {
+      "name": "theme?",
+      "description": "",
+      "type": "string",
+      "default": "'github_dark'",
+      "required": false
+    },
+    {
+      "name": "content?",
+      "description": "",
+      "type": "string",
+      "default": "`echo 'Hello World!'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

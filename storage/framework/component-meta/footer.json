@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "currentYear?",
+      "description": "",
+      "type": "string",
+      "default": "new Date().getFullYear()",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "variant?",
+      "description": "",
+      "type": "'macos' | 'windows'",
+      "default": "'macos'",
+      "required": false
+    },
+    {
+      "name": "size?",
+      "description": "",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "required": false
+    },
+    {
+      "name": "showLabels?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "disabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

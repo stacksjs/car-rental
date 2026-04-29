@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "type?",
+      "description": "",
+      "type": "string",
+      "default": "'line'",
+      "required": false
+    },
+    {
+      "name": "data",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "unknown",
+      "required": true
+    },
+    {
+      "name": "options?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "{}",
+      "required": false
+    },
+    {
+      "name": "height?",
+      "description": "",
+      "type": "string",
+      "default": "'300px'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

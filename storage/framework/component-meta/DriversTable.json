@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "drivers?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

@@ -1,0 +1,153 @@
+{
+  "props": [
+    {
+      "name": "libraryName?",
+      "description": "",
+      "type": "string",
+      "default": "'hello-world'",
+      "required": false
+    },
+    {
+      "name": "libraryOwner?",
+      "description": "",
+      "type": "string",
+      "default": "'@stacksjs'",
+      "required": false
+    },
+    {
+      "name": "libraryRepository?",
+      "description": "",
+      "type": "string",
+      "default": "'stacksjs/stacks'",
+      "required": false
+    },
+    {
+      "name": "libraryLicense?",
+      "description": "",
+      "type": "string",
+      "default": "'MIT'",
+      "required": false
+    },
+    {
+      "name": "libraryAuthor?",
+      "description": "",
+      "type": "string",
+      "default": "'Chris Breuer'",
+      "required": false
+    },
+    {
+      "name": "libraryDefaultLanguage?",
+      "description": "",
+      "type": "string",
+      "default": "'en'",
+      "required": false
+    },
+    {
+      "name": "libraryContributors?",
+      "description": "",
+      "type": "string",
+      "default": "'Chris Breuer <chris@stacksjs.com>'",
+      "required": false
+    },
+    {
+      "name": "functionsName?",
+      "description": "",
+      "type": "string",
+      "default": "'hello-world-fx'",
+      "required": false
+    },
+    {
+      "name": "functionsDescription?",
+      "description": "",
+      "type": "string",
+      "default": "'Your function library description.'",
+      "required": false
+    },
+    {
+      "name": "functionsKeywords?",
+      "description": "",
+      "type": "string",
+      "default": "'functions,composables,library,typescript,javascript'",
+      "required": false
+    },
+    {
+      "name": "functionsFiles?",
+      "description": "",
+      "type": "string",
+      "default": "'counter,dark'",
+      "required": false
+    },
+    {
+      "name": "stxComponentsName?",
+      "description": "",
+      "type": "string",
+      "default": "'hello-world-stx'",
+      "required": false
+    },
+    {
+      "name": "stxComponentsKeywords?",
+      "description": "",
+      "type": "string",
+      "default": "'component,library,stx,vite,typescript,javascript'",
+      "required": false
+    },
+    {
+      "name": "stxComponentsDescription?",
+      "description": "",
+      "type": "string",
+      "default": "'Your stx component library description'",
+      "required": false
+    },
+    {
+      "name": "stxComponentsTags?",
+      "description": "",
+      "type": "string",
+      "default": "[, webComponentsName = 'hello-world-elements', webComponentsKeywords = 'custom-elements,web-components,library,framework-agnostic,typescript,javascript', webComponentsDescription = 'Your framework agnostic web component library description.', webComponentsTags = [, libraryReleaseable = true, functionsGenerateSourcemap = true",
+      "required": false
+    },
+    {
+      "name": "webComponentsName?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "webComponentsKeywords?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "webComponentsDescription?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "webComponentsTags?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "libraryReleaseable?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "functionsGenerateSourcemap?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

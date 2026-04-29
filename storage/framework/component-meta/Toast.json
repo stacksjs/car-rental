@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "show?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "type?",
+      "description": "",
+      "type": "'warning' | 'success' | 'error' | 'info'",
+      "default": "'warning'",
+      "required": false
+    },
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "'sample title'",
+      "required": false
+    },
+    {
+      "name": "position?",
+      "description": "",
+      "type": "string",
+      "default": "'top-right'",
+      "required": false
+    },
+    {
+      "name": "id?",
+      "description": "",
+      "type": "string",
+      "default": "'toast-' + Math.random().toString(36).slice(2, 11)",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

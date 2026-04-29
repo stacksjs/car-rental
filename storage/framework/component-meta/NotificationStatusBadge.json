@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "status?",
+      "description": "",
+      "type": "'delivered' | 'sent' | 'pending' | 'failed'",
+      "default": "'pending'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

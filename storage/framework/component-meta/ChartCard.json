@@ -1,0 +1,43 @@
+{
+  "props": [
+    {
+      "name": "title?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "subtitle?",
+      "description": "",
+      "type": "string",
+      "default": "''",
+      "required": false
+    },
+    {
+      "name": "height?",
+      "description": "",
+      "type": "string",
+      "default": "'300px'",
+      "required": false
+    },
+    {
+      "name": "loading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "controls",
+      "description": ""
+    },
+    {
+      "name": "default",
+      "description": ""
+    }
+  ]
+}

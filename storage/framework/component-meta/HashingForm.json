@@ -1,0 +1,48 @@
+{
+  "props": [
+    {
+      "name": "driver?",
+      "description": "",
+      "type": "string",
+      "default": "'argon2'",
+      "required": false
+    },
+    {
+      "name": "bcryptRounds?",
+      "description": "",
+      "type": "string",
+      "default": "'10'",
+      "required": false
+    },
+    {
+      "name": "bcryptCost?",
+      "description": "",
+      "type": "string",
+      "default": "'4'",
+      "required": false
+    },
+    {
+      "name": "argon2Memory?",
+      "description": "",
+      "type": "string",
+      "default": "'65596'",
+      "required": false
+    },
+    {
+      "name": "argon2Threads?",
+      "description": "",
+      "type": "string",
+      "default": "'1'",
+      "required": false
+    },
+    {
+      "name": "argon2Time?",
+      "description": "",
+      "type": "string",
+      "default": "'1'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

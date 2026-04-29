@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "live?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "path?",
+      "description": "",
+      "type": "string",
+      "default": "'~/Code/stacks'",
+      "required": false
+    },
+    {
+      "name": "branch?",
+      "description": "",
+      "type": "string",
+      "default": "'main'",
+      "required": false
+    },
+    {
+      "name": "version?",
+      "description": "",
+      "type": "string",
+      "default": "'v1.2.3'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

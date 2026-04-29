@@ -1,0 +1,34 @@
+{
+  "props": [
+    {
+      "name": "listItems?",
+      "description": "",
+      "type": "string",
+      "default": "[, selected = null, query = '', isOpen = false",
+      "required": false
+    },
+    {
+      "name": "selected?",
+      "description": "",
+      "type": "any",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "query?",
+      "description": "",
+      "type": "string",
+      "default": "unknown",
+      "required": false
+    },
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "unknown",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

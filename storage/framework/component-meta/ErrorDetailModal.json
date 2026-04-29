@@ -1,0 +1,41 @@
+{
+  "props": [
+    {
+      "name": "error?",
+      "description": "",
+      "type": "any",
+      "default": "null",
+      "required": false
+    },
+    {
+      "name": "isOpen?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "errorInstances?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    },
+    {
+      "name": "isLoading?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "activeTab?",
+      "description": "",
+      "type": "string",
+      "default": "'details'",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

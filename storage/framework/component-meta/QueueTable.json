@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "queues?",
+      "description": "",
+      "type": "any[]",
+      "default": "[]",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

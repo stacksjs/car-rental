@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "plan?",
+      "description": "",
+      "type": "Record<string, any>",
+      "default": "{}",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}

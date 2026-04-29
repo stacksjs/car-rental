@@ -1,0 +1,13 @@
+{
+  "props": [
+    {
+      "name": "enabled?",
+      "description": "",
+      "type": "boolean",
+      "default": "false",
+      "required": false
+    }
+  ],
+  "events": [],
+  "slots": []
+}
