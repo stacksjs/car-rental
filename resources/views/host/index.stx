@@ -1,0 +1,100 @@
+<script server>
+const pageTitle = 'Become a host · Drivly'
+const pageDescription = 'List your car on Drivly and earn an average of $10,516/year. Free to list. Up to $750K in protection on every trip.'
+const activePage = 'become-host'
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: 'Earn with your car — list free on Drivly',
+  ogDescription: pageDescription,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
+const stats = [
+  { label: 'Average host earnings', value: '$10,516/yr' },
+  { label: 'Coverage per trip', value: '$750K' },
+  { label: 'Setup fees', value: '$0' },
+]
+
+const benefits = [
+  { icon: '💰', title: 'Earn on your schedule',  desc: 'Rent your car a couple of days a week and you\'ll often cover the payment, insurance, and a little extra besides.' },
+  { icon: '🛡️', title: 'Protection included',    desc: 'Up to $750K in liability coverage. Physical damage covered up to your car\'s actual cash value.' },
+  { icon: '🚘', title: 'You set the rules',      desc: 'Price, availability, mileage limits, pickup style — your call. Decline trips that don\'t feel right.' },
+  { icon: '✨', title: 'Free to list',            desc: 'No setup fees, no monthly minimum. Drivly takes a small cut only when you earn. You keep 75–85%.' },
+]
+
+const steps = [
+  { num: '01', title: 'List in 10 minutes',       desc: 'Add photos, set your price, draw your availability calendar. Most hosts are live by lunch.' },
+  { num: '02', title: 'Approve trips you want',   desc: 'Use Instant Book or review every request. We verify guests and run identity checks.' },
+  { num: '03', title: 'Hand off keys, get paid',  desc: 'Cash drops to your account 3 hours after each trip. Track everything from your dashboard.' },
+]
+</script>
+
+@extends('layouts/app.stx')
+
+@section('content')
+<div class="mx-auto pb-24 px-6 py-12 max-w-[1100px]">
+
+  <header class="mb-12 text-center">
+    <p class="m-0 mb-3 text-xs tracking-[0.2em] uppercase text-[color:var(--text-muted)]">Become a Drivly host</p>
+    <h1 class="m-0 mb-4 text-4xl sm:text-5xl md:text-6xl serif">Your car. Your terms. Your money.</h1>
+    <p class="m-0 mx-auto max-w-[680px] text-lg text-[color:var(--text-secondary)]">
+      Hosts on Drivly turn an idle vehicle into reliable monthly income. We bring the bookings, the insurance, and the support — you keep the keys.
+    </p>
+    <div class="flex flex-wrap gap-3 items-center justify-center mt-8">
+      <StxLink to="/host/list" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all hover:-translate-y-px">
+        List your car
+      </StxLink>
+      <StxLink to="/host/dashboard" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] bg-transparent border rounded-xl transition-colors border-[color:var(--border)] text-[color:var(--text)] hover:bg-[color:var(--surface)]">
+        Already a host? Sign in
+      </StxLink>
+    </div>
+  </header>
+
+  <section class="grid gap-4 grid-cols-3 mb-16">
+    @foreach($stats as $s)
+      <div class="px-5 py-6 text-center border rounded-2xl bg-[color:var(--surface)] border-[color:var(--border)]">
+        <div class="m-0 mb-1 text-3xl sm:text-4xl serif">{{ $s.value }}</div>
+        <div class="text-xs tracking-wider uppercase text-[color:var(--text-muted)]">{{ $s.label }}</div>
+      </div>
+    @endforeach
+  </section>
+
+  <section class="mb-16">
+    <h2 class="m-0 mb-8 text-3xl sm:text-4xl serif">Why hosts pick Drivly</h2>
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
+      @foreach($benefits as $b)
+        <div class="p-6 border rounded-2xl bg-[color:var(--surface)] border-[color:var(--border)]">
+          <p class="m-0 mb-3 text-3xl">{{ $b.icon }}</p>
+          <h3 class="m-0 mb-2 font-semibold text-lg">{{ $b.title }}</h3>
+          <p class="m-0 text-sm text-[color:var(--text-secondary)]">{{ $b.desc }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="mb-16">
+    <h2 class="m-0 mb-8 text-3xl sm:text-4xl serif">How it works</h2>
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
+      @foreach($steps as $st)
+        <div class="p-6 border rounded-2xl bg-[color:var(--surface)] border-[color:var(--border)]">
+          <p class="m-0 mb-3 text-xs tracking-widest text-[color:var(--text-muted)]">{{ $st.num }}</p>
+          <h3 class="m-0 mb-2 font-semibold text-lg">{{ $st.title }}</h3>
+          <p class="m-0 text-sm text-[color:var(--text-secondary)]">{{ $st.desc }}</p>
+        </div>
+      @endforeach
+    </div>
+  </section>
+
+  <section class="mt-16 px-6 py-10 text-center border rounded-3xl bg-[color:var(--surface)] border-[color:var(--border)]">
+    <h2 class="m-0 mb-2 text-3xl sm:text-4xl serif">Ready to start earning?</h2>
+    <p class="m-0 mb-6 mx-auto max-w-[520px] text-[color:var(--text-secondary)]">It takes about ten minutes to list. You can pause your calendar any time.</p>
+    <StxLink to="/host/list" class="inline-flex gap-2 items-center px-6 py-3.5 font-semibold text-[0.9375rem] text-white bg-[#FF3E54] hover:bg-[#e63349] rounded-xl transition-all hover:-translate-y-px">
+      List your car
+    </StxLink>
+  </section>
+
+</div>
+@endsection

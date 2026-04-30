@@ -21,7 +21,12 @@ export default new Action({
 
     let qb = Car.query().where('status', 'active')
 
-    if (q) qb = qb.where((b: any) => b.where('make', 'like', `%${q}%`).orWhere('model', 'like', `%${q}%`).orWhere('trim', 'like', `%${q}%`).orWhere('description', 'like', `%${q}%`))
+    if (q) {
+      const like = `%${q.toLowerCase()}%`
+      qb = qb.whereGroup((b: any) =>
+        b.whereLike('make', like).orWhereLike('model', like).orWhereLike('trim', like).orWhereLike('description', like),
+      )
+    }
     if (category) qb = qb.where('category', category)
     if (make) qb = qb.where('make', make)
     if (transmission) qb = qb.where('transmission', transmission)

@@ -268,5 +268,10 @@ export default {
     complaints: true,
   },
 
-  default: (env.MAIL_MAILER || env.MAIL_DRIVER || 'ses') as 'ses' | 'sendgrid' | 'mailgun' | 'mailtrap' | 'smtp',
+  // Driver selection follows the env, but the dev default is `log` (writes
+  // to storage/logs/mail/, never opens a network socket) so a missing
+  // SES/SendGrid setup doesn't make request handlers hang on credential
+  // lookups. Production overrides via `MAIL_MAILER=ses` (or sendgrid /
+  // mailgun / smtp) in the deployed env.
+  default: (env.MAIL_MAILER || env.MAIL_DRIVER || (env.APP_ENV === 'production' ? 'ses' : 'log')) as 'log' | 'ses' | 'sendgrid' | 'mailgun' | 'mailtrap' | 'smtp',
 } satisfies EmailConfig
