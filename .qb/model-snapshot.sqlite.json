@@ -622,6 +622,70 @@
             "hasDefault": false
           },
           {
+            "name": "earliest_pickup_date",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "latest_dropoff_date",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "compensation_type",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "flat_fee",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "per_mile_rate",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "fuel_allowance",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "max_extra_days",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
+            "name": "estimated_pay",
+            "type": "string",
+            "isPrimaryKey": false,
+            "isUnique": false,
+            "isNullable": true,
+            "hasDefault": false
+          },
+          {
             "name": "status",
             "type": "string",
             "isPrimaryKey": false,
@@ -4048,7 +4112,7 @@
       }
     ]
   },
-  "hash": "1524254e3828f521370df51a9b2a2e3838d91315b5bedf434964425a28b42bb3",
+  "hash": "d32c77f8cc65cd242f73c645aff852d9cbd7e1b6c68eda7354cee9ccf8ca30db",
   "dialect": "sqlite",
-  "updatedAt": "2026-04-28T20:22:59.765Z"
+  "updatedAt": "2026-04-29T06:01:22.615Z"
 }
