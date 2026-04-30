@@ -69,3 +69,4 @@ pantry
 
 # Build artifact directory used by docs/build steps — never tracked.
 storage/framework/cache/
+.stacks-channel
