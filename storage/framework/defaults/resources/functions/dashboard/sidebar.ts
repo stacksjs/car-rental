@@ -20,11 +20,39 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+type ModelCategory = 'userland' | 'data' | 'commerce' | 'content' | 'marketing' | 'system'
+
 interface DiscoveredModel {
   id: string
   name: string
   icon?: string
   hasDedicatedPage?: boolean
+  category?: ModelCategory
+}
+
+interface DashboardSectionToggles {
+  library: boolean
+  content: boolean
+  commerce: boolean
+  marketing: boolean
+  analytics: boolean
+  management: boolean
+  utilities: boolean
+}
+
+interface DiscoveredManifest {
+  models: DiscoveredModel[]
+  sections: DashboardSectionToggles
+}
+
+const DEFAULT_TOGGLES: DashboardSectionToggles = {
+  library: true,
+  content: true,
+  commerce: true,
+  marketing: true,
+  analytics: true,
+  management: true,
+  utilities: true,
 }
 
 const SVG_OPEN = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
@@ -114,36 +142,88 @@ function renderSection(key: string, label: string, items: NavItem[]): string {
 
 /**
  * Pull the discovered-models manifest from the framework defaults dir.
- * Returns [] when the file is absent (e.g. on a fresh project before
- * the first dashboard run regenerates it). Sorted by name so the order
- * is stable across rebuilds.
+ * Handles both the modern envelope (`{ models, sections }`) and the legacy
+ * bare-array form to keep dashboards working across versions while a stale
+ * `.discovered-models.json` is still on disk.
+ *
+ * Returns the default empty payload when the file is absent (fresh project
+ * before the first dashboard run regenerates it).
  */
-export function loadDiscoveredModels(): DiscoveredModel[] {
+export function loadDiscoveredManifest(): DiscoveredManifest {
   const manifestPath = resolve(process.cwd(), 'storage/framework/defaults/views/dashboard/.discovered-models.json')
-  if (!existsSync(manifestPath)) return []
+  if (!existsSync(manifestPath)) return { models: [], sections: DEFAULT_TOGGLES }
   try {
-    const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as DiscoveredModel[]
-    return Array.isArray(parsed) ? parsed.sort((a, b) => (a.name || '').localeCompare(b.name || '')) : []
+    const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as DiscoveredModel[] | { models?: DiscoveredModel[], sections?: Partial<DashboardSectionToggles> }
+    if (Array.isArray(parsed)) {
+      return {
+        models: parsed.sort((a, b) => (a.name || '').localeCompare(b.name || '')),
+        sections: DEFAULT_TOGGLES,
+      }
+    }
+    const models = Array.isArray(parsed.models) ? parsed.models.sort((a, b) => (a.name || '').localeCompare(b.name || '')) : []
+    return {
+      models,
+      sections: { ...DEFAULT_TOGGLES, ...(parsed.sections ?? {}) },
+    }
   }
   catch {
-    return []
+    return { models: [], sections: DEFAULT_TOGGLES }
   }
 }
 
+/** Backward-compat: prior callers only needed the model list. */
+export function loadDiscoveredModels(): DiscoveredModel[] {
+  return loadDiscoveredManifest().models
+}
+
 /**
- * Build the entire sidebar nav HTML. Pass any discoveredModels you want
- * surfaced as a separate "Models" section — by convention we filter to
- * those that don't already have a dedicated page in the static nav.
+ * Pick discovered-model rows that belong to a category and turn them into
+ * web-sidebar nav items. The row visually lives under the categorized
+ * section but always links to `/data/<id>` because that's the only dynamic
+ * model viewer route the dashboard ships — there is no `/commerce/[model]`,
+ * `/content/[model]`, etc. catch-all. `dedicated` skips models the section
+ * already surfaces as a hand-built static row (e.g. `/commerce/customers`
+ * already exists, so the Customer model row would just duplicate it).
  */
-export function buildSidebarNavHtml(discoveredModels: DiscoveredModel[] = []): string {
-  const sections: Array<[string, string, NavItem[]]> = [
-    ['library', 'library', [
-      { to: '/components', icon: 'puzzle', text: 'Components' },
-      { to: '/functions', icon: 'function', text: 'Functions' },
-      { to: '/releases', icon: 'list-number', text: 'Releases' },
-      { to: '/packages', icon: 'package', text: 'Packages' },
-    ]],
-    ['content', 'content', [
+function categoryNavItems(
+  models: DiscoveredModel[],
+  category: ModelCategory,
+  dedicated: Set<string>,
+): NavItem[] {
+  return models
+    .filter(m => (m.category ?? 'data') === category)
+    .filter(m => !m.hasDedicatedPage && !dedicated.has(m.id))
+    .map((m): NavItem => ({ to: `/data/${m.id}`, icon: 'table', text: m.name, mpa: true }))
+}
+
+/**
+ * Build the entire sidebar nav HTML. Models are bucketed into the section
+ * matching their `category`:
+ *   - `userland` / `data` → Data
+ *   - `commerce` → Commerce (skipped entirely if disabled in config)
+ *   - `content` → Content (skipped if disabled)
+ *   - `marketing` → Marketing (skipped if disabled)
+ *   - `system` → App
+ *
+ * Models with a dedicated dashboard page never get a dynamic row.
+ */
+export function buildSidebarNavHtml(
+  discoveredModels: DiscoveredModel[] = [],
+  toggles: DashboardSectionToggles = DEFAULT_TOGGLES,
+): string {
+  const sections: Array<[string, string, NavItem[]]> = []
+
+  if (toggles.library) {
+    sections.push(['library', 'library', [
+      { to: '/library/components', icon: 'puzzle', text: 'Components' },
+      { to: '/library/functions', icon: 'function', text: 'Functions' },
+      { to: '/library/releases', icon: 'list-number', text: 'Releases' },
+      { to: '/library/packages', icon: 'package', text: 'Packages' },
+    ]])
+  }
+
+  if (toggles.content) {
+    sections.push(['content', 'content', [
       { to: '/content/dashboard', icon: 'dashboard', text: 'Dashboard' },
       { to: '/content/files', icon: 'files', text: 'Files' },
       { to: '/content/pages', icon: 'file', text: 'Pages' },
@@ -153,68 +233,142 @@ export function buildSidebarNavHtml(discoveredModels: DiscoveredModel[] = []): s
       { to: '/content/comments', icon: 'comment', text: 'Comments' },
       { to: '/content/authors', icon: 'user-edit', text: 'Authors' },
       { to: '/content/seo', icon: 'seo', text: 'SEO' },
-    ]],
-    ['app', 'app', [
-      { to: '/deployments', icon: 'rocket', text: 'Deployments' },
-      { to: '/requests', icon: 'api', text: 'Requests' },
-      { to: '/realtime', icon: 'link', text: 'Realtime' },
-      { to: '/actions', icon: 'bolt', text: 'Actions' },
-      { to: '/commands', icon: 'terminal', text: 'Commands' },
-      { to: '/queue', icon: 'queue', text: 'Queue' },
-      { to: '/jobs', icon: 'briefcase', text: 'Jobs' },
-      { to: '/queries', icon: 'search', text: 'Queries' },
-      { to: '/notifications/dashboard', icon: 'bell', text: 'Notifications' },
-    ]],
-    ['data', 'data', [
-      { to: '/data/dashboard', icon: 'dashboard', text: 'Dashboard' },
-      { to: '/data/activity', icon: 'activity', text: 'Activity' },
-      { to: '/data/users', icon: 'users', text: 'Users' },
-      { to: '/data/teams', icon: 'group', text: 'Teams' },
-      { to: '/data/subscribers', icon: 'mail', text: 'Subscribers' },
-      // Each user-defined model without a dedicated page gets a row
-      // here so the dashboard exposes an entry point even before a
-      // bespoke page is hand-built. The mpa flag tells the SPA router
-      // to do a full page load (the model viewer is its own bundle).
-      ...discoveredModels
-        .filter(m => !m.hasDedicatedPage)
-        .map((m): NavItem => ({ to: `/data/${m.id}`, icon: 'table', text: m.name, mpa: true })),
-    ]],
-    ['commerce', 'commerce', [
+      ...categoryNavItems(discoveredModels, 'content', new Set([
+        'page', 'post', 'category', 'tag', 'comment', 'author',
+      ])),
+    ]])
+  }
+
+  sections.push(['app', 'app', [
+    { to: '/app/deployments', icon: 'rocket', text: 'Deployments' },
+    { to: '/app/requests', icon: 'api', text: 'Requests' },
+    { to: '/app/realtime', icon: 'link', text: 'Realtime' },
+    { to: '/app/actions', icon: 'bolt', text: 'Actions' },
+    { to: '/app/commands', icon: 'terminal', text: 'Commands' },
+    { to: '/app/queue', icon: 'queue', text: 'Queue' },
+    { to: '/app/jobs', icon: 'briefcase', text: 'Jobs' },
+    { to: '/app/jobs/history', icon: 'clock', text: 'Job History' },
+    { to: '/app/queries', icon: 'search', text: 'Queries' },
+    { to: '/app/queries/slow', icon: 'clock', text: 'Slow Queries' },
+    { to: '/app/queries/history', icon: 'log', text: 'Query History' },
+    { to: '/app/errors', icon: 'log', text: 'Errors' },
+    { to: '/app/notifications', icon: 'bell', text: 'Notifications' },
+    { to: '/app/inbox', icon: 'mail', text: 'Inbox' },
+    { to: '/app/inbox/activity', icon: 'activity', text: 'Mail Activity' },
+    { to: '/app/inbox/settings', icon: 'settings', text: 'Mail Settings' },
+    ...categoryNavItems(discoveredModels, 'system', new Set()),
+  ]])
+
+  // Data is now restricted to the base Stacks rows + ALL Models, plus
+  // anything the project actually defined under `app/Models/`. Commerce /
+  // content / marketing models live under their respective sections.
+  sections.push(['data', 'data', [
+    { to: '/data/dashboard', icon: 'dashboard', text: 'Dashboard' },
+    { to: '/data/activity', icon: 'activity', text: 'Activity' },
+    { to: '/data/users', icon: 'users', text: 'Users' },
+    { to: '/data/teams', icon: 'group', text: 'Teams' },
+    { to: '/data/subscribers', icon: 'mail', text: 'Subscribers' },
+    { to: '/data/models', icon: 'table', text: 'All Models' },
+    ...discoveredModels
+      .filter(m => m.category === 'userland' || m.category === 'data' || m.category === undefined)
+      .filter(m => !m.hasDedicatedPage)
+      .map((m): NavItem => ({ to: `/data/${m.id}`, icon: 'table', text: m.name, mpa: true })),
+  ]])
+
+  if (toggles.commerce) {
+    sections.push(['commerce', 'commerce', [
       { to: '/commerce/dashboard', icon: 'dashboard', text: 'Dashboard' },
       { to: '/commerce/pos', icon: 'cart', text: 'POS' },
       { to: '/commerce/customers', icon: 'user', text: 'Customers' },
       { to: '/commerce/orders', icon: 'orders', text: 'Orders' },
       { to: '/commerce/products', icon: 'package', text: 'Products' },
+      { to: '/commerce/categories', icon: 'tags', text: 'Categories' },
+      { to: '/commerce/manufacturers', icon: 'briefcase', text: 'Manufacturers' },
+      { to: '/commerce/units', icon: 'list-number', text: 'Units' },
+      { to: '/commerce/variants', icon: 'puzzle', text: 'Variants' },
+      { to: '/commerce/reviews', icon: 'star', text: 'Reviews' },
       { to: '/commerce/coupons', icon: 'coupon', text: 'Coupons' },
       { to: '/commerce/gift-cards', icon: 'gift', text: 'Gift Cards' },
       { to: '/commerce/payments', icon: 'invoice', text: 'Payments' },
-      { to: '/commerce/delivery', icon: 'truck', text: 'Delivery' },
       { to: '/commerce/taxes', icon: 'percent', text: 'Taxes' },
-    ]],
-    ['marketing', 'marketing', [
+      { to: '/commerce/printers/devices', icon: 'package', text: 'Printers' },
+      { to: '/commerce/printers/receipts', icon: 'invoice', text: 'Receipts' },
+      { to: '/commerce/waitlist/products', icon: 'clock', text: 'Product Waitlist' },
+      { to: '/commerce/waitlist/restaurant', icon: 'clock', text: 'Restaurant Waitlist' },
+      ...categoryNavItems(discoveredModels, 'commerce', new Set([
+        'customer', 'order', 'product', 'product-variant', 'product-unit',
+        'manufacturer', 'review', 'coupon', 'gift-card', 'payment', 'category',
+        'cart', 'cart-item', 'order-item', 'tax-rate',
+        'shipping-method', 'shipping-rate', 'shipping-zone',
+        'delivery-route', 'driver', 'license-key', 'digital-delivery',
+        'print-device', 'receipt',
+        'waitlist-product', 'waitlist-restaurant',
+      ])),
+    ]])
+
+    sections.push(['delivery', 'delivery', [
+      { to: '/commerce/delivery', icon: 'truck', text: 'Overview' },
+      { to: '/commerce/delivery/shipping-methods', icon: 'truck', text: 'Shipping Methods' },
+      { to: '/commerce/delivery/shipping-rates', icon: 'percent', text: 'Shipping Rates' },
+      { to: '/commerce/delivery/shipping-zones', icon: 'globe', text: 'Shipping Zones' },
+      { to: '/commerce/delivery/drivers', icon: 'user', text: 'Drivers' },
+      { to: '/commerce/delivery/routes', icon: 'globe', text: 'Routes' },
+      { to: '/commerce/delivery/license-keys', icon: 'lock', text: 'License Keys' },
+      { to: '/commerce/delivery/digital', icon: 'package', text: 'Digital Delivery' },
+    ]])
+  }
+
+  if (toggles.marketing) {
+    sections.push(['marketing', 'marketing', [
       { to: '/marketing/lists', icon: 'list-settings', text: 'Lists' },
       { to: '/marketing/social-posts', icon: 'clock', text: 'Social Posts' },
       { to: '/marketing/campaigns', icon: 'rocket', text: 'Campaigns' },
       { to: '/marketing/reviews', icon: 'star', text: 'Reviews' },
-    ]],
-    ['analytics', 'analytics', [
+      ...categoryNavItems(discoveredModels, 'marketing', new Set(['campaign'])),
+    ]])
+  }
+
+  if (toggles.analytics) {
+    sections.push(['analytics', 'analytics', [
       { to: '/analytics/web', icon: 'globe', text: 'Web' },
+      { to: '/analytics/pages', icon: 'document', text: 'Top Pages' },
+      { to: '/analytics/referrers', icon: 'link', text: 'Referrers' },
+      { to: '/analytics/countries', icon: 'globe-search', text: 'Countries' },
+      { to: '/analytics/devices', icon: 'package', text: 'Devices' },
+      { to: '/analytics/browsers', icon: 'globe', text: 'Browsers' },
+      { to: '/analytics/events', icon: 'bolt', text: 'Events' },
       { to: '/analytics/blog', icon: 'document', text: 'Blog' },
-      { to: '/analytics/events', icon: 'target', text: 'Goals' },
-      { to: '/analytics/commerce/web', icon: 'cart', text: 'Commerce' },
-      { to: '/analytics/commerce/sales', icon: 'sale-tag', text: 'Sales' },
+      { to: '/analytics/goals', icon: 'target', text: 'Goals' },
+      { to: '/analytics/commerce', icon: 'cart', text: 'Commerce' },
+      { to: '/analytics/sales', icon: 'sale-tag', text: 'Sales' },
       { to: '/analytics/marketing', icon: 'megaphone', text: 'Marketing' },
-    ]],
-    ['management', 'management', [
-      { to: '/cloud', icon: 'cloud', text: 'Cloud' },
-      { to: '/servers', icon: 'server', text: 'Servers' },
-      { to: '/serverless', icon: 'zap', text: 'Serverless' },
-      { to: '/dns', icon: 'globe-search', text: 'DNS' },
+    ]])
+  }
+
+  if (toggles.management) {
+    sections.push(['management', 'management', [
+      { to: '/management/cloud', icon: 'cloud', text: 'Cloud' },
+      { to: '/management/servers', icon: 'server', text: 'Servers' },
+      { to: '/management/serverless', icon: 'zap', text: 'Serverless' },
+      { to: '/management/dns', icon: 'globe-search', text: 'DNS' },
       { to: '/management/permissions', icon: 'lock', text: 'Permissions' },
-      { to: '/mailboxes', icon: 'mailbox', text: 'Mailboxes' },
-      { to: '/logs', icon: 'log', text: 'Logs' },
-    ]],
-  ]
+      { to: '/management/mailboxes', icon: 'mailbox', text: 'Mailboxes' },
+      { to: '/management/logs', icon: 'log', text: 'Logs' },
+      { to: '/management/health', icon: 'activity', text: 'Health' },
+      { to: '/management/insights', icon: 'star', text: 'Insights' },
+    ]])
+  }
+
+  if (toggles.utilities) {
+    sections.push(['utilities', 'utilities', [
+      { to: '/utilities/buddy', icon: 'terminal', text: 'Buddy CLI' },
+      { to: '/utilities/environment', icon: 'settings', text: 'Environment' },
+      { to: '/utilities/access-tokens', icon: 'lock', text: 'Access Tokens' },
+      { to: '/utilities/billing', icon: 'invoice', text: 'Billing' },
+      { to: '/utilities/mail', icon: 'mail', text: 'Mail Settings' },
+      { to: '/utilities/settings', icon: 'settings', text: 'Settings' },
+    ]])
+  }
 
   return sections.map(([key, label, items]) => renderSection(key, label, items)).join('')
 }
@@ -229,9 +383,10 @@ export function buildSidebarNavHtml(discoveredModels: DiscoveredModel[] = []): s
  * of its return value.
  */
 export function buildSidebarChunks(): { top: string, nav: string, bottom: string } {
+  const manifest = loadDiscoveredManifest()
   return {
     top: `<a href="/" class="sidebar-link sidebar-link-home"><span class="sidebar-icon">${svg('home')}</span><span>Home</span></a>`,
-    nav: buildSidebarNavHtml(loadDiscoveredModels()),
-    bottom: `<a href="/settings/ai" class="sidebar-link"><span class="sidebar-icon">${svg('settings')}</span><span>Settings</span></a>`,
+    nav: buildSidebarNavHtml(manifest.models, manifest.sections),
+    bottom: `<a href="/utilities/settings" class="sidebar-link"><span class="sidebar-icon">${svg('settings')}</span><span>Settings</span></a>`,
   }
 }
