@@ -58,7 +58,7 @@
     "@stacksjs/ts-cloud": "^0.1.14"
   },
   "peerDependencies": {
-    "@anthropic-ai/claude-agent-sdk": "^0.2.79"
+    "@anthropic-ai/claude-agent-sdk": "^0.2.132"
   },
   "peerDependenciesMeta": {
     "@anthropic-ai/claude-agent-sdk": {
