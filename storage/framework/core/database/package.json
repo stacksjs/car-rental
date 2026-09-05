@@ -50,18 +50,18 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "bun-query-builder": "^0.1.12"
+    "bun-query-builder": "^0.2.67"
   },
   "devDependencies": {
     "@stacksjs/cli": "workspace:*",
     "@stacksjs/config": "workspace:*",
     "@stacksjs/logging": "workspace:*",
-    "@stacksjs/router": "workspace:*",
+    "@stacksjs/router": "workspace:*0.74.24",
     "better-dx": "^0.2.5",
     "@stacksjs/path": "workspace:*",
     "@stacksjs/query-builder": "workspace:*",
     "@stacksjs/storage": "workspace:*",
     "@stacksjs/strings": "workspace:*",
-    "@stacksjs/utils": "workspace:*"
+    "@stacksjs/utils": "workspace:*0.74.24"
   }
 }

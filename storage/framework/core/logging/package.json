@@ -48,13 +48,13 @@
     "prepublishOnly": "bun run build"
   },
   "devDependencies": {
-    "@stacksjs/clarity": "^0.3.24",
-    "@stacksjs/cli": "workspace:*",
-    "@stacksjs/config": "workspace:*",
+    "@stacksjs/clarity": "^0.3.33",
+    "@stacksjs/cli": "workspace:*0.74.24",
+    "@stacksjs/config": "workspace:*0.74.24",
     "@stacksjs/error-handling": "workspace:*",
-    "@stacksjs/path": "workspace:*",
-    "@stacksjs/storage": "workspace:*",
-    "@stacksjs/validation": "workspace:*",
+    "@stacksjs/path": "workspace:*0.74.24",
+    "@stacksjs/storage": "workspace:*0.74.24",
+    "@stacksjs/validation": "workspace:*0.74.24",
     "typescript": "^6.0.2"
   }
 }
