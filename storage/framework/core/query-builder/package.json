@@ -46,11 +46,11 @@
     "prepublishOnly": "bun run build"
   },
   "devDependencies": {
-    "@stacksjs/database": "workspace:*",
+    "@stacksjs/database": "workspace:*0.75.41",
     "better-dx": "^0.2.5",
-    "@stacksjs/types": "workspace:*"
+    "@stacksjs/types": "workspace:*0.75.41"
   },
   "dependencies": {
-    "bun-query-builder": "^0.1.12"
+    "bun-query-builder": "^0.3.4"
   }
 }
