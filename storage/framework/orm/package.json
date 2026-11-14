@@ -36,11 +36,11 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "@stacksjs/cache": "workspace:*",
-    "@stacksjs/database": "workspace:*",
-    "@stacksjs/error-handling": "workspace:*"
+    "@stacksjs/cache": "workspace:*0.75.584",
+    "@stacksjs/database": "workspace:*0.75.584",
+    "@stacksjs/error-handling": "workspace:*0.75.584"
   },
   "devDependencies": {
-    "better-dx": "^0.2.5"
+    "better-dx": "^0.2.40"
   }
 }

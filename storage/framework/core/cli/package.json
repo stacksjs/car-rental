@@ -58,16 +58,16 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "@stacksjs/clapp": "^0.2.0"
+    "@stacksjs/clapp": "^0.2.17"
   },
   "devDependencies": {
-    "@stacksjs/collections": "workspace:*",
+    "@stacksjs/collections": "workspace:*0.75.584",
     "@stacksjs/config": "workspace:*",
     "better-dx": "^0.2.5",
     "@stacksjs/error-handling": "workspace:*",
     "@stacksjs/logging": "workspace:*",
     "@stacksjs/path": "workspace:*",
-    "@stacksjs/types": "workspace:*",
+    "@stacksjs/types": "workspace:*0.75.584",
     "@stacksjs/utils": "workspace:*",
     "@stacksjs/validation": "workspace:*"
   }
