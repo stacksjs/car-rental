@@ -54,11 +54,11 @@
     "@stacksjs/ts-cloud": "^0.1.14"
   },
   "devDependencies": {
-    "@stacksjs/arrays": "workspace:*",
+    "@stacksjs/arrays": "workspace:*0.75.639",
     "better-dx": "^0.2.5",
     "@stacksjs/error-handling": "workspace:*",
     "@stacksjs/path": "workspace:*",
     "@stacksjs/strings": "workspace:*",
-    "@stacksjs/types": "workspace:*"
+    "@stacksjs/types": "workspace:*0.75.639"
   }
 }
