@@ -50,7 +50,7 @@
     "bun-query-builder": "^0.1.12"
   },
   "devDependencies": {
-    "@stacksjs/build": "workspace:*",
+    "@stacksjs/build": "workspace:*0.75.712",
     "@stacksjs/config": "workspace:*",
     "better-dx": "^0.2.5",
     "@stacksjs/query-builder": "workspace:*",

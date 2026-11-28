@@ -54,6 +54,6 @@
     "@stacksjs/config": "workspace:*",
     "better-dx": "^0.2.5",
     "@stacksjs/path": "workspace:*",
-    "@stacksjs/server": "workspace:*"
+    "@stacksjs/server": "workspace:*0.75.712"
   }
 }

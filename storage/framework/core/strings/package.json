@@ -60,7 +60,7 @@
     "prepublishOnly": "bun run build"
   },
   "devDependencies": {
-    "@stacksjs/alias": "workspace:*",
+    "@stacksjs/alias": "workspace:*0.75.712",
     "better-dx": "^0.2.5",
     "@stacksjs/types": "workspace:*"
   }
